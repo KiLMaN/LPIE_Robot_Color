@@ -1,3 +1,20 @@
 LPIE_ROBOT_COLOR / PC
 
 Partie logiciel et analyse video provenant de la caméra
+
+
+
+Logiciels utilisés :
+
+	Redistribuables VS2010 : http://www.microsoft.com/en-us/download/details.aspx?id=5555
+
+	Visual C# ( Visual studio 2010 )
+		language de base
+		
+	OpenCv V2.1 Win32 VS 2008 - 2010
+		Librairie pour l'aquisition d'image depuis une caméra numérique
+		Ainsi que pour le traitement de l'image
+		
+		http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.1/OpenCV-2.1.0-win32-vs2008.exe/download
+		
+		Guide INSTALL : http://opencv.willowgarage.com/wiki/VisualC%2B%2B_VS2010
