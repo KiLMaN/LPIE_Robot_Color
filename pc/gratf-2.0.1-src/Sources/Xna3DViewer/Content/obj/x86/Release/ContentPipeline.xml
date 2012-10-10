@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline" xmlns:Framework="Microsoft.Xna.Framework" xmlns:Processors="Microsoft.Xna.Framework.Content.Pipeline.Processors">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>ship1.fbx</Source>
+      <Name>ship1</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship1.xnb</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\ship1_0.xml</Key>
+        <Value>2012-10-10T18:24:47.8355478+02:00</Value>
+      </Dependency>
+      <Request>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship1_c_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>ship2.fbx</Source>
+      <Name>ship2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship2.xnb</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\ship2_0.xml</Key>
+        <Value>2012-10-10T18:24:48.9766131+02:00</Value>
+      </Dependency>
+      <Request>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship2_c_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>ship3.fbx</Source>
+      <Name>ship3</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship3.xnb</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\ship3_0.xml</Key>
+        <Value>2012-10-10T18:24:50.0526746+02:00</Value>
+      </Dependency>
+      <Request>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship3_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>ship4.fbx</Source>
+      <Name>ship4</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship4.xnb</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\ship4_0.xml</Key>
+        <Value>2012-10-10T18:24:50.408695+02:00</Value>
+      </Dependency>
+      <Request>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship4_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>ship5.fbx</Source>
+      <Name>ship5</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship5.xnb</Output>
+      <Time>2011-09-14T04:34:06+02:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\ship5_0.xml</Key>
+        <Value>2012-10-10T18:24:51.1627381+02:00</Value>
+      </Dependency>
+      <Request>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship5_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>ship1.fbx</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\ship1_0.xml</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ship1_c.tga</Source>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Parameters>
+        <Data Key="ColorKeyColor" Type="Framework:Color">FFFF00FF</Data>
+        <Data Key="ColorKeyEnabled" Type="bool">true</Data>
+        <Data Key="TextureFormat" Type="Processors:TextureProcessorOutputFormat">DxtCompressed</Data>
+        <Data Key="GenerateMipmaps" Type="bool">true</Data>
+        <Data Key="ResizeToPowerOfTwo" Type="bool">false</Data>
+        <Data Key="PremultiplyAlpha" Type="bool">true</Data>
+      </Parameters>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship1_c_0.xnb</Output>
+      <Time>2011-01-19T20:35:56+01:00</Time>
+    </Item>
+    <Item>
+      <Source>ship2.fbx</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\ship2_0.xml</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ship2_c.tga</Source>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Parameters>
+        <Data Key="ColorKeyColor" Type="Framework:Color">FFFF00FF</Data>
+        <Data Key="ColorKeyEnabled" Type="bool">true</Data>
+        <Data Key="TextureFormat" Type="Processors:TextureProcessorOutputFormat">DxtCompressed</Data>
+        <Data Key="GenerateMipmaps" Type="bool">true</Data>
+        <Data Key="ResizeToPowerOfTwo" Type="bool">false</Data>
+        <Data Key="PremultiplyAlpha" Type="bool">true</Data>
+      </Parameters>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship2_c_0.xnb</Output>
+      <Time>2011-01-19T20:35:56+01:00</Time>
+    </Item>
+    <Item>
+      <Source>ship3.fbx</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\ship3_0.xml</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ship3.tga</Source>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Parameters>
+        <Data Key="ColorKeyColor" Type="Framework:Color">FFFF00FF</Data>
+        <Data Key="ColorKeyEnabled" Type="bool">true</Data>
+        <Data Key="TextureFormat" Type="Processors:TextureProcessorOutputFormat">DxtCompressed</Data>
+        <Data Key="GenerateMipmaps" Type="bool">true</Data>
+        <Data Key="ResizeToPowerOfTwo" Type="bool">false</Data>
+        <Data Key="PremultiplyAlpha" Type="bool">true</Data>
+      </Parameters>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship3_0.xnb</Output>
+      <Time>2011-01-19T20:35:56+01:00</Time>
+    </Item>
+    <Item>
+      <Source>ship4.fbx</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\ship4_0.xml</Output>
+      <Time>2011-09-02T05:34:10+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ship4.tga</Source>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Parameters>
+        <Data Key="ColorKeyColor" Type="Framework:Color">FFFF00FF</Data>
+        <Data Key="ColorKeyEnabled" Type="bool">true</Data>
+        <Data Key="TextureFormat" Type="Processors:TextureProcessorOutputFormat">DxtCompressed</Data>
+        <Data Key="GenerateMipmaps" Type="bool">true</Data>
+        <Data Key="ResizeToPowerOfTwo" Type="bool">false</Data>
+        <Data Key="PremultiplyAlpha" Type="bool">true</Data>
+      </Parameters>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship4_0.xnb</Output>
+      <Time>2011-01-19T20:35:56+01:00</Time>
+    </Item>
+    <Item>
+      <Source>ship5.fbx</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\ship5_0.xml</Output>
+      <Time>2011-09-14T04:34:06+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ship5.tga</Source>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Parameters>
+        <Data Key="ColorKeyColor" Type="Framework:Color">FFFF00FF</Data>
+        <Data Key="ColorKeyEnabled" Type="bool">true</Data>
+        <Data Key="TextureFormat" Type="Processors:TextureProcessorOutputFormat">DxtCompressed</Data>
+        <Data Key="GenerateMipmaps" Type="bool">true</Data>
+        <Data Key="ResizeToPowerOfTwo" Type="bool">false</Data>
+        <Data Key="PremultiplyAlpha" Type="bool">true</Data>
+      </Parameters>
+      <Options>None</Options>
+      <Output>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\ship5_0.xnb</Output>
+      <Time>2011-09-14T04:34:06+02:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>HiDef</TargetProfile>
+      <BuildConfiguration>Release</BuildConfiguration>
+      <CompressContent>true</CompressContent>
+      <RootDirectory>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\Content\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\Content\obj\x86\Release\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\bin\Release_x86\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2010-08-23T12:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2010-08-23T12:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2012-08-14T20:29:46.925381+02:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>

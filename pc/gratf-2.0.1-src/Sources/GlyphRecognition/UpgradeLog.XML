@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="GlyphRecognition">
+</Property><Property Name="Fichier solution" Value="C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\GlyphRecognition.sln">
+</Property><Property Name="Date" Value="mercredi 10 octobre 2012">
+</Property><Property Name="Time" Value="20:21">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="GlyphRecognition.sln" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\GlyphRecognition.sln">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="GlyphRecognition.csproj" Description="Fichier projet correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\GlyphRecognition.csproj">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="ExtractedGlyphData.cs" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\ExtractedGlyphData.cs">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="Glyph.cs" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\Glyph.cs">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="GlyphDatabase.cs" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\GlyphDatabase.cs">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="GlyphRecognizer.cs" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\GlyphRecognizer.cs">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="GlyphTracker.cs" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\GlyphTracker.cs">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="Properties\AssemblyInfo.cs" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="SquareBinaryGlyphRecognizer.cs" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\SquareBinaryGlyphRecognizer.cs">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="AForge.Vision.GlyphRecognition.snk" Description="Fichier correctement sauvegardé en tant que C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\Backup\AForge.Vision.GlyphRecognition.snk">
+</Event><Event ErrorLevel="0" Project="GlyphRecognition" Source="GlyphRecognition.csproj" Description="Le fichier projet ne doit pas être converti.">
+</Event><Event ErrorLevel="3" Project="GlyphRecognition" Source="GlyphRecognition.csproj" Description="Aucune conversion requise">
+</Event><Event ErrorLevel="0" Project="" Source="GlyphRecognition.sln" Description="Solution correctement convertie">
+</Event><Event ErrorLevel="3" Project="" Source="GlyphRecognition.sln" Description="Converted">
+</Event></UpgradeLog>

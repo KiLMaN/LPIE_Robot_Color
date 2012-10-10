@@ -1,0 +1,9 @@
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\bin\x86\Debug\AForge.Vision.GlyphRecognition.dll
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\bin\x86\Debug\AForge.Vision.GlyphRecognition.pdb
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\bin\x86\Debug\AForge.Vision.GlyphRecognition.xml
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\bin\x86\Debug\AForge.dll
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\bin\x86\Debug\AForge.Imaging.dll
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\bin\x86\Debug\AForge.Math.dll
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\obj\x86\Debug\AForge.Vision.GlyphRecognition.dll
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\GlyphRecognition\obj\x86\Debug\AForge.Vision.GlyphRecognition.pdb

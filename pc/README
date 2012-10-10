@@ -11,6 +11,15 @@ Logiciels utilisés :
 	Visual C# ( Visual studio 2010 )
 		language de base
 		
+	AForge.NET
+		Librairie pour l'aquisition d'image depuis une caméra numérique
+		Ainsi que pour le traitement de l'image
+		
+		http://www.aforgenet.com/framework/downloads.html
+		
+		
+	OU :
+	
 	OpenCv V2.1 Win32 VS 2008 - 2010
 		Librairie pour l'aquisition d'image depuis une caméra numérique
 		Ainsi que pour le traitement de l'image

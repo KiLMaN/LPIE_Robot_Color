@@ -1,0 +1,1 @@
+C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Xna3DViewer\Content\obj\x86\Release\ResolveAssemblyReference.cache
