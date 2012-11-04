@@ -1,4 +1,5 @@
-﻿namespace pc_console_robot
+﻿using System.Windows.Forms;
+namespace pc_console_robot
 {
     partial class MainForm
     {
@@ -30,6 +31,8 @@
         {
             this.selecteur_camera = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.selecteur_resolution = new System.Windows.Forms.ComboBox();
             this.btn_refresh_liste_cam = new System.Windows.Forms.Button();
             this.btn_afficher_flux_cam = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -41,20 +44,33 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.label_etat_programe = new System.Windows.Forms.ToolStripStatusLabel();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.selecteur_resolution = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.pic_ImageRouge = new System.Windows.Forms.PictureBox();
+            this.pic_ImageEdge = new System.Windows.Forms.PictureBox();
+            this.pic_ImageNormal = new System.Windows.Forms.PictureBox();
+            this.pic_ImageBleu = new System.Windows.Forms.PictureBox();
+            this.pic_ImageVert = new System.Windows.Forms.PictureBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lbl_lum = new System.Windows.Forms.Label();
+            this.lbl_sat = new System.Windows.Forms.Label();
+            this.lbl_hue = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageRouge)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageEdge)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageNormal)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageBleu)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageVert)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.SuspendLayout();
             // 
             // selecteur_camera
@@ -79,6 +95,24 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Caméra Vidéo";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 53);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(63, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Résolution :";
+            // 
+            // selecteur_resolution
+            // 
+            this.selecteur_resolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.selecteur_resolution.FormattingEnabled = true;
+            this.selecteur_resolution.Location = new System.Drawing.Point(80, 49);
+            this.selecteur_resolution.Name = "selecteur_resolution";
+            this.selecteur_resolution.Size = new System.Drawing.Size(184, 21);
+            this.selecteur_resolution.TabIndex = 2;
             // 
             // btn_refresh_liste_cam
             // 
@@ -182,81 +216,210 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(892, 86);
+            this.numericUpDown1.Location = new System.Drawing.Point(993, 12);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(120, 20);
             this.numericUpDown1.TabIndex = 8;
             this.numericUpDown1.Value = new decimal(new int[] {
+            130,
+            0,
+            0,
+            0});
+            // 
+            // pic_ImageRouge
+            // 
+            this.pic_ImageRouge.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pic_ImageRouge.Location = new System.Drawing.Point(72, 410);
+            this.pic_ImageRouge.Name = "pic_ImageRouge";
+            this.pic_ImageRouge.Size = new System.Drawing.Size(237, 176);
+            this.pic_ImageRouge.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pic_ImageRouge.TabIndex = 9;
+            this.pic_ImageRouge.TabStop = false;
+            // 
+            // pic_ImageEdge
+            // 
+            this.pic_ImageEdge.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pic_ImageEdge.Location = new System.Drawing.Point(431, 127);
+            this.pic_ImageEdge.Name = "pic_ImageEdge";
+            this.pic_ImageEdge.Size = new System.Drawing.Size(388, 277);
+            this.pic_ImageEdge.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pic_ImageEdge.TabIndex = 7;
+            this.pic_ImageEdge.TabStop = false;
+            // 
+            // pic_ImageNormal
+            // 
+            this.pic_ImageNormal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pic_ImageNormal.Location = new System.Drawing.Point(39, 127);
+            this.pic_ImageNormal.Name = "pic_ImageNormal";
+            this.pic_ImageNormal.Size = new System.Drawing.Size(386, 277);
+            this.pic_ImageNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pic_ImageNormal.TabIndex = 5;
+            this.pic_ImageNormal.TabStop = false;
+            this.pic_ImageNormal.MouseClick += new MouseEventHandler(this.pic_ImageNormal_Click);
+            // 
+            // pic_ImageBleu
+            // 
+            this.pic_ImageBleu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pic_ImageBleu.Location = new System.Drawing.Point(315, 410);
+            this.pic_ImageBleu.Name = "pic_ImageBleu";
+            this.pic_ImageBleu.Size = new System.Drawing.Size(237, 176);
+            this.pic_ImageBleu.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pic_ImageBleu.TabIndex = 10;
+            this.pic_ImageBleu.TabStop = false;
+            // 
+            // pic_ImageVert
+            // 
+            this.pic_ImageVert.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pic_ImageVert.Location = new System.Drawing.Point(558, 410);
+            this.pic_ImageVert.Name = "pic_ImageVert";
+            this.pic_ImageVert.Size = new System.Drawing.Size(237, 176);
+            this.pic_ImageVert.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pic_ImageVert.TabIndex = 11;
+            this.pic_ImageVert.TabStop = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(883, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(104, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Radius Filtre Couleur";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(870, 40);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(117, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Seuil Detection couleur";
+            // 
+            // numericUpDown2
+            // 
+            this.numericUpDown2.Location = new System.Drawing.Point(993, 38);
+            this.numericUpDown2.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown2.TabIndex = 13;
+            this.numericUpDown2.Value = new decimal(new int[] {
             40,
             0,
             0,
             0});
             // 
-            // pictureBox4
+            // label6
             // 
-            this.pictureBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox4.Location = new System.Drawing.Point(433, 410);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(386, 277);
-            this.pictureBox4.TabIndex = 9;
-            this.pictureBox4.TabStop = false;
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(870, 65);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(115, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Seuil Detection Glyphe";
             // 
-            // pictureBox3
+            // numericUpDown3
             // 
-            this.pictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox3.Location = new System.Drawing.Point(39, 410);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(388, 277);
-            this.pictureBox3.TabIndex = 7;
-            this.pictureBox3.TabStop = false;
+            this.numericUpDown3.Location = new System.Drawing.Point(993, 63);
+            this.numericUpDown3.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numericUpDown3.Name = "numericUpDown3";
+            this.numericUpDown3.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown3.TabIndex = 15;
+            this.numericUpDown3.Value = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
             // 
-            // pictureBox2
+            // label7
             // 
-            this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox2.Location = new System.Drawing.Point(431, 127);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(386, 277);
-            this.pictureBox2.TabIndex = 5;
-            this.pictureBox2.TabStop = false;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(925, 141);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(36, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "Hue : ";
             // 
-            // pictureBox1
+            // label8
             // 
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(39, 127);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(386, 277);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(932, 167);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(29, 13);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Sat :";
             // 
-            // selecteur_resolution
+            // label9
             // 
-            this.selecteur_resolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.selecteur_resolution.FormattingEnabled = true;
-            this.selecteur_resolution.Location = new System.Drawing.Point(80, 49);
-            this.selecteur_resolution.Name = "selecteur_resolution";
-            this.selecteur_resolution.Size = new System.Drawing.Size(184, 21);
-            this.selecteur_resolution.TabIndex = 2;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(928, 192);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(33, 13);
+            this.label9.TabIndex = 19;
+            this.label9.Text = "Lum :";
             // 
-            // label3
+            // lbl_lum
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 53);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Résolution :";
+            this.lbl_lum.AutoSize = true;
+            this.lbl_lum.Location = new System.Drawing.Point(967, 192);
+            this.lbl_lum.Name = "lbl_lum";
+            this.lbl_lum.Size = new System.Drawing.Size(13, 13);
+            this.lbl_lum.TabIndex = 22;
+            this.lbl_lum.Text = "0";
+            // 
+            // lbl_sat
+            // 
+            this.lbl_sat.AutoSize = true;
+            this.lbl_sat.Location = new System.Drawing.Point(967, 167);
+            this.lbl_sat.Name = "lbl_sat";
+            this.lbl_sat.Size = new System.Drawing.Size(13, 13);
+            this.lbl_sat.TabIndex = 21;
+            this.lbl_sat.Text = "0";
+            // 
+            // lbl_hue
+            // 
+            this.lbl_hue.AutoSize = true;
+            this.lbl_hue.Location = new System.Drawing.Point(967, 141);
+            this.lbl_hue.Name = "lbl_hue";
+            this.lbl_hue.Size = new System.Drawing.Size(13, 13);
+            this.lbl_hue.TabIndex = 20;
+            this.lbl_hue.Text = "0";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1125, 712);
-            this.Controls.Add(this.pictureBox4);
+            this.Controls.Add(this.lbl_lum);
+            this.Controls.Add(this.lbl_sat);
+            this.Controls.Add(this.lbl_hue);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.numericUpDown3);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.numericUpDown2);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.pic_ImageVert);
+            this.Controls.Add(this.pic_ImageBleu);
+            this.Controls.Add(this.pic_ImageRouge);
             this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.pictureBox3);
+            this.Controls.Add(this.pic_ImageEdge);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pic_ImageNormal);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "MainForm";
@@ -269,10 +432,13 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageRouge)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageEdge)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageNormal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageBleu)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ImageVert)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -288,17 +454,29 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_stopper_flux_video;
         private System.Windows.Forms.Label txt_nb_fps;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pic_ImageNormal;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel label_etat_programe;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox pic_ImageEdge;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox pic_ImageRouge;
         private System.Windows.Forms.Label txt_resolution;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox selecteur_resolution;
+        private System.Windows.Forms.PictureBox pic_ImageBleu;
+        private System.Windows.Forms.PictureBox pic_ImageVert;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown numericUpDown3;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lbl_lum;
+        private System.Windows.Forms.Label lbl_sat;
+        private System.Windows.Forms.Label lbl_hue;
     }
 }
 
