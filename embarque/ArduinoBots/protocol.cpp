@@ -193,14 +193,3 @@ unsigned int crc16_protocole(TrameProtocole trame)
 {
   return calc_crc16((byte *)&trame,trame.length + 5);
 }
-
-
-
-
-
-
-
-
-
-
-

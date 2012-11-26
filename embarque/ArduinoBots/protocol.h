@@ -40,5 +40,3 @@ TrameProtocole * getTrame();
 
 /* Calcul du CRC - 16 */
 unsigned int crc16_protocole(TrameProtocole trame);
-
-

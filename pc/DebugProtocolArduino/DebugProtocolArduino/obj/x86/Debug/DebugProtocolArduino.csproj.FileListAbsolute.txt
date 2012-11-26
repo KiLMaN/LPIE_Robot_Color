@@ -1,0 +1,9 @@
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\bin\Debug\DebugProtocolArduino.exe
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\bin\Debug\DebugProtocolArduino.pdb
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.Form1.resources
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.Properties.Resources.resources
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.exe
+D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.pdb

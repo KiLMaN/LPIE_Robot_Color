@@ -17,32 +17,6 @@ void loop()
   TrameProtocole * trame = getTrame();
   if(trame != NULL) // Nouvelle trame reçue
   {
-    Serial.println("Trame Ok");
+    //Serial.println("Trame Ok");
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
