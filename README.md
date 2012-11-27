@@ -1,26 +1,26 @@
-LPIE_ROBOT_COLOR
+LPIE ROBOT COLOR
 ================
 
 Introduction
 ------------
 
-Le projet créer pour l'examen de la Licence Pro. Informatique Embarquée de L'ITIN en partenariat avec L'UCP,  
-A pour but de creer des unités mobiles communicantes chagées de déplacer des objets de couleur dans des zones prédéfinies
+Le projet crï¿½er pour l'examen de la Licence Pro. Informatique Embarquï¿½e de L'ITIN en partenariat avec L'UCP,  
+A pour but de creer des unitï¿½s mobiles communicantes chagï¿½es de dï¿½placer des objets de couleur dans des zones prï¿½dï¿½finies
 
 
 Fonctionnement
 --------------
 
 ### Infos Globales
-Un protocole spécifique est mis en place pour envoyer et recevoir depuis / vers les modules embarqués 
+Un protocole spï¿½cifique est mis en place pour envoyer et recevoir depuis / vers les modules embarquï¿½s 
 
 ### Robots
 
-Les robots basés sur des arduino communiquent avec le pc central via une liaison Xbee.  
-Les robots sont équipés d'une pince controlée par des servomoteurs qui lui permet de saisir les objets  
-Ils sont aussi équipés de capteurs infrarouge et ultrasonic pour etudier l'environement du robot lors de ses déplacements  
+Les robots basï¿½s sur des arduino communiquent avec le pc central via une liaison Xbee.  
+Les robots sont ï¿½quipï¿½s d'une pince controlï¿½e par des servomoteurs qui lui permet de saisir les objets  
+Ils sont aussi ï¿½quipï¿½s de capteurs infrarouge et ultrasonic pour etudier l'environement du robot lors de ses dï¿½placements  
 
 ### PC
 
-Le pc est équipé d'une caméra de type 'webcam' de haute qualitée qui filme les déplacements et positions des robots et de leurs cibles  
-Cette information est décodée puis traitée via des algorithmes pour envoyer des commandes au robots 
+Le pc est ï¿½quipï¿½ d'une camï¿½ra de type 'webcam' de haute qualitï¿½e qui filme les dï¿½placements et positions des robots et de leurs cibles  
+Cette information est dï¿½codï¿½e puis traitï¿½e via des algorithmes pour envoyer des commandes au robots 
