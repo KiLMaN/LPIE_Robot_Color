@@ -20,9 +20,8 @@ namespace DebugProtocolArduino
             PROTOCOL_STOP = 0x8C
         };
 
-        private static int BUFFER_DATA_IN = 50; // Nombre d'octets de data que le protocole peut envoyé en meme temps
+        private const int BUFFER_DATA_IN = 50; // Nombre d'octets de data que le protocole peut envoyé en meme temps
         /* Structure de la trame */
-
         public struct TrameProtocole
         {
             public byte src;
@@ -107,7 +106,6 @@ namespace DebugProtocolArduino
                     m_TrameReceive.length = data;
                     if (m_TrameReceive.length > BUFFER_DATA_IN) // On envoi un trame trop longue 
                     {
-                       
                         ProtocolState = -1;
                         return false;
                     }
@@ -254,7 +252,7 @@ namespace DebugProtocolArduino
             trame.num = num;
             trame.length = Convert.ToByte(data.Length);
             trame.data = data;
-            //trame.crc = crc(trame) ;
+            trame.crc = crc16_protocole(trame);
             return trame;
         }
 
@@ -293,11 +291,39 @@ namespace DebugProtocolArduino
 
         public void SendTrame(TrameProtocole trame)
         {
+            if (PortSerie == null)
+                return;
+            if (!PortSerie.IsOpen)
+                return;
             byte[] Bin = MakeTrameBinary(trame);
             Log.log(Bin.ToString());
 
            PortSerie.Write(Bin, 0,Bin.Length);
                 
+        }
+        byte[] getBytes(TrameProtocole trame)
+        {
+            byte[] retVal = new byte[trame.length + 5];
+             /*public byte src;
+            public byte dst;
+            public ushort num;
+            public byte length;
+            public byte[] data;*/
+            int index = 0;
+            retVal[index++] = trame.src;
+            retVal[index++] = trame.dst;
+            retVal[index++] = (byte)(trame.num >> 8);
+            retVal[index++] = (byte)(trame.num & 0xFF);
+            retVal[index++] = trame.length;
+
+            foreach (byte data in trame.data)
+                retVal[index++] = data;
+
+            return retVal;
+        }
+        ushort crc16_protocole(TrameProtocole trame)
+        {
+            return crc16.calc_crc16(getBytes(trame), trame.length + 5);
         }
          
 

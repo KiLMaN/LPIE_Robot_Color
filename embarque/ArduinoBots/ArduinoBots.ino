@@ -17,6 +17,13 @@ void loop()
   TrameProtocole * trame = getTrame();
   if(trame != NULL) // Nouvelle trame reçue
   {
+    if(checkCrc(*trame))
+    {
+      SendTrame(*trame);
+      //Serial.println("Trame Ok");
+    }
+    //Serial.println("Trame Ok");
+    
     //Serial.println("Trame Ok");
   }
 }

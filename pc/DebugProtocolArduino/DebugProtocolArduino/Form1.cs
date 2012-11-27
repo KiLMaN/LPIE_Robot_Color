@@ -102,10 +102,28 @@ namespace DebugProtocolArduino
             ptTest.SendTrame(trame);
             Protocol.TrameProtocole newtrame ;
 
-            while ((newtrame = ptTest.getTrame()).Equals(default(Protocol.TrameProtocole)));
-            Log.log(DateTime.Now.ToString("HH:mm:ss.ffffff") + '\n');
-            Log.log(newtrame.ToString());
+            System.Threading.Thread.Sleep(1000);
+            while (gPortSerie.BytesToRead > 0 )  // Lit les données entrantes du port com
+            {
+                //int data = gPortSerie.ReadByte();
+//Log.log(data.ToString());
 
+                //Log.log(String.Format("0x{0:X}", gPortSerie.ReadByte()));
+                Log.log(gPortSerie.ReadExisting());
+            }
+
+            /*while ((newtrame = ptTest.getTrame()).Equals(default(Protocol.TrameProtocole)));
+            Log.log(DateTime.Now.ToString("HH:mm:ss.ffffff") + '\n');
+            Log.log(newtrame.ToString());*/
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            byte[] data = { (byte)('s'),(byte)('d'),(byte)('n'),(byte)('n'),(byte)('1'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p') };
+
+
+            ushort crc = crc16.calc_crc16(data, data.Length);
         }
 
         

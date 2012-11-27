@@ -1,5 +1,5 @@
 /* Protocole de communication */
-#define   DEBUG_PROTOCOL      1 
+//#define   DEBUG_PROTOCOL      1 
 #ifdef DEBUG_PROTOCOL
 
 /** Definition du protocole **/
@@ -24,7 +24,7 @@
 #define   BUFFER_DATA_IN        50   // Nombre d'octets de data que le protocole peut envoyé en meme temps
 
 /* Structure de la trame */
-typedef struct t_TrameProtocole
+typedef struct t_TrameProtocole 
 {
   byte src;
   byte dst;
@@ -40,3 +40,8 @@ TrameProtocole * getTrame();
 
 /* Calcul du CRC - 16 */
 unsigned int crc16_protocole(TrameProtocole trame);
+
+TrameProtocole * MakeTrame(byte src, byte dst, word num, byte data[]);
+void SendTrame(TrameProtocole trame);
+
+boolean checkCrc(TrameProtocole trame);
