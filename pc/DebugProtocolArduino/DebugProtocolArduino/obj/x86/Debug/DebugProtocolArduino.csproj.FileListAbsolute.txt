@@ -7,3 +7,12 @@ D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\
 D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\GenerateResource.write.1.tlog
 D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.exe
 D:\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\bin\Debug\DebugProtocolArduino.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\bin\Debug\DebugProtocolArduino.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.Form1.resources
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\DebugProtocolArduino.Properties.Resources.resources
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\DebugProtocolArduino\DebugProtocolArduino\obj\x86\Debug\GenerateResource.write.1.tlog

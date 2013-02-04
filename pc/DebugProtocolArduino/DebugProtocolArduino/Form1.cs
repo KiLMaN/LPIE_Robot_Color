@@ -21,10 +21,15 @@ namespace DebugProtocolArduino
         public Form1()
         {
             InitializeComponent();
-            getListePortSerie();
             Log.attachTo(txtbox_debug_log);
+            getListePortSerie();
+
+            pictBoxEtatConn.BackColor = Color.Red;  
         }
 
+
+
+        delegate void d_updateSateRobot(Boolean state);
         /*delegate void LogLigne(string str);
         void writeLogDebugWin(string str)
         {
@@ -90,7 +95,16 @@ namespace DebugProtocolArduino
             foreach (string port in listePort)
                 liste_portSerie.Items.Add(port);
             /* Selectionne le premier de la liste */
-            liste_portSerie.SelectedIndex = 0 ;
+            try
+            {
+                liste_portSerie.SelectedIndex = 0;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Pas de port Serie de disponible 
+                MessageBox.Show("Aucun port serie n'est disponible !");
+                Log.log("Aucun port serie n'est disponible !");
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -105,26 +119,22 @@ namespace DebugProtocolArduino
             System.Threading.Thread.Sleep(1000);
             while (gPortSerie.BytesToRead > 0 )  // Lit les données entrantes du port com
             {
-                //int data = gPortSerie.ReadByte();
-//Log.log(data.ToString());
-
-                //Log.log(String.Format("0x{0:X}", gPortSerie.ReadByte()));
                 Log.log(gPortSerie.ReadExisting());
             }
 
-            /*while ((newtrame = ptTest.getTrame()).Equals(default(Protocol.TrameProtocole)));
-            Log.log(DateTime.Now.ToString("HH:mm:ss.ffffff") + '\n');
-            Log.log(newtrame.ToString());*/
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            byte[] data = { (byte)('s'),(byte)('d'),(byte)('n'),(byte)('n'),(byte)('1'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p'),(byte)('p') };
-
-
-            ushort crc = crc16.calc_crc16(data, data.Length);
+           
         }
+
+        private void btn_left_Click(object sender, EventArgs e)
+        {
+
+        }
+
 
         
 
