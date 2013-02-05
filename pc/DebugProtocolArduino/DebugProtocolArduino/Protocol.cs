@@ -6,8 +6,28 @@ using System.IO.Ports;
 
 namespace DebugProtocolArduino
 {
+    /* Structure de la trame */
+    public struct TrameProtocole
+    {
+        public byte src;
+        public byte dst;
+        public ushort num;
+        public byte length;
+        public byte[] data;
+        public ushort crc;
+
+        // Override the ToString method:
+        public override string ToString()
+        {
+            return (String.Format("(Source :{0}, Destination :{1}, Numéro :{2}, Longeur :{3}, crc :{4})", src, dst, num, length, crc));
+        }
+    };
+
+
     class Protocol
     {
+        private const int BUFFER_DATA_IN = 50; // Nombre d'octets de data que le protocole peut envoyé en meme temps
+
         /** Definition du protocole **/
         enum ProtocoleChar : byte
         {
@@ -20,25 +40,9 @@ namespace DebugProtocolArduino
             PROTOCOL_STOP = 0x8C
         };
 
-        private const int BUFFER_DATA_IN = 50; // Nombre d'octets de data que le protocole peut envoyé en meme temps
-        /* Structure de la trame */
-        public struct TrameProtocole
-        {
-            public byte src;
-            public byte dst;
-            public ushort num;
-            public byte length;
-            public byte[] data;
-            public ushort crc;
 
-            // Override the ToString method:
-            public override string ToString()
-            {
-                return (String.Format("(Source :{0}, Destination :{1}, Numéro :{2}, Longeur :{3}, crc :{4})", src, dst, num, length, crc));
-            }
-        };
 
-        
+
 
 
 
@@ -109,7 +113,7 @@ namespace DebugProtocolArduino
                         ProtocolState = -1;
                         return false;
                     }
-                     m_TrameReceive.data = new byte[m_TrameReceive.length]; // Initialisation du tableau
+                    m_TrameReceive.data = new byte[m_TrameReceive.length]; // Initialisation du tableau
                     return true;
                 case 6: // DATAS (Besoin de m_TrameReceive.length bytes)
                     m_TrameReceive.data[CurrentLengthDatas] = data; // remplis le tableau des données
@@ -241,7 +245,7 @@ namespace DebugProtocolArduino
             return default(TrameProtocole);
         }
 
-       public TrameProtocole MakeTrame(byte src, byte dst, ushort num, byte[] data)
+        public TrameProtocole MakeTrame(byte src, byte dst, ushort num, byte[] data)
         {
             if (data.Length > BUFFER_DATA_IN)
                 return default(TrameProtocole);
@@ -284,7 +288,7 @@ namespace DebugProtocolArduino
 
         private void addToTrameBinary(List<byte> trameSortie, byte Donnee)
         {
-            if(Enum.IsDefined(typeof(ProtocoleChar),Donnee)) // Si la donnée existe dans l'enum
+            if (Enum.IsDefined(typeof(ProtocoleChar), Donnee)) // Si la donnée existe dans l'enum
                 trameSortie.Add((byte)ProtocoleChar.PROTOCOL_ESCAPE); // on l'échape 
             trameSortie.Add(Donnee); // et on l'ajoute
         }
@@ -298,17 +302,17 @@ namespace DebugProtocolArduino
             byte[] Bin = MakeTrameBinary(trame);
             Log.log(Bin.ToString());
 
-           PortSerie.Write(Bin, 0,Bin.Length);
-                
+            PortSerie.Write(Bin, 0, Bin.Length);
+
         }
         byte[] getBytes(TrameProtocole trame)
         {
             byte[] retVal = new byte[trame.length + 5];
-             /*public byte src;
-            public byte dst;
-            public ushort num;
-            public byte length;
-            public byte[] data;*/
+            /*public byte src;
+           public byte dst;
+           public ushort num;
+           public byte length;
+           public byte[] data;*/
             int index = 0;
             retVal[index++] = trame.src;
             retVal[index++] = trame.dst;
@@ -325,7 +329,7 @@ namespace DebugProtocolArduino
         {
             return crc16.calc_crc16(getBytes(trame), trame.length + 5);
         }
-         
+
 
     }
 }

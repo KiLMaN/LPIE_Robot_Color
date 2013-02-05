@@ -32,8 +32,25 @@
             this.gPortSerie = new System.IO.Ports.SerialPort(this.components);
             this.Tabs = new System.Windows.Forms.TabControl();
             this.TabControle = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.pictBoxEtatConn = new System.Windows.Forms.PictureBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.proBar_UltraSon = new System.Windows.Forms.ProgressBar();
+            this.proBar_IrSensor = new System.Windows.Forms.ProgressBar();
+            this.lbl_UltraSon = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lbl_IR_Sensor = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btn_pince_open = new System.Windows.Forms.Button();
+            this.btn_pince_close = new System.Windows.Forms.Button();
+            this.btn_pince_bas = new System.Windows.Forms.Button();
+            this.btn_pince_haut = new System.Windows.Forms.Button();
+            this.btn_right = new System.Windows.Forms.Button();
+            this.btn_down = new System.Windows.Forms.Button();
+            this.btn_left = new System.Windows.Forms.Button();
+            this.btn_up = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btn_ActualiserListePortSerie = new System.Windows.Forms.Button();
             this.liste_portSerie = new System.Windows.Forms.ComboBox();
@@ -45,33 +62,14 @@
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.TabLogs = new System.Windows.Forms.TabPage();
             this.txtbox_debug_log = new System.Windows.Forms.RichTextBox();
-            this.btn_up = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btn_left = new System.Windows.Forms.Button();
-            this.btn_down = new System.Windows.Forms.Button();
-            this.btn_right = new System.Windows.Forms.Button();
-            this.btn_pince_haut = new System.Windows.Forms.Button();
-            this.btn_pince_bas = new System.Windows.Forms.Button();
-            this.btn_pince_open = new System.Windows.Forms.Button();
-            this.btn_pince_close = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lbl_IR_Sensor = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.lbl_UltraSon = new System.Windows.Forms.Label();
-            this.proBar_IrSensor = new System.Windows.Forms.ProgressBar();
-            this.proBar_UltraSon = new System.Windows.Forms.ProgressBar();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.pictBoxEtatConn = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.Tabs.SuspendLayout();
             this.TabControle.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.TabLogs.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxEtatConn)).BeginInit();
+            this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.TabLogs.SuspendLayout();
             this.SuspendLayout();
             // 
             // gPortSerie
@@ -94,8 +92,6 @@
             this.TabControle.Controls.Add(this.groupBox4);
             this.TabControle.Controls.Add(this.groupBox3);
             this.TabControle.Controls.Add(this.groupBox2);
-            this.TabControle.Controls.Add(this.button2);
-            this.TabControle.Controls.Add(this.button1);
             this.TabControle.Controls.Add(this.groupBox1);
             this.TabControle.Location = new System.Drawing.Point(4, 22);
             this.TabControle.Name = "TabControle";
@@ -105,25 +101,192 @@
             this.TabControle.Text = "Controle";
             this.TabControle.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // groupBox4
             // 
-            this.button2.Location = new System.Drawing.Point(424, 35);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.groupBox4.Controls.Add(this.label2);
+            this.groupBox4.Controls.Add(this.pictBoxEtatConn);
+            this.groupBox4.Location = new System.Drawing.Point(340, 218);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(204, 73);
+            this.groupBox4.TabIndex = 13;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Etat Robot";
             // 
-            // button1
+            // label2
             // 
-            this.button1.Location = new System.Drawing.Point(424, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 32);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(89, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Etat Connection :";
+            // 
+            // pictBoxEtatConn
+            // 
+            this.pictBoxEtatConn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictBoxEtatConn.Location = new System.Drawing.Point(98, 13);
+            this.pictBoxEtatConn.Name = "pictBoxEtatConn";
+            this.pictBoxEtatConn.Size = new System.Drawing.Size(100, 50);
+            this.pictBoxEtatConn.TabIndex = 0;
+            this.pictBoxEtatConn.TabStop = false;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.proBar_UltraSon);
+            this.groupBox3.Controls.Add(this.proBar_IrSensor);
+            this.groupBox3.Controls.Add(this.lbl_UltraSon);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.lbl_IR_Sensor);
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Location = new System.Drawing.Point(340, 131);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(204, 81);
+            this.groupBox3.TabIndex = 12;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Capteurs";
+            // 
+            // proBar_UltraSon
+            // 
+            this.proBar_UltraSon.Location = new System.Drawing.Point(100, 55);
+            this.proBar_UltraSon.Name = "proBar_UltraSon";
+            this.proBar_UltraSon.Size = new System.Drawing.Size(98, 18);
+            this.proBar_UltraSon.TabIndex = 5;
+            // 
+            // proBar_IrSensor
+            // 
+            this.proBar_IrSensor.Location = new System.Drawing.Point(100, 26);
+            this.proBar_IrSensor.Name = "proBar_IrSensor";
+            this.proBar_IrSensor.Size = new System.Drawing.Size(98, 18);
+            this.proBar_IrSensor.TabIndex = 4;
+            // 
+            // lbl_UltraSon
+            // 
+            this.lbl_UltraSon.AutoSize = true;
+            this.lbl_UltraSon.Location = new System.Drawing.Point(81, 58);
+            this.lbl_UltraSon.Name = "lbl_UltraSon";
+            this.lbl_UltraSon.Size = new System.Drawing.Size(13, 13);
+            this.lbl_UltraSon.TabIndex = 3;
+            this.lbl_UltraSon.Text = "0";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 58);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(54, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Ultra Son:";
+            // 
+            // lbl_IR_Sensor
+            // 
+            this.lbl_IR_Sensor.AutoSize = true;
+            this.lbl_IR_Sensor.Location = new System.Drawing.Point(81, 29);
+            this.lbl_IR_Sensor.Name = "lbl_IR_Sensor";
+            this.lbl_IR_Sensor.Size = new System.Drawing.Size(13, 13);
+            this.lbl_IR_Sensor.TabIndex = 1;
+            this.lbl_IR_Sensor.Text = "0";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(60, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "IR Sensor :";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btn_pince_open);
+            this.groupBox2.Controls.Add(this.btn_pince_close);
+            this.groupBox2.Controls.Add(this.btn_pince_bas);
+            this.groupBox2.Controls.Add(this.btn_pince_haut);
+            this.groupBox2.Controls.Add(this.btn_right);
+            this.groupBox2.Controls.Add(this.btn_down);
+            this.groupBox2.Controls.Add(this.btn_left);
+            this.groupBox2.Controls.Add(this.btn_up);
+            this.groupBox2.Location = new System.Drawing.Point(8, 131);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(326, 160);
+            this.groupBox2.TabIndex = 11;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Mouvement";
+            // 
+            // btn_pince_open
+            // 
+            this.btn_pince_open.Location = new System.Drawing.Point(204, 119);
+            this.btn_pince_open.Name = "btn_pince_open";
+            this.btn_pince_open.Size = new System.Drawing.Size(75, 23);
+            this.btn_pince_open.TabIndex = 17;
+            this.btn_pince_open.Text = "Ouvre Pince";
+            this.btn_pince_open.UseVisualStyleBackColor = true;
+            // 
+            // btn_pince_close
+            // 
+            this.btn_pince_close.Location = new System.Drawing.Point(204, 90);
+            this.btn_pince_close.Name = "btn_pince_close";
+            this.btn_pince_close.Size = new System.Drawing.Size(75, 23);
+            this.btn_pince_close.TabIndex = 16;
+            this.btn_pince_close.Text = "Ferme Pince";
+            this.btn_pince_close.UseVisualStyleBackColor = true;
+            // 
+            // btn_pince_bas
+            // 
+            this.btn_pince_bas.Location = new System.Drawing.Point(42, 119);
+            this.btn_pince_bas.Name = "btn_pince_bas";
+            this.btn_pince_bas.Size = new System.Drawing.Size(75, 23);
+            this.btn_pince_bas.TabIndex = 15;
+            this.btn_pince_bas.Text = "Pince Bas";
+            this.btn_pince_bas.UseVisualStyleBackColor = true;
+            // 
+            // btn_pince_haut
+            // 
+            this.btn_pince_haut.Location = new System.Drawing.Point(42, 90);
+            this.btn_pince_haut.Name = "btn_pince_haut";
+            this.btn_pince_haut.Size = new System.Drawing.Size(75, 23);
+            this.btn_pince_haut.TabIndex = 14;
+            this.btn_pince_haut.Text = "Pince Haut";
+            this.btn_pince_haut.UseVisualStyleBackColor = true;
+            // 
+            // btn_right
+            // 
+            this.btn_right.Location = new System.Drawing.Point(204, 29);
+            this.btn_right.Name = "btn_right";
+            this.btn_right.Size = new System.Drawing.Size(75, 23);
+            this.btn_right.TabIndex = 13;
+            this.btn_right.Text = "=>";
+            this.btn_right.UseVisualStyleBackColor = true;
+            this.btn_right.Click += new System.EventHandler(this.btn_right_Click);
+            // 
+            // btn_down
+            // 
+            this.btn_down.Location = new System.Drawing.Point(123, 58);
+            this.btn_down.Name = "btn_down";
+            this.btn_down.Size = new System.Drawing.Size(75, 23);
+            this.btn_down.TabIndex = 12;
+            this.btn_down.Text = "v";
+            this.btn_down.UseVisualStyleBackColor = true;
+            this.btn_down.Click += new System.EventHandler(this.btn_down_Click);
+            // 
+            // btn_left
+            // 
+            this.btn_left.Location = new System.Drawing.Point(42, 29);
+            this.btn_left.Name = "btn_left";
+            this.btn_left.Size = new System.Drawing.Size(75, 23);
+            this.btn_left.TabIndex = 11;
+            this.btn_left.Text = "<=";
+            this.btn_left.UseVisualStyleBackColor = true;
+            this.btn_left.Click += new System.EventHandler(this.btn_left_Click);
+            // 
+            // btn_up
+            // 
+            this.btn_up.Location = new System.Drawing.Point(123, 29);
+            this.btn_up.Name = "btn_up";
+            this.btn_up.Size = new System.Drawing.Size(75, 23);
+            this.btn_up.TabIndex = 10;
+            this.btn_up.Text = "^";
+            this.btn_up.UseVisualStyleBackColor = true;
+            this.btn_up.Click += new System.EventHandler(this.btn_up_Click);
             // 
             // groupBox1
             // 
@@ -165,7 +328,6 @@
             this.liste_portSerie.Name = "liste_portSerie";
             this.liste_portSerie.Size = new System.Drawing.Size(134, 21);
             this.liste_portSerie.TabIndex = 1;
-            this.liste_portSerie.SelectedIndexChanged += new System.EventHandler(this.liste_portSerie_SelectedIndexChanged);
             // 
             // lbl_IdDest
             // 
@@ -241,190 +403,6 @@
             this.txtbox_debug_log.TabIndex = 0;
             this.txtbox_debug_log.Text = "";
             // 
-            // btn_up
-            // 
-            this.btn_up.Location = new System.Drawing.Point(123, 29);
-            this.btn_up.Name = "btn_up";
-            this.btn_up.Size = new System.Drawing.Size(75, 23);
-            this.btn_up.TabIndex = 10;
-            this.btn_up.Text = "^";
-            this.btn_up.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.btn_pince_open);
-            this.groupBox2.Controls.Add(this.btn_pince_close);
-            this.groupBox2.Controls.Add(this.btn_pince_bas);
-            this.groupBox2.Controls.Add(this.btn_pince_haut);
-            this.groupBox2.Controls.Add(this.btn_right);
-            this.groupBox2.Controls.Add(this.btn_down);
-            this.groupBox2.Controls.Add(this.btn_left);
-            this.groupBox2.Controls.Add(this.btn_up);
-            this.groupBox2.Location = new System.Drawing.Point(8, 131);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(326, 160);
-            this.groupBox2.TabIndex = 11;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Mouvement";
-            // 
-            // btn_left
-            // 
-            this.btn_left.Location = new System.Drawing.Point(42, 29);
-            this.btn_left.Name = "btn_left";
-            this.btn_left.Size = new System.Drawing.Size(75, 23);
-            this.btn_left.TabIndex = 11;
-            this.btn_left.Text = "<=";
-            this.btn_left.UseVisualStyleBackColor = true;
-            this.btn_left.Click += new System.EventHandler(this.btn_left_Click);
-            // 
-            // btn_down
-            // 
-            this.btn_down.Location = new System.Drawing.Point(123, 58);
-            this.btn_down.Name = "btn_down";
-            this.btn_down.Size = new System.Drawing.Size(75, 23);
-            this.btn_down.TabIndex = 12;
-            this.btn_down.Text = "v";
-            this.btn_down.UseVisualStyleBackColor = true;
-            // 
-            // btn_right
-            // 
-            this.btn_right.Location = new System.Drawing.Point(204, 29);
-            this.btn_right.Name = "btn_right";
-            this.btn_right.Size = new System.Drawing.Size(75, 23);
-            this.btn_right.TabIndex = 13;
-            this.btn_right.Text = "=>";
-            this.btn_right.UseVisualStyleBackColor = true;
-            // 
-            // btn_pince_haut
-            // 
-            this.btn_pince_haut.Location = new System.Drawing.Point(42, 90);
-            this.btn_pince_haut.Name = "btn_pince_haut";
-            this.btn_pince_haut.Size = new System.Drawing.Size(75, 23);
-            this.btn_pince_haut.TabIndex = 14;
-            this.btn_pince_haut.Text = "Pince Haut";
-            this.btn_pince_haut.UseVisualStyleBackColor = true;
-            // 
-            // btn_pince_bas
-            // 
-            this.btn_pince_bas.Location = new System.Drawing.Point(42, 119);
-            this.btn_pince_bas.Name = "btn_pince_bas";
-            this.btn_pince_bas.Size = new System.Drawing.Size(75, 23);
-            this.btn_pince_bas.TabIndex = 15;
-            this.btn_pince_bas.Text = "Pince Bas";
-            this.btn_pince_bas.UseVisualStyleBackColor = true;
-            // 
-            // btn_pince_open
-            // 
-            this.btn_pince_open.Location = new System.Drawing.Point(204, 119);
-            this.btn_pince_open.Name = "btn_pince_open";
-            this.btn_pince_open.Size = new System.Drawing.Size(75, 23);
-            this.btn_pince_open.TabIndex = 17;
-            this.btn_pince_open.Text = "Ouvre Pince";
-            this.btn_pince_open.UseVisualStyleBackColor = true;
-            // 
-            // btn_pince_close
-            // 
-            this.btn_pince_close.Location = new System.Drawing.Point(204, 90);
-            this.btn_pince_close.Name = "btn_pince_close";
-            this.btn_pince_close.Size = new System.Drawing.Size(75, 23);
-            this.btn_pince_close.TabIndex = 16;
-            this.btn_pince_close.Text = "Ferme Pince";
-            this.btn_pince_close.UseVisualStyleBackColor = true;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.proBar_UltraSon);
-            this.groupBox3.Controls.Add(this.proBar_IrSensor);
-            this.groupBox3.Controls.Add(this.lbl_UltraSon);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.lbl_IR_Sensor);
-            this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Location = new System.Drawing.Point(340, 131);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(204, 81);
-            this.groupBox3.TabIndex = 12;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Capteurs";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "IR Sensor :";
-            // 
-            // lbl_IR_Sensor
-            // 
-            this.lbl_IR_Sensor.AutoSize = true;
-            this.lbl_IR_Sensor.Location = new System.Drawing.Point(81, 29);
-            this.lbl_IR_Sensor.Name = "lbl_IR_Sensor";
-            this.lbl_IR_Sensor.Size = new System.Drawing.Size(13, 13);
-            this.lbl_IR_Sensor.TabIndex = 1;
-            this.lbl_IR_Sensor.Text = "0";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 58);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(54, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Ultra Son:";
-            // 
-            // lbl_UltraSon
-            // 
-            this.lbl_UltraSon.AutoSize = true;
-            this.lbl_UltraSon.Location = new System.Drawing.Point(81, 58);
-            this.lbl_UltraSon.Name = "lbl_UltraSon";
-            this.lbl_UltraSon.Size = new System.Drawing.Size(13, 13);
-            this.lbl_UltraSon.TabIndex = 3;
-            this.lbl_UltraSon.Text = "0";
-            // 
-            // proBar_IrSensor
-            // 
-            this.proBar_IrSensor.Location = new System.Drawing.Point(100, 26);
-            this.proBar_IrSensor.Name = "proBar_IrSensor";
-            this.proBar_IrSensor.Size = new System.Drawing.Size(98, 18);
-            this.proBar_IrSensor.TabIndex = 4;
-            // 
-            // proBar_UltraSon
-            // 
-            this.proBar_UltraSon.Location = new System.Drawing.Point(100, 55);
-            this.proBar_UltraSon.Name = "proBar_UltraSon";
-            this.proBar_UltraSon.Size = new System.Drawing.Size(98, 18);
-            this.proBar_UltraSon.TabIndex = 5;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Controls.Add(this.pictBoxEtatConn);
-            this.groupBox4.Location = new System.Drawing.Point(340, 218);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(204, 73);
-            this.groupBox4.TabIndex = 13;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Etat Robot";
-            // 
-            // pictBoxEtatConn
-            // 
-            this.pictBoxEtatConn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictBoxEtatConn.Location = new System.Drawing.Point(98, 13);
-            this.pictBoxEtatConn.Name = "pictBoxEtatConn";
-            this.pictBoxEtatConn.Size = new System.Drawing.Size(100, 50);
-            this.pictBoxEtatConn.TabIndex = 0;
-            this.pictBoxEtatConn.TabStop = false;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 32);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Etat Connection :";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -435,15 +413,15 @@
             this.Text = "Debug Arduino Bots";
             this.Tabs.ResumeLayout(false);
             this.TabControle.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.TabLogs.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxEtatConn)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.TabLogs.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -464,8 +442,6 @@
         private System.Windows.Forms.TextBox txt_idSrc;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btn_ActualiserListePortSerie;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btn_right;
         private System.Windows.Forms.Button btn_down;

@@ -2,13 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 namespace DebugProtocolArduino
 {
     class Messages
     {
+        #region #### Globales ####
+        public enum IDSensorsArduino : byte
+        {
+            IR = 0x01,
+            UltraSon = 0x02
+        };
+        #endregion
+
         #region #### Enumeration Messages Headers ####
-        enum PCtoEMBmess : byte
+       public enum PCtoEMBmess : byte
         {
             TURN =          0x51,
             MOVE =          0x52,
@@ -19,7 +30,7 @@ namespace DebugProtocolArduino
             RESP_CONN =     0x11
         };
 
-        enum EMBtoPCmess : byte
+        public enum EMBtoPCmess : byte
         {
             ASK_CONN =      0x12,
             RESP_PING =     0x22,
@@ -30,45 +41,52 @@ namespace DebugProtocolArduino
 
         #region #### PCtoEMB Structures ####
         /* Connection Managment */
+        [Serializable]
         public struct PCtoEMBMessageRespConn
         {
-            public byte headerMess;
+            public PCtoEMBmess headerMess;
             public byte state;
         };
+        [Serializable]
         public struct PCtoEMBMessagePing
         {
-            public byte headerMess;
+            public PCtoEMBmess headerMess;
         };
 
         /* Deplacement Managment */
+        [Serializable]
         public struct PCtoEMBMessageTurn
         {
-            public byte headerMess;
+            public PCtoEMBmess headerMess;
             public byte direction;
             public byte angle;
         };
+        [Serializable]
         public struct PCtoEMBMessageMove
         {
-            public byte headerMess;
+            public PCtoEMBmess headerMess;
             public byte sens;
             public byte speed;
             public byte distance;
         };
 
         /* Claw Managment */
+        [Serializable]
         public struct PCtoEMBMessageOpenClaw
         {
-            public byte headerMess;
+            public PCtoEMBmess headerMess;
         };
+        [Serializable]
         public struct PCtoEMBMessageCloseClaw
         {
-            public byte headerMess;
+            public PCtoEMBmess headerMess;
         };
 
         /* Sensor Managment */
+        [Serializable]
         public struct PCtoEMBMessageAskSensor
         {
-            public byte headerMess;
+            public PCtoEMBmess headerMess;
             public byte idSensor;
         };
 
@@ -76,30 +94,51 @@ namespace DebugProtocolArduino
 
         #region #### EMBtoPC Structures ####
         /* Connection Managment */
+        [Serializable]
         public struct EMBtoPCMessageAskConn
         {
-            public byte headerMess;
+            public EMBtoPCmess headerMess;
         };
+        [Serializable]
         public struct EMBtoPCMessageRespPing
         {
-            public byte headerMess;
+            public EMBtoPCmess headerMess;
         };
 
         /* Sensor Managment */
+        [Serializable]
         public struct EMBtoPCMessageRespSensor
         {
-            public byte headerMess;
+            public EMBtoPCmess headerMess;
             public byte idSensor;
             public byte valueSensor;
         };
 
         /* Global Ack */
+        [Serializable]
         public struct EMBtoPCMessageGlobalAck
         {
-            public byte headerMess;
+            public EMBtoPCmess headerMess;
             public byte idCommand;
             public byte valueAck;
         };
         #endregion
+
+        /* Retourne un tableau de bytes a partir d'une structure sérialisable */
+        private static byte[] getBytes(object strucutre)
+        {
+            // Create a memory stream, and serialize.
+            using (MemoryStream stream = new MemoryStream())
+            {
+                // Create a binary formatter.
+                IFormatter formatter = new BinaryFormatter();
+
+                // Serialize.
+                formatter.Serialize(stream, strucutre);
+
+                // Now return the array.
+                return stream.ToArray();
+            }
+        }
     }
 }

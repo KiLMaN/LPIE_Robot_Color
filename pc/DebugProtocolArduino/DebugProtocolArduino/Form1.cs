@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using System.Threading;
 
+using System.Runtime.Serialization.Formatters.Binary;
+
 
 
 namespace DebugProtocolArduino
@@ -17,6 +19,9 @@ namespace DebugProtocolArduino
     {
         int BAUD_RATE = 115200;
 
+        int g_ProtocolCpt = 0;
+        private Protocol g_Protocol = new Protocol();
+        private BinaryFormatter _bFormatter;
 
         public Form1()
         {
@@ -24,62 +29,43 @@ namespace DebugProtocolArduino
             Log.attachTo(txtbox_debug_log);
             getListePortSerie();
 
-            pictBoxEtatConn.BackColor = Color.Red;  
+            //pictBoxEtatConn.BackColor = Color.Red;  
         }
 
-
-
-        delegate void d_updateSateRobot(Boolean state);
-        /*delegate void LogLigne(string str);
-        void writeLogDebugWin(string str)
+        #region #### Delegate ####
+        delegate void d_updateStateRobot(Boolean state);
+        void updateStateRobot(Boolean state)
         {
-            txtbox_debug_log.AppendText(str + '\n');
-        }
-        void log(string str)
-        {
-            Invoke((LogLigne)writeLogDebugWin, str);
-        }*/
-
-        private void liste_portSerie_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            
-                
+            if(state == true)
+                pictBoxEtatConn.BackColor = Color.Green; 
+            else
+                pictBoxEtatConn.BackColor = Color.Red; 
         }
 
-        /* Appui sur le bouton Connection */
-        private void btn_connection_Click(object sender, EventArgs e)
+        delegate void d_updateStateCapteur(byte idCapteur, int valCapteur);
+        void updateStateCapteur(byte idCapteur, int valCapteur)
         {
-            /* Déjà ouvert */
-            if (gPortSerie.IsOpen)
+            if (idCapteur == (byte)Messages.IDSensorsArduino.IR) // InfraRouge
             {
-                Log.log("Fermeture du port : " + gPortSerie.PortName);
-                gPortSerie.Close();
-                btn_connection.Text = "Connection";
+                lbl_IR_Sensor.Text = valCapteur.ToString();
+                proBar_IrSensor.Value = (int)(valCapteur / 2.55);
+            }
+            else if (idCapteur == (byte)Messages.IDSensorsArduino.UltraSon) // UltraSon
+            {
+                lbl_UltraSon.Text = valCapteur.ToString();
+                proBar_UltraSon.Value = (int)(valCapteur / 2.55);
             }
             else
             {
-                try
-                {
-                    Log.log("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
-                    gPortSerie.PortName = (string)liste_portSerie.SelectedItem;
-                    gPortSerie.BaudRate = BAUD_RATE;
-                    gPortSerie.Open();
-                    btn_connection.Text = "Fermeture";
-                }
-                catch (Exception E)
-                {
-                    Log.log(E.Message.ToString());
-                }
-            }
+                Log.log("Error 'updateStateCapteur' idCapteur  :"+idCapteur);
+            } 
         }
-        /* Appui sur le bouton Actualiser */
-        private void btn_ActualiserListePortSerie_Click(object sender, EventArgs e)
-        {
-            getListePortSerie();
-        }
+        #endregion
+
+
 
         /** Recupere la liste des ports séries disponibles sur la machine et l'affiche dans la liste **/
-        public void getListePortSerie()
+        private void getListePortSerie()
         {
             /* Protège contre l'actualisation apres ouverture du port */
             if (gPortSerie.IsOpen)
@@ -87,7 +73,7 @@ namespace DebugProtocolArduino
 
             /* Trouve les ports */
             string[] listePort = SerialPort.GetPortNames();
-            
+
 
             /* Vide la liste */
             liste_portSerie.Items.Clear();
@@ -107,34 +93,98 @@ namespace DebugProtocolArduino
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        /** Ouvre le port série séléctionné */
+        private void openSerialPort()
         {
-            Protocol ptTest = new Protocol();
-            ptTest.PortSerie = gPortSerie;
-            Protocol.TrameProtocole trame = ptTest.MakeTrame(0x01,0x02,0x0001,new byte[]{0x01,0x25,0x32});
-            Log.log(DateTime.Now.ToString("HH:mm:ss.ffffff") + '\n');
-            ptTest.SendTrame(trame);
-            Protocol.TrameProtocole newtrame ;
-
-            System.Threading.Thread.Sleep(1000);
-            while (gPortSerie.BytesToRead > 0 )  // Lit les données entrantes du port com
+            /* Déjà ouvert */
+            if (gPortSerie.IsOpen)
             {
-                Log.log(gPortSerie.ReadExisting());
+                Log.log("Fermeture du port : " + gPortSerie.PortName);
+                gPortSerie.Close();
+                btn_connection.Text = "Connection";
+                liste_portSerie.Enabled = true;
+                btn_ActualiserListePortSerie.Enabled = true;
             }
-
-
+            else
+            {
+                try
+                {
+                    Log.log("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
+                    gPortSerie.PortName = (string)liste_portSerie.SelectedItem;
+                    gPortSerie.BaudRate = BAUD_RATE;
+                    gPortSerie.Open();
+                    btn_connection.Text = "Fermeture";
+                    liste_portSerie.Enabled = false;
+                    btn_ActualiserListePortSerie.Enabled = false;
+                }
+                catch (Exception E)
+                {
+                    Log.log(E.Message.ToString());
+                    liste_portSerie.Enabled = true;
+                    btn_ActualiserListePortSerie.Enabled = true;
+                }
+            }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void sendMoveMessage(bool Sens)
         {
-           
+            Messages.PCtoEMBMessageMove pMessage;
+            pMessage.headerMess =   Messages.PCtoEMBmess.MOVE;
+            pMessage.sens =         (byte)((Sens) ? 0x01 : 0x00);
+            pMessage.speed =        0xF0;
+            pMessage.distance =     0xF0;
+ 
+            byte Dst = (byte)Convert.ToUInt16(txt_idDst.Text);
+            byte Src = (byte)Convert.ToUInt16(txt_idSrc.Text);
+
+
+            //Protocol.TrameProtocole pTrame = g_Protocol.MakeTrame(Src,Dst,g_ProtocolCpt,pMessage);
+        }
+        private void sendTurnMessage(bool Sens)
+        {
+            Messages.PCtoEMBMessageTurn pMessage;
+            pMessage.headerMess = Messages.PCtoEMBmess.TURN;
+            pMessage.direction = (byte)((Sens) ? 0x01 : 0x00);
+            pMessage.angle = 0x5A;
         }
 
+
+        #region #### Buttons ####
+        /* Appui sur le bouton Connection */
+        private void btn_connection_Click(object sender, EventArgs e)
+        {
+            openSerialPort();
+        }
+
+        /* Appui sur le bouton Actualiser */
+        private void btn_ActualiserListePortSerie_Click(object sender, EventArgs e)
+        {
+            getListePortSerie();
+        }
+
+
+        /* Bouton Mouvement UP / DOWN */
+        private void btn_up_Click(object sender, EventArgs e)
+        {
+            sendMoveMessage(true);
+        }
+        private void btn_down_Click(object sender, EventArgs e)
+        {
+            sendMoveMessage(false);
+        }
+
+
+        /* Bouton Mouvement LEFT /  RIGHT */
         private void btn_left_Click(object sender, EventArgs e)
         {
-
+            sendTurnMessage(true);
+        }
+        private void btn_right_Click(object sender, EventArgs e)
+        {
+            sendTurnMessage(false);
         }
 
+    #endregion 
 
         
 
