@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO.Ports;
-using System.Threading;
+using System.Windows.Forms;
 
-using System.Runtime.Serialization.Formatters.Binary;
 
 
 
@@ -21,11 +14,15 @@ namespace DebugProtocolArduino
 
         ushort g_ProtocolCpt = 0;
         private Protocol g_Protocol = new Protocol();
+        public Logger g_Logger = new Logger(); // Logger global
+        
 
         public Form1()
         {
+
             InitializeComponent();
-            Log.attachTo(txtbox_debug_log);
+            g_Logger.attachToRTB(txtbox_debug_log);
+            Logger.GlobalLogger = g_Logger; // Met a la disposition le logger
             getListePortSerie();
 
             //pictBoxEtatConn.BackColor = Color.Red;  
@@ -56,7 +53,7 @@ namespace DebugProtocolArduino
             }
             else
             {
-                Log.log("Error 'updateStateCapteur' idCapteur  :"+idCapteur);
+                Logger.GlobalLogger.logToScreen("Error 'updateStateCapteur' idCapteur  :" + idCapteur);
             } 
         }
         #endregion
@@ -88,7 +85,7 @@ namespace DebugProtocolArduino
             {
                 // Pas de port Serie de disponible 
                 MessageBox.Show("Aucun port serie n'est disponible !");
-                Log.log("Aucun port serie n'est disponible !");
+                Logger.GlobalLogger.logToScreen("Aucun port serie n'est disponible !");
             }
         }
 
@@ -98,7 +95,7 @@ namespace DebugProtocolArduino
             /* Déjà ouvert */
             if (gPortSerie.IsOpen)
             {
-                Log.log("Fermeture du port : " + gPortSerie.PortName);
+                Logger.GlobalLogger.logToScreen("Fermeture du port : " + gPortSerie.PortName);
                 gPortSerie.Close();
                 btn_connection.Text = "Connection";
                 liste_portSerie.Enabled = true;
@@ -108,7 +105,7 @@ namespace DebugProtocolArduino
             {
                 try
                 {
-                    Log.log("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
+                    Logger.GlobalLogger.logToScreen("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
                     gPortSerie.PortName = (string)liste_portSerie.SelectedItem;
                     gPortSerie.BaudRate = BAUD_RATE;
                     gPortSerie.Open();
@@ -118,7 +115,7 @@ namespace DebugProtocolArduino
                 }
                 catch (Exception E)
                 {
-                    Log.log(E.Message.ToString());
+                    Logger.GlobalLogger.logToScreen(E.Message.ToString());
                     liste_portSerie.Enabled = true;
                     btn_ActualiserListePortSerie.Enabled = true;
                 }
@@ -132,18 +129,8 @@ namespace DebugProtocolArduino
             Message.sens = (byte)((Sens) ? 0x01 : 0x00);
             Message.speed = (byte)0xF0;
             Message.distance = (byte)0xF0;
+
             byte[] data = Message.getBytes();
-
-           /* Messages.PCtoEMBMessageMove pMessage;
-            pMessage.headerMess =   (byte)Messages.PCtoEMBmess.MOVE;
-            pMessage.sens =         (byte)((Sens) ? 0x01 : 0x00);
-            pMessage.speed =        (byte)0xF0;
-            pMessage.distance =     (byte)0xF0;
- 
-            
-           
-            //getBytes*/
-
             byte Dst = (byte)Convert.ToUInt16(txt_idDst.Text);
             byte Src = (byte)Convert.ToUInt16(txt_idSrc.Text);
 
@@ -151,10 +138,17 @@ namespace DebugProtocolArduino
         }
         private void sendTurnMessage(bool Sens)
         {
-          /*  Messages.PCtoEMBMessageTurn pMessage;
-            pMessage.headerMess = Messages.PCtoEMBmess.TURN;
-            pMessage.direction = (byte)((Sens) ? 0x01 : 0x00);
-            pMessage.angle = 0x5A;*/
+            PCtoEMBMessageTurn Message = new PCtoEMBMessageTurn();
+            Message.headerMess = (byte)PCtoEMBmessHeads.TURN;
+            Message.direction = (byte)((Sens) ? 0x01 : 0x00);
+            Message.angle = (byte)0x5A;
+
+
+            byte[] data = Message.getBytes();
+            byte Dst = (byte)Convert.ToUInt16(txt_idDst.Text);
+            byte Src = (byte)Convert.ToUInt16(txt_idSrc.Text);
+            TrameProtocole pTrame = g_Protocol.MakeTrame(Src, Dst, g_ProtocolCpt, data);
+            g_Logger.log(pTrame.data.ToString());
         }
 
 

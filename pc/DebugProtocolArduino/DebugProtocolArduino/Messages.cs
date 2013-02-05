@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
-using System.Runtime.InteropServices;
-
+﻿using System.Linq;
 
 #region #### Globales Robots ####
 public enum IDSensorsArduino : byte
@@ -78,7 +70,7 @@ abstract class EMBtoPCmess : MessageProtocol
 /* Connection Managment */
 class PCtoEMBMessageRespConn    : PCtoEMBmess
 {
-    public byte state;
+    public byte state = 0;
     public override byte[] getBytes()
     {
         byte[] data = { this.state };
@@ -125,7 +117,7 @@ class PCtoEMBMessageCloseClaw   : PCtoEMBmess
 /* Sensor Managment */
 class PCtoEMBMessageAskSensor   : PCtoEMBmess
 {
-    public byte idSensor;
+    public byte idSensor = 0;
     public override byte[] getBytes()
     {
         byte[] data = { this.idSensor};
@@ -149,8 +141,8 @@ class EMBtoPCMessageRespPing    : EMBtoPCmess
 /* Sensor Managment */
 class EMBtoPCMessageRespSensor  : EMBtoPCmess
 {
-    public byte idSensor;
-    public byte valueSensor;
+    public byte idSensor = 0;
+    public byte valueSensor = 0;
     public override byte[] getBytes()
     {
         byte[] data = { this.idSensor, this.valueSensor };
@@ -161,8 +153,8 @@ class EMBtoPCMessageRespSensor  : EMBtoPCmess
 /* Global Ack */
 class EMBtoPCMessageGlobalAck   : EMBtoPCmess
 {
-    public byte idCommand;
-    public byte valueAck;
+    public byte idCommand = 0;
+    public byte valueAck = 0;
     public override byte[] getBytes()
     {
         byte[] data = { this.idCommand, this.valueAck };

@@ -232,7 +232,7 @@ namespace DebugProtocolArduino
 
                 if (ProtocolState == -1) // Erreur dans l'ordre des Données
                 {
-                    Log.log("[PROTOCOL] - Protocol ERROR");
+                    Logger.GlobalLogger.logToScreen("[PROTOCOL] - Protocol ERROR");
                 }
 
                 if (TrameOk)
@@ -300,7 +300,7 @@ namespace DebugProtocolArduino
             if (!PortSerie.IsOpen)
                 return;
             byte[] Bin = MakeTrameBinary(trame);
-            Log.log(Bin.ToString());
+            Logger.GlobalLogger.logToScreen(Bin.ToString());
 
             PortSerie.Write(Bin, 0, Bin.Length);
 

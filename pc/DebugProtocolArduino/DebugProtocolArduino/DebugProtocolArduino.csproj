@@ -53,7 +53,7 @@
     <Compile Include="home_window.Designer.cs">
       <DependentUpon>home_window.cs</DependentUpon>
     </Compile>
-    <Compile Include="Log.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
