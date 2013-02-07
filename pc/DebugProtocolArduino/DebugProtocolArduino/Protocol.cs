@@ -232,7 +232,7 @@ namespace DebugProtocolArduino
 
                 if (ProtocolState == -1) // Erreur dans l'ordre des Données
                 {
-                    Logger.GlobalLogger.logToScreen("[PROTOCOL] - Protocol ERROR");
+                    Logger.GlobalLogger.error("Protocol ERROR");
                 }
 
                 if (TrameOk)
@@ -293,7 +293,7 @@ namespace DebugProtocolArduino
             trameSortie.Add(Donnee); // et on l'ajoute
         }
 
-        public void SendTrame(TrameProtocole trame)
+        /*public void SendTrame(TrameProtocole trame)
         {
             if (PortSerie == null)
                 return;
@@ -304,8 +304,11 @@ namespace DebugProtocolArduino
 
             PortSerie.Write(Bin, 0, Bin.Length);
 
-        }
-        byte[] getBytes(TrameProtocole trame)
+        }*/
+        
+
+        /* Satics */
+        public static byte[] getBytes(TrameProtocole trame)
         {
             byte[] retVal = new byte[trame.length + 5];
             /*public byte src;
@@ -325,9 +328,10 @@ namespace DebugProtocolArduino
 
             return retVal;
         }
-        ushort crc16_protocole(TrameProtocole trame)
+
+        public static ushort crc16_protocole(TrameProtocole trame)
         {
-            return crc16.calc_crc16(getBytes(trame), trame.length + 5);
+            return crc16.calc_crc16(Protocol.getBytes(trame), trame.length + 5);
         }
 
 

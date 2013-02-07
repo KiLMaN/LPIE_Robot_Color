@@ -132,10 +132,21 @@ class PCtoEMBMessageAskSensor   : PCtoEMBmess
 /* Connection Managment */
 class EMBtoPCMessageAskConn     : EMBtoPCmess
 {
-
+    public static explicit operator EMBtoPCMessageAskConn(byte[] data) // cast Explicite
+    {
+        EMBtoPCMessageAskConn ret = new EMBtoPCMessageAskConn();
+        ret.headerMess = data[0];
+        return ret;
+    }
 }
 class EMBtoPCMessageRespPing    : EMBtoPCmess
 {
+    public static explicit operator EMBtoPCMessageRespPing(byte[] data) // cast Explicite
+    {
+        EMBtoPCMessageRespPing ret = new EMBtoPCMessageRespPing();
+        ret.headerMess = data[0];
+        return ret;
+    }
 }
 
 /* Sensor Managment */
@@ -148,6 +159,14 @@ class EMBtoPCMessageRespSensor  : EMBtoPCmess
         byte[] data = { this.idSensor, this.valueSensor };
         return base.getBytes().Concat(data).ToArray();
     }
+    public static explicit operator EMBtoPCMessageRespSensor(byte[] data) // cast Explicite
+    {
+        EMBtoPCMessageRespSensor ret = new EMBtoPCMessageRespSensor();
+        ret.headerMess = data[0];
+        ret.idSensor = data[1];
+        ret.valueSensor = data[2];
+        return ret;
+    }
 }
 
 /* Global Ack */
@@ -159,6 +178,14 @@ class EMBtoPCMessageGlobalAck   : EMBtoPCmess
     {
         byte[] data = { this.idCommand, this.valueAck };
         return base.getBytes().Concat(data).ToArray();
+    }
+    public static explicit operator EMBtoPCMessageGlobalAck(byte[] data) // cast Explicite
+    {
+        EMBtoPCMessageGlobalAck ret = new EMBtoPCMessageGlobalAck();
+        ret.headerMess = data[0];
+        ret.idCommand = data[1];
+        ret.valueAck = data[2];
+        return ret;
     }
 }
 #endregion

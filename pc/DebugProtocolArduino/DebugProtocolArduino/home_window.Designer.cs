@@ -62,6 +62,7 @@
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.TabLogs = new System.Windows.Forms.TabPage();
             this.txtbox_debug_log = new System.Windows.Forms.RichTextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.Tabs.SuspendLayout();
             this.TabControle.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -89,6 +90,7 @@
             // 
             // TabControle
             // 
+            this.TabControle.Controls.Add(this.button1);
             this.TabControle.Controls.Add(this.groupBox4);
             this.TabControle.Controls.Add(this.groupBox3);
             this.TabControle.Controls.Add(this.groupBox2);
@@ -403,6 +405,16 @@
             this.txtbox_debug_log.TabIndex = 0;
             this.txtbox_debug_log.Text = "";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(452, 23);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -461,6 +473,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictBoxEtatConn;
+        private System.Windows.Forms.Button button1;
     }
 }
 

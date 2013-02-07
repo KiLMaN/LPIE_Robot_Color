@@ -1,1 +1,8 @@
 05/02/2013 22:12:17 : System.Byte[]
+07/02/2013 13:13:37 : [ERROR] [Form1[Form1][button1_Click]testError
+07/02/2013 13:14:11 : [ERROR] [Form1] [button1_Click] testError
+07/02/2013 13:42:38 : [DEBUG] [Form1] [openSerialPort] Ouverture du port : COM3
+07/02/2013 13:42:49 : [DEBUG] [Form1] [openSerialPort] Fermeture du port : COM3
+07/02/2013 13:42:51 : [DEBUG] [Form1] [openSerialPort] Ouverture du port : COM3
+07/02/2013 13:42:54 : [DEBUG] [Form1] [sendTurnMessage] System.Byte[]
+07/02/2013 13:42:55 : [DEBUG] [Form1] [sendTurnMessage] System.Byte[]

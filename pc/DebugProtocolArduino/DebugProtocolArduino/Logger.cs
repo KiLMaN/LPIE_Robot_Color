@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace DebugProtocolArduino
 {
     public class Logger
     {
+        public static bool enableDebug = true;
+        public static bool enableInfo = true;
+        public static bool enableError = true;
 
         public static Logger GlobalLogger;
         private List<RichTextBox> m_RTB_list = new List<RichTextBox>();
@@ -38,13 +42,13 @@ namespace DebugProtocolArduino
             RTB.AppendText("Logger Initialisé sur ce controle \n");
 
         }
-        public void logToScreen(string str)
+        private void logToScreen(string str)
         {
             foreach (RichTextBox item in m_RTB_list)
                 if (item != null)
                     item.AppendText(str + '\n');
         }
-        public void logToFile(string Message)
+        private void logToFile(string Message)
         {
             try
             {
@@ -58,10 +62,48 @@ namespace DebugProtocolArduino
             catch (Exception) { }
         }
 
-        public void log(string str)
+        private void log(string str)
         {
             logToScreen(str);
             logToFile(str);
+        }
+
+
+        public void error(string message)
+        {
+            if (enableError)
+            {
+                StackFrame frame = new StackFrame(1);
+                var method = frame.GetMethod();
+                var type = method.DeclaringType;
+                var name = method.Name;
+
+                log("[ERROR] [" + type.Name + "] [" + name + "] " + message);
+            }
+        }
+        public void info(string message)
+        {
+            if (enableInfo)
+            {
+                StackFrame frame = new StackFrame(1);
+                var method = frame.GetMethod();
+                var type = method.DeclaringType;
+                var name = method.Name;
+
+                log("[INFO] [" + type.Name + "] [" + name + "] " + message);
+            }
+        }
+        public void debug(string message)
+        {
+            if (enableDebug)
+            {
+                StackFrame frame = new StackFrame(1);
+                var method = frame.GetMethod();
+                var type = method.DeclaringType;
+                var name = method.Name;
+
+                log("[DEBUG] [" + type.Name + "] [" + name + "] " + message);
+            }
         }
     }
 }

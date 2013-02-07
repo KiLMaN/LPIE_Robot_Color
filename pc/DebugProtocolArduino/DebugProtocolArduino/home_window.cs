@@ -53,7 +53,7 @@ namespace DebugProtocolArduino
             }
             else
             {
-                Logger.GlobalLogger.logToScreen("Error 'updateStateCapteur' idCapteur  :" + idCapteur);
+                Logger.GlobalLogger.error("idCapteur  :" + idCapteur);
             } 
         }
         #endregion
@@ -69,11 +69,12 @@ namespace DebugProtocolArduino
 
             /* Trouve les ports */
             string[] listePort = SerialPort.GetPortNames();
-
+       
 
             /* Vide la liste */
             liste_portSerie.Items.Clear();
             /* Remplie la liste */
+
             foreach (string port in listePort)
                 liste_portSerie.Items.Add(port);
             /* Selectionne le premier de la liste */
@@ -85,7 +86,7 @@ namespace DebugProtocolArduino
             {
                 // Pas de port Serie de disponible 
                 MessageBox.Show("Aucun port serie n'est disponible !");
-                Logger.GlobalLogger.logToScreen("Aucun port serie n'est disponible !");
+                Logger.GlobalLogger.info("Aucun port serie n'est disponible !");
             }
         }
 
@@ -95,7 +96,7 @@ namespace DebugProtocolArduino
             /* Déjà ouvert */
             if (gPortSerie.IsOpen)
             {
-                Logger.GlobalLogger.logToScreen("Fermeture du port : " + gPortSerie.PortName);
+                Logger.GlobalLogger.debug("Fermeture du port : " + gPortSerie.PortName);
                 gPortSerie.Close();
                 btn_connection.Text = "Connection";
                 liste_portSerie.Enabled = true;
@@ -105,7 +106,7 @@ namespace DebugProtocolArduino
             {
                 try
                 {
-                    Logger.GlobalLogger.logToScreen("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
+                    Logger.GlobalLogger.debug("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
                     gPortSerie.PortName = (string)liste_portSerie.SelectedItem;
                     gPortSerie.BaudRate = BAUD_RATE;
                     gPortSerie.Open();
@@ -115,7 +116,7 @@ namespace DebugProtocolArduino
                 }
                 catch (Exception E)
                 {
-                    Logger.GlobalLogger.logToScreen(E.Message.ToString());
+                    Logger.GlobalLogger.error(E.Message.ToString());
                     liste_portSerie.Enabled = true;
                     btn_ActualiserListePortSerie.Enabled = true;
                 }
@@ -148,7 +149,7 @@ namespace DebugProtocolArduino
             byte Dst = (byte)Convert.ToUInt16(txt_idDst.Text);
             byte Src = (byte)Convert.ToUInt16(txt_idSrc.Text);
             TrameProtocole pTrame = g_Protocol.MakeTrame(Src, Dst, g_ProtocolCpt, data);
-            g_Logger.log(pTrame.data.ToString());
+            g_Logger.debug(pTrame.data.ToString());
         }
 
 
@@ -188,6 +189,11 @@ namespace DebugProtocolArduino
         }
 
     #endregion 
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // button de test
+        }
 
         
 
