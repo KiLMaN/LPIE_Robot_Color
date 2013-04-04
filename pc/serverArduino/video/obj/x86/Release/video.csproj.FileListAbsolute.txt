@@ -8,3 +8,5 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Release\video.pdb
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Release\video.exe.CodeAnalysisLog.xml
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Release\video.exe.lastcodeanalysissucceeded
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Release\video.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Release\video.pdb

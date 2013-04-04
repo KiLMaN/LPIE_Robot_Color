@@ -6,3 +6,5 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\ob
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\GenerateResource.write.1.tlog
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.pdb
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.pdb
