@@ -1,5 +1,0 @@
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\video.dll
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\video.pdb
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\Debug\video.dll
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\Debug\video.pdb

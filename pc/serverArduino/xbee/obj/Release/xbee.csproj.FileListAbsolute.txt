@@ -1,5 +1,0 @@
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Release\xbee.dll
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Release\xbee.pdb
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\Release\ResolveAssemblyReference.cache
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\Release\xbee.dll
-C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\Release\xbee.pdb
