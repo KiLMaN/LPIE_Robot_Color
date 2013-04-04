@@ -161,6 +161,7 @@ namespace pc_console_robot
                 videoSource.DesiredFrameRate = videoSource.VideoCapabilities[selecteur_resolution.SelectedIndex].FrameRate;
                 videoSource.DesiredFrameSize = videoSource.VideoCapabilities[selecteur_resolution.SelectedIndex].FrameSize;
                 videoSource.Start();
+                
 
 
             }
@@ -227,12 +228,12 @@ namespace pc_console_robot
 
 
             // 1 - grayscaling
-            UnmanagedImage image = UnmanagedImage.FromManagedImage(img);
+           /* UnmanagedImage image = UnmanagedImage.FromManagedImage(img);
             UnmanagedImage imageRouge = image.Clone();
             UnmanagedImage imageBleu = image.Clone();
             UnmanagedImage imageVert = image.Clone();
             UnmanagedImage grayImage = null;
-
+            
             Color colorPoint = image.GetPixel(posX, posY);
 
             this.Invoke((ProcessLalbelText)ChangeLabelText, new object[] { colorPoint.GetHue().ToString(), lbl_hue });
@@ -279,28 +280,28 @@ namespace pc_console_robot
             RGB colorVert = new RGB(30, 215, 30);
             RGB colorBlanc = new RGB(225, 219, 160);*/
 
-            HSLFiltering filter = new HSLFiltering();
+            //HSLFiltering filter = new HSLFiltering();
             // create filter
            // EuclideanColorFiltering filter = new EuclideanColorFiltering();
             //filter.Radius = (short)numericUpDown1.Value;
-            filter.Hue = new IntRange(40, 140);
-            filter.Saturation = new Range(0.5f, 1.0f);
-            filter.Luminance = new Range(0.2f, 1.0f);
+            //filter.Hue = new IntRange(40, 140);
+            //filter.Saturation = new Range(0.5f, 1.0f);
+            //filter.Luminance = new Range(0.2f, 1.0f);
            
             //filter.CenterColor = colorRed;
-            filter.ApplyInPlace(imageRouge);
+            //filter.ApplyInPlace(imageRouge);
 
-            filter.Hue = new IntRange(100, 180);
+            //filter.Hue = new IntRange(100, 180);
             //filter.CenterColor = colorBlanc;
-            filter.ApplyInPlace(imageVert);
+            //filter.ApplyInPlace(imageVert);
 
-            filter.Hue = new IntRange(0, 40);
-             //filter.CenterColor = colorBlue;
-            filter.ApplyInPlace(imageBleu);
+            //filter.Hue = new IntRange(0, 40);
+           //  //filter.CenterColor = colorBlue;
+           // filter.ApplyInPlace(imageBleu);
 
 
 
-            Grayscale filterRouge = new Grayscale(0.800, 0.200, 0.200);
+           /* Grayscale filterRouge = new Grayscale(0.800, 0.200, 0.200);
             Grayscale filterVert = new Grayscale(0.200, 0.800, 0.200);
             Grayscale filterBleu = new Grayscale(0.200, 0.200, 0.800);
 
@@ -314,19 +315,21 @@ namespace pc_console_robot
             thresholdFilterCouleur.ApplyInPlace(edgesRougeImage);
             thresholdFilterCouleur.ApplyInPlace(edgesBleuImage);
             // All the image processing is done here...
-
+            */
             // pictureBox1.Image = image.ToManagedImage();
             if (this != null && (!this.IsDisposed)) // Si on est pas en train de suppirmer la fenetre 
             {
                 try
                 {
-                    this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { image,         pic_ImageNormal });
-                    this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { edgesImage,    pic_ImageEdge });
+                    UnmanagedImage image = UnmanagedImage.FromManagedImage(img);
+                    this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { image, pic_ImageNormal });
+                    image.Dispose();
+/*this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { edgesImage,    pic_ImageEdge });
 
                     this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { imageRouge, pic_ImageRouge });
 
                     this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { imageBleu, pic_ImageBleu });
-                    this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { imageVert, pic_ImageVert });
+                    this.Invoke((ProcessNewImage)DisplayNewImage, new object[] { imageVert, pic_ImageVert });*/
                 }
                 catch (ObjectDisposedException) // La fenetre était en train de se fermée 
                 {

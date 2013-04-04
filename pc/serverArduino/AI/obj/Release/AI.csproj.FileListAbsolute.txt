@@ -1,0 +1,5 @@
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\AI\bin\Release\AI.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\AI\bin\Release\AI.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\AI\obj\Release\ResolveAssemblyReference.cache
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\AI\obj\Release\AI.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\AI\obj\Release\AI.pdb
