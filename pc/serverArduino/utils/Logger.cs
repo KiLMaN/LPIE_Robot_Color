@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 
-namespace DebugProtocolArduino
+namespace utils
 {
     public class Logger
     {
@@ -18,8 +18,8 @@ namespace DebugProtocolArduino
         private List<RichTextBox> m_RTB_list = new List<RichTextBox>();
         private StreamWriter _Fichier;
         private string _LogFile = "log.log";
-       
-       
+
+
         public string LogFile
         {
             get
@@ -44,9 +44,21 @@ namespace DebugProtocolArduino
         }
         private void logToScreen(string str)
         {
+            // Faire le log to screen qui fonctionne interthread (invoke)
             foreach (RichTextBox item in m_RTB_list)
-                if (item != null)
-                    item.AppendText(str + '\n');
+            {
+                try
+                {
+                    if (item != null)
+                        item.AppendText(str + '\n');
+                }
+                catch (Exception )
+                {
+
+                }
+            }
+
+
         }
         private void logToFile(string Message)
         {
@@ -57,7 +69,7 @@ namespace DebugProtocolArduino
                 Message = DateTime.Now.ToString(format) + " : " + Message;
                 _Fichier.Write(Message + "\r\n");
                 _Fichier.Close();
-                
+
             }
             catch (Exception) { }
         }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DebugProtocolArduino
+namespace utils
 {
-    class crc16
+    public class crc16
     {
         /* Implémentation du calcul du crc fait sur l'arduino */
         public static ushort calc_crc16(byte[] data, int length) 

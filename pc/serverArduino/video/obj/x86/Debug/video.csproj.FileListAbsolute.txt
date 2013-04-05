@@ -1,0 +1,8 @@
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\video.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\video.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.Properties.Resources.resources
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.pdb

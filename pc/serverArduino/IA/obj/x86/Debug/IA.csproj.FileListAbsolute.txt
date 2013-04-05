@@ -1,0 +1,10 @@
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Debug\IA.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Debug\IA.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Debug\utils.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Debug\utils.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Debug\IA.Properties.Resources.resources
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Debug\IA.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Debug\IA.pdb

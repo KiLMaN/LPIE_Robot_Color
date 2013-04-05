@@ -1,0 +1,16 @@
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\application.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\application.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\IA.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\utils.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\video.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\xbee.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\IA.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\video.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\xbee.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\utils.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\application.Properties.Resources.resources
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\application.exe
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\application.pdb

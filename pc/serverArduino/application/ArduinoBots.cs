@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Communication.Arduino.messages;
+using Communication.Arduino.protocol;
+using utils;
 
 
-namespace DebugProtocolArduino
+namespace ProtocolArduino
 {
     enum StateBot : byte
     {

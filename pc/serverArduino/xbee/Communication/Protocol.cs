@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO.Ports;
+using utils;
 
-namespace DebugProtocolArduino
+namespace Communication.Arduino.protocol
 {
     /* Structure de la trame */
     public struct TrameProtocole
@@ -16,10 +17,26 @@ namespace DebugProtocolArduino
         public byte[] data;
         public ushort crc;
 
+        public int state;
+
         // Override the ToString method:
         public override string ToString()
         {
-            return (String.Format("(Source :{0}, Destination :{1}, Numéro :{2}, Longeur :{3}, crc :{4})", src, dst, num, length, crc));
+            String datas = "";
+            for(int i = 0 ; i < length ; i++)
+            {
+                datas = String.Format("{0}\t ,{1:X2}", datas, data[i]);
+            }
+            return (String.Format("(Source :{0}, Destination :{1}, Numéro :{2}, Longeur :{3}, crc :{4:X4} , \r\ndata :{5})", src, dst, num, length, crc, datas));
+        }
+
+        public void setSrc(byte src)
+        {
+            this.src = src;
+        }
+        public void setDst(byte dst)
+        {
+            this.dst = dst;
         }
     };
 
@@ -28,6 +45,7 @@ namespace DebugProtocolArduino
     {
         private const int BUFFER_DATA_IN = 50; // Nombre d'octets de data que le protocole peut envoyé en meme temps
 
+        private ushort _cpt = 0;
         /** Definition du protocole **/
         enum ProtocoleChar : byte
         {
@@ -39,12 +57,6 @@ namespace DebugProtocolArduino
             /* Octets de stop */
             PROTOCOL_STOP = 0x8C
         };
-
-
-
-
-
-
 
 
         /* ProtocolState :
@@ -73,14 +85,8 @@ namespace DebugProtocolArduino
         private SerialPort m_Serial = null;
         public SerialPort PortSerie
         {
-            get
-            {
-                return m_Serial;
-            }
-            set
-            {
-                m_Serial = value;
-            }
+            get{return m_Serial;}
+            set{m_Serial = value;}
         }
 
         /* Parse la trame en fonction des données reçues et du state */
@@ -237,7 +243,9 @@ namespace DebugProtocolArduino
 
                 if (TrameOk)
                 {
+                    m_TrameReceive.state = 0; // Non traitée
                     return m_TrameReceive;
+                    
                 }
                 else
                     return default(TrameProtocole);
@@ -245,7 +253,7 @@ namespace DebugProtocolArduino
             return default(TrameProtocole);
         }
 
-        public TrameProtocole MakeTrame(byte src, byte dst, ushort num, byte[] data)
+        public TrameProtocole MakeTrame(byte src, byte dst, byte[] data)
         {
             if (data.Length > BUFFER_DATA_IN)
                 return default(TrameProtocole);
@@ -253,7 +261,7 @@ namespace DebugProtocolArduino
             TrameProtocole trame = new TrameProtocole();
             trame.src = src;
             trame.dst = dst;
-            trame.num = num;
+            trame.num = _cpt++;
             trame.length = Convert.ToByte(data.Length);
             trame.data = data;
             trame.crc = crc16_protocole(trame);
@@ -293,19 +301,28 @@ namespace DebugProtocolArduino
             trameSortie.Add(Donnee); // et on l'ajoute
         }
 
-        /*public void SendTrame(TrameProtocole trame)
+        public void SendTrame(TrameProtocole trame,bool XbeeAPI)
         {
             if (PortSerie == null)
                 return;
             if (!PortSerie.IsOpen)
                 return;
             byte[] Bin = MakeTrameBinary(trame);
-            Logger.GlobalLogger.logToScreen(Bin.ToString());
+            Logger.GlobalLogger.debug(String.Format("{0:X}",Bin));
 
-            PortSerie.Write(Bin, 0, Bin.Length);
+            if (!XbeeAPI)
+                SendBytes(Bin);
+            else
+            {
+                byte[] datas= Communication.Arduino.Xbee.XbeeAPI.buildApiFrame(0x5001,new byte[]{0x48,0x65,0x6C,0x6C,0x6F});
+                SendBytes(datas);
+            }
 
-        }*/
-        
+        }
+        public void SendBytes(byte[] datas)
+        {
+            PortSerie.Write(datas, 0, datas.Length);
+        }
 
         /* Satics */
         public static byte[] getBytes(TrameProtocole trame)

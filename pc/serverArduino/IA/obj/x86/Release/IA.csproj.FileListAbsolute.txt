@@ -6,3 +6,5 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Rel
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\GenerateResource.write.1.tlog
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\IA.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\IA.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Release\utils.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Release\utils.pdb

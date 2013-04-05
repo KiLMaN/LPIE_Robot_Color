@@ -1,0 +1,5 @@
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\utils\bin\Debug\utils.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\utils\bin\Debug\utils.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\utils\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\utils\obj\Debug\utils.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\utils\obj\Debug\utils.pdb
