@@ -34,3 +34,5 @@ C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Glyp
 C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Glyph Recognition Studio\obj\x86\Release\GenerateResource.write.1.tlog
 C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Glyph Recognition Studio\obj\x86\Release\Glyph Recognition Studio.exe
 C:\Users\Brice\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Glyph Recognition Studio\obj\x86\Release\Glyph Recognition Studio.pdb
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Glyph Recognition Studio\obj\x86\Release\Glyph Recognition Studio.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\gratf-2.0.1-src\Sources\Glyph Recognition Studio\obj\x86\Release\Glyph Recognition Studio.pdb

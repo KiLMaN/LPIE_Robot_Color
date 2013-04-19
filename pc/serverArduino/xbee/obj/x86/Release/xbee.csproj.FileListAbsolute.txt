@@ -6,5 +6,16 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\R
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\GenerateResource.write.1.tlog
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\xbee.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\xbee.pdb
+<<<<<<< HEAD
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Release\utils.dll
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Release\utils.pdb
+=======
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Release\xbee.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Release\xbee.pdb
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\xbee.Properties.Resources.resources
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\GenerateResource.read.1.tlog
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\GenerateResource.write.1.tlog
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\xbee.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Release\xbee.pdb
+>>>>>>> origin/maxime

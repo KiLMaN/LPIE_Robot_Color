@@ -6,6 +6,7 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\ob
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\GenerateResource.write.1.tlog
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.pdb
+<<<<<<< HEAD
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\IA.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\utils.dll
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\video.exe
@@ -14,3 +15,13 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bi
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\video.pdb
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\xbee.pdb
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\utils.pdb
+=======
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.pdb
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\application.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Release\application.pdb
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\application.Properties.Resources.resources
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\GenerateResource.read.1.tlog
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Release\GenerateResource.write.1.tlog
+>>>>>>> origin/maxime
