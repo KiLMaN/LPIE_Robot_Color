@@ -6,3 +6,11 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Rel
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\GenerateResource.write.1.tlog
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\IA.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\IA.pdb
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Release\IA.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\bin\Release\IA.pdb
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\IA.Properties.Resources.resources
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\GenerateResource.read.1.tlog
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\GenerateResource.write.1.tlog
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\IA.exe
+C:\Users\maxime\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\IA\obj\x86\Release\IA.pdb
