@@ -10,6 +10,17 @@ namespace Communication.Arduino
         private byte _src = 0;
         private byte _dst = 0;
 
+        public byte source
+        {
+            get { return _src; }
+            set { _src = value; }
+        }
+        public byte destination
+        {
+            get { return _dst; }
+            set { _dst = value; }
+        }
+
         public messageBuilder()
         {
             _Protocol = new Protocol() ;

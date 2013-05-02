@@ -1,6 +1,9 @@
 *.cbtemp
 *.layout
 *.depend
+*.pdb
+*.suo
+*.tlog
 
 #################
 ## Eclipse
@@ -46,8 +49,8 @@ local.properties
 *.sln.docstates
 
 # Build results
-[Dd]ebug/
-[Rr]elease/
+*/[Dd]ebug/
+*/[Rr]elease/
 *_i.c
 *_p.c
 *.ilk

@@ -14,3 +14,8 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\ob
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\application.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\obj\x86\Debug\application.pdb
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\AForge.Video.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\AForge.Imaging.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\AForge.dll
+C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\application\bin\Debug\AForge.Math.dll

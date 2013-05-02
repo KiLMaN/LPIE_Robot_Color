@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO.Ports;
 
 namespace Communication.Arduino.Xbee
 {
@@ -61,6 +62,27 @@ namespace Communication.Arduino.Xbee
             return ret;
         }
 
+        static public byte[] extractDataFromApiFrame(SerialPort port)
+        {
+            int length = 0;
+            int i = 0;
+            List<byte> donnees = new List<byte>();
 
+            while (port.ReadByte() != START_DEL){} // recherche du démarrage
+
+            length = (port.ReadByte() << 8) + port.ReadByte();
+            port.ReadByte(); // Skip API Identifier
+            port.ReadByte(); //  API frame ID
+            port.ReadByte(); port.ReadByte(); //   Destination address low
+            port.ReadByte(); //   Option byte
+
+            while (i < (length - 5)) // Parcours des données
+            {
+                donnees.Add((byte)port.ReadByte());
+                i++;
+            }
+            return donnees.ToArray();
+
+        }
     }
 }

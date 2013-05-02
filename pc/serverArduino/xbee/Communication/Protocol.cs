@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO.Ports;
 using utils;
+using Communication.Arduino.Xbee;
 
 namespace Communication.Arduino.protocol
 {
@@ -148,11 +149,7 @@ namespace Communication.Arduino.protocol
         }
 
 
-        /* Recupere la trame découpée */
-        /* Aucune vérification de CRC ou de destinataire n'est fait */
-        /* Pour le CRC : crc16_protocole(Trame); */
-        /* ? pour dire que l'on peut renvoyer une valleur null */
-        public TrameProtocole getTrame()
+        public TrameProtocole getIncomingTrame(bool bXbeeAPI)
         {
             if (PortSerie == null) // Pas initialisé
                 return default(TrameProtocole);
@@ -160,13 +157,70 @@ namespace Communication.Arduino.protocol
             if (PortSerie.BytesToRead == 0) // Si auccune donnée n'est disponible 
                 return default(TrameProtocole);
 
+            byte[] datas;
+            if (bXbeeAPI)
+            {
+                datas = XbeeAPI.extractDataFromApiFrame(PortSerie);
+            }
+            else
+            {
+                bool bEnd = false , bStart = false;
+                List<byte> listByte = new List<byte>();
+                while (PortSerie.BytesToRead > 0 && !bEnd)
+                {
+                    byte dataRead = (byte)PortSerie.ReadByte();
+                    if (!bStart)
+                    {
+                        if (dataRead == (byte)ProtocoleChar.PROTOCOL_START_1)
+                        {
+                            bStart = true;
+                            listByte.Add(dataRead);
+                        }
+                    }
+                    else
+                    {
+                        if (dataRead == (byte)ProtocoleChar.PROTOCOL_STOP) // Stop
+                        {
+                            if (listByte[listByte.Count - 1] != (byte)ProtocoleChar.PROTOCOL_ESCAPE) // On à pas echapper
+                            {
+                                bEnd = true;
+                            }
+                           
+                        }
+                        listByte.Add(dataRead);
+                    }
+                }
+
+                datas = listByte.ToArray();
+            }
+
+
+            return getTrame(datas);
+        }
+
+
+        /* Recupere la trame découpée */
+        /* Aucune vérification de CRC ou de destinataire n'est fait */
+        /* Pour le CRC : crc16_protocole(Trame); */
+        /* ? pour dire que l'on peut renvoyer une valleur null */
+        public TrameProtocole getTrame(byte[] datas)
+        {
+            if (datas == null) // Pas initialisé
+                return default(TrameProtocole);
+
+            if (datas.Length == 0) // Si auccune donnée n'est disponible 
+                return default(TrameProtocole);
+
             byte DataSerial;
             Boolean TrameOk = false;
+            int pos = 0;
 
-            while (PortSerie.BytesToRead > 0 && !TrameOk)  // Lit les données entrantes du port com
+
+            while (pos < datas.Length && !TrameOk)  // Lit les données entrantes du port com
             {
                 // Lit un octet du port série
-                DataSerial = (byte)PortSerie.ReadByte();
+                DataSerial = datas[pos] ;
+                pos++;
 
                 if (ProtocolState < 100) // Pas d'échapement
                 {
@@ -247,8 +301,8 @@ namespace Communication.Arduino.protocol
                     return m_TrameReceive;
                     
                 }
-                else
-                    return default(TrameProtocole);
+                /*else
+                    return default(TrameProtocole);*/
             }
             return default(TrameProtocole);
         }
@@ -301,7 +355,7 @@ namespace Communication.Arduino.protocol
             trameSortie.Add(Donnee); // et on l'ajoute
         }
 
-        public void SendTrame(TrameProtocole trame,bool XbeeAPI)
+        public void SendTrame(TrameProtocole trame,bool bXbeeAPI)
         {
             if (PortSerie == null)
                 return;
@@ -310,11 +364,11 @@ namespace Communication.Arduino.protocol
             byte[] Bin = MakeTrameBinary(trame);
             Logger.GlobalLogger.debug(String.Format("{0:X}",Bin));
 
-            if (!XbeeAPI)
+            if (!bXbeeAPI)
                 SendBytes(Bin);
             else
             {
-                byte[] datas= Communication.Arduino.Xbee.XbeeAPI.buildApiFrame(0x5001,new byte[]{0x48,0x65,0x6C,0x6C,0x6F});
+                byte[] datas = XbeeAPI.buildApiFrame(trame.dst, getBytes(trame));
                 SendBytes(datas);
             }
 
@@ -327,28 +381,71 @@ namespace Communication.Arduino.protocol
         /* Satics */
         public static byte[] getBytes(TrameProtocole trame)
         {
-            byte[] retVal = new byte[trame.length + 5];
-            /*public byte src;
-           public byte dst;
-           public ushort num;
-           public byte length;
-           public byte[] data;*/
-            int index = 0;
-            retVal[index++] = trame.src;
-            retVal[index++] = trame.dst;
-            retVal[index++] = (byte)(trame.num >> 8);
-            retVal[index++] = (byte)(trame.num & 0xFF);
-            retVal[index++] = trame.length;
+            try
+            {
+                byte[] retVal = new byte[trame.length + 10];
+                /*public byte src;
+               public byte dst;
+               public ushort num;
+               public byte length;
+               public byte[] data;*/
+                int index = 0;
+                retVal[index++] =  (byte)ProtocoleChar.PROTOCOL_START_1;
+                retVal[index++] = (byte)ProtocoleChar.PROTOCOL_START_2;
+                retVal[index++] = trame.src;
+                retVal[index++] = trame.dst;
+                retVal[index++] = (byte)(trame.num >> 8);
+                retVal[index++] = (byte)(trame.num & 0xFF);
+                retVal[index++] = trame.length;
 
-            foreach (byte data in trame.data)
-                retVal[index++] = data;
+                foreach (byte data in trame.data)
+                    retVal[index++] = data;
 
-            return retVal;
+                retVal[index++] = (byte)(trame.crc >> 8);
+                retVal[index++] = (byte)(trame.crc & 0xFF);
+                retVal[index++] = (byte)ProtocoleChar.PROTOCOL_STOP;
+
+                return retVal;
+            }
+            catch (Exception e)
+            {
+                Logger.GlobalLogger.error(e.ToString());
+                return new byte[] { 0 };
+            }
+        }
+        /* Satics */
+        public static byte[] getBytesCrc(TrameProtocole trame)
+        {
+            try
+            {
+                byte[] retVal = new byte[trame.length + 5];
+                /*public byte src;
+               public byte dst;
+               public ushort num;
+               public byte length;
+               public byte[] data;*/
+                int index = 0;
+                retVal[index++] = trame.src;
+                retVal[index++] = trame.dst;
+                retVal[index++] = (byte)(trame.num >> 8);
+                retVal[index++] = (byte)(trame.num & 0xFF);
+                retVal[index++] = trame.length;
+
+                foreach (byte data in trame.data)
+                    retVal[index++] = data;
+
+                return retVal;
+            }
+            catch(Exception e)
+            {
+                Logger.GlobalLogger.error(e.ToString());
+                return new byte[]{0};
+            }
         }
 
         public static ushort crc16_protocole(TrameProtocole trame)
         {
-            return crc16.calc_crc16(Protocol.getBytes(trame), trame.length + 5);
+            return crc16.calc_crc16(Protocol.getBytesCrc(trame), trame.length + 5);
         }
 
 

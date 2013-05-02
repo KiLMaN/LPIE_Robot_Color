@@ -6,13 +6,23 @@ using Communication.Arduino.messages;
 using Communication.Arduino;
 using utils;
 using Communication.Arduino.Xbee;
+using Communication.Events;
+
+
+
 
 
 
 namespace Xbee
 {
+
     public partial class Form1 : Form
     {
+
+
+
+       
+
 
         private SerialXbee g_Serial = new SerialXbee();
         private messageBuilder g_MessageBuilder;
@@ -28,8 +38,17 @@ namespace Xbee
             getListePortSerie();
 
             g_MessageBuilder = new messageBuilder();
+            g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
+            g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_close);
+
+            Vehicule.OnNewVehicle += new Vehicule.NewVehicleEventHandler(Vehicule_OnNewVehicle);
             //pictBoxEtatConn.BackColor = Color.Red;  
+        }
+
+        void Vehicule_OnNewVehicle(object sender, IntChangeEventArgs e)
+        {
+	        textBox1.Text = e.IntValue.ToString();
         }
 
         void Form1_close(object e, FormClosingEventArgs arg)
@@ -194,6 +213,22 @@ namespace Xbee
         private void CB_EnableSensor_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+
+        private void updateSourceAndDestination()
+        {
+            g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
+            g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
+        }
+        private void txt_idSrc_TextChanged(object sender, EventArgs e)
+        {
+            updateSourceAndDestination();
+        }
+
+        private void txt_idDst_TextChanged(object sender, EventArgs e)
+        {
+            updateSourceAndDestination();
         }
 
 

@@ -7,13 +7,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using utils;
 using Communication.Arduino.protocol;
-
+using Communication.Events;
 
 
 namespace Communication.Arduino.Xbee
 {
     class SerialXbee
     {
+
+
+        //Le délégué pour stocker les références sur les méthodes
+        public delegate void NewInfosArduinoBotEventHandler(object sender, NewTrameReceiveEventArgs e);
+        //L'évènement
+        public static event NewInfosArduinoBotEventHandler OnNewTrameReceived;
+
+         
+
         private int delayThreadSend = 100; // Delay entre les executions des envois en millisecondes
 
         private List<TrameProtocole> _stackReceive;     // Liste des messages reçus a traiter //
@@ -121,39 +130,53 @@ namespace Communication.Arduino.Xbee
         public void _PortSerie_DataReceived(object sender, SerialDataReceivedEventArgs arg)
         {
             Logger.GlobalLogger.debug("_PortSerie_DataReceived");
-
-            TrameProtocole trame =  _protocol.getTrame(); // recuperre la trame reçue
-            if (Protocol.crc16_protocole(trame) == trame.crc) // Verification du CRC
+            try
             {
-                Logger.GlobalLogger.debug("CRC OK");
-
-                //byte idSource = trame.src;
-                //ArduinoBots robot = FlotteRobots.Find(ArduinoBots.ById(idSource));
-                /*if (robot == null) // Robot inconnu
+                TrameProtocole trame = _protocol.getIncomingTrame(_XbeeModeApi); // recuperre la trame reçue
+                if (trame.src == 0)
+                    Logger.GlobalLogger.error("Parsing Error : No SRC !");
+                else if (Protocol.crc16_protocole(trame) == trame.crc) // Verification du CRC
                 {
-                    Logger.GlobalLogger.info("Robot inconnu, Creation Nouveau robot");
-                    robot = new ArduinoBots(idSource);
-                    FlotteRobots.Add(robot);
-                }*/
+                    Logger.GlobalLogger.debug("CRC OK");
 
-                /*if (trame.dst == BROADCAST_ID) // Broadcast 
-                {
+                    //byte idSource = trame.src;
+                    //ArduinoBots robot = FlotteRobots.Find(ArduinoBots.ById(idSource));
+                    /*if (robot == null) // Robot inconnu
+                    {
+                        Logger.GlobalLogger.info("Robot inconnu, Creation Nouveau robot");
+                        robot = new ArduinoBots(idSource);
+                        FlotteRobots.Add(robot);
+                    }*/
+
+                    /*if (trame.dst == BROADCAST_ID) // Broadcast 
+                    {
                    
-                }
-                else if (trame.dst == COMPUTER_ID) // Ordi 
-                {
+                    }
+                    else if (trame.dst == COMPUTER_ID) // Ordi 
+                    {
+                    }
+                    else
+                    {
+                    }*/
+
+                    Logger.GlobalLogger.debug("Add in stack");
+                    _stackReceive.Add(trame); // ajout le la trame reçus dans la stack à traité
+
+                    // envoi de l'evenement
+                    NewTrameReceiveEventArgs e = new NewTrameReceiveEventArgs(trame);
+                    OnNewTrameReceived(this, e);
+
+
                 }
                 else
                 {
-                }*/
-
-                Logger.GlobalLogger.debug("Add in stack");
-                _stackReceive.Add(trame); // ajout le la trame reçus dans la stack à traité
-
+                    Logger.GlobalLogger.error("CRC FAILED");
+                }
             }
-            else
+            catch (Exception e)
             {
-                Logger.GlobalLogger.error("CRC FAILED");
+                Logger.GlobalLogger.error(e.ToString());
+                return;
             }
         }
         public void StartListenSerial()

@@ -30,6 +30,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.pictBoxEtatConn = new System.Windows.Forms.PictureBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.CB_EnableSensor = new System.Windows.Forms.CheckBox();
             this.proBar_UltraSon = new System.Windows.Forms.ProgressBar();
             this.proBar_IrSensor = new System.Windows.Forms.ProgressBar();
             this.lbl_UltraSon = new System.Windows.Forms.Label();
@@ -44,6 +47,7 @@
             this.btn_left = new System.Windows.Forms.Button();
             this.btn_up = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.CB_Xbee = new System.Windows.Forms.CheckBox();
             this.btn_ActualiserListePortSerie = new System.Windows.Forms.Button();
             this.liste_portSerie = new System.Windows.Forms.ComboBox();
             this.lbl_IdDest = new System.Windows.Forms.Label();
@@ -54,19 +58,15 @@
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.TabLogs = new System.Windows.Forms.TabPage();
             this.txtbox_debug_log = new System.Windows.Forms.RichTextBox();
-            this.CB_EnableSensor = new System.Windows.Forms.CheckBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.CB_Xbee = new System.Windows.Forms.CheckBox();
             this.Tabs.SuspendLayout();
             this.TabControle.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxEtatConn)).BeginInit();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.TabLogs.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // Tabs
@@ -140,6 +140,44 @@
             this.groupBox3.TabIndex = 12;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Capteurs";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(178, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(20, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "ms";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(100, 17);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(72, 20);
+            this.numericUpDown1.TabIndex = 7;
+            this.numericUpDown1.Tag = "";
+            this.numericUpDown1.Value = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            // 
+            // CB_EnableSensor
+            // 
+            this.CB_EnableSensor.AutoSize = true;
+            this.CB_EnableSensor.Location = new System.Drawing.Point(18, 20);
+            this.CB_EnableSensor.Name = "CB_EnableSensor";
+            this.CB_EnableSensor.Size = new System.Drawing.Size(59, 17);
+            this.CB_EnableSensor.TabIndex = 6;
+            this.CB_EnableSensor.Text = "Activer";
+            this.CB_EnableSensor.UseVisualStyleBackColor = true;
+            this.CB_EnableSensor.CheckedChanged += new System.EventHandler(this.CB_EnableSensor_CheckedChanged);
             // 
             // proBar_UltraSon
             // 
@@ -284,6 +322,18 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Configuration";
             // 
+            // CB_Xbee
+            // 
+            this.CB_Xbee.AutoSize = true;
+            this.CB_Xbee.Checked = true;
+            this.CB_Xbee.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CB_Xbee.Location = new System.Drawing.Point(241, 47);
+            this.CB_Xbee.Name = "CB_Xbee";
+            this.CB_Xbee.Size = new System.Drawing.Size(68, 17);
+            this.CB_Xbee.TabIndex = 8;
+            this.CB_Xbee.Text = "XbeeAPI";
+            this.CB_Xbee.UseVisualStyleBackColor = true;
+            // 
             // btn_ActualiserListePortSerie
             // 
             this.btn_ActualiserListePortSerie.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
@@ -324,6 +374,7 @@
             this.txt_idSrc.Size = new System.Drawing.Size(100, 20);
             this.txt_idSrc.TabIndex = 3;
             this.txt_idSrc.Text = "254";
+            this.txt_idSrc.TextChanged += new System.EventHandler(this.txt_idSrc_TextChanged);
             // 
             // btn_connection
             // 
@@ -342,6 +393,7 @@
             this.txt_idDst.Size = new System.Drawing.Size(100, 20);
             this.txt_idDst.TabIndex = 4;
             this.txt_idDst.Text = "255";
+            this.txt_idDst.TextChanged += new System.EventHandler(this.txt_idDst_TextChanged);
             // 
             // lbl_IdSrc
             // 
@@ -382,54 +434,6 @@
             this.txtbox_debug_log.TabIndex = 0;
             this.txtbox_debug_log.Text = "";
             // 
-            // CB_EnableSensor
-            // 
-            this.CB_EnableSensor.AutoSize = true;
-            this.CB_EnableSensor.Location = new System.Drawing.Point(18, 20);
-            this.CB_EnableSensor.Name = "CB_EnableSensor";
-            this.CB_EnableSensor.Size = new System.Drawing.Size(59, 17);
-            this.CB_EnableSensor.TabIndex = 6;
-            this.CB_EnableSensor.Text = "Activer";
-            this.CB_EnableSensor.UseVisualStyleBackColor = true;
-            this.CB_EnableSensor.CheckedChanged += new System.EventHandler(this.CB_EnableSensor_CheckedChanged);
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Location = new System.Drawing.Point(100, 17);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(72, 20);
-            this.numericUpDown1.TabIndex = 7;
-            this.numericUpDown1.Tag = "";
-            this.numericUpDown1.Value = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(178, 20);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(20, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "ms";
-            // 
-            // CB_Xbee
-            // 
-            this.CB_Xbee.AutoSize = true;
-            this.CB_Xbee.Location = new System.Drawing.Point(241, 47);
-            this.CB_Xbee.Name = "CB_Xbee";
-            this.CB_Xbee.Size = new System.Drawing.Size(68, 17);
-            this.CB_Xbee.TabIndex = 8;
-            this.CB_Xbee.Text = "XbeeAPI";
-            this.CB_Xbee.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -445,11 +449,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxEtatConn)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.TabLogs.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
