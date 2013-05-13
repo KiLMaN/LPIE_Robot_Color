@@ -7,7 +7,7 @@ using xbee.Communication.Events;
 
 namespace xbee.Communication
 {
-    class SerialManagment
+    class SerialManagment : IDisposable
     {
         #region #### Evenement ####
         //Le délégué pour stocker les références sur les méthodes
@@ -166,5 +166,11 @@ namespace xbee.Communication
             }
         }
         #endregion
+
+        public void Dispose()
+        {
+            Close();
+            //throw new NotImplementedException();
+        }
     }
 }
