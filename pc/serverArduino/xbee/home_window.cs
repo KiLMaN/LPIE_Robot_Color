@@ -2,18 +2,15 @@
 using System.Drawing;
 using System.IO.Ports;
 using System.Windows.Forms;
-using Communication.Arduino.messages;
-using Communication.Arduino;
 using utils;
-using Communication.Arduino.Xbee;
-using Communication.Events;
+using xbee.Communication;
 
 
 
 
 
 
-namespace Xbee
+namespace xbee
 {
 
     public partial class Form1 : Form
@@ -24,8 +21,8 @@ namespace Xbee
        
 
 
-        private SerialXbee g_Serial = new SerialXbee();
-        private messageBuilder g_MessageBuilder;
+        //private SerialXbee g_Serial = new SerialXbee();
+        //private messageBuilder g_MessageBuilder;
         public Logger g_Logger = new Logger(); // Logger global
         
 
@@ -37,23 +34,19 @@ namespace Xbee
             Logger.GlobalLogger = g_Logger; // Met a la disposition le logger
             getListePortSerie();
 
-            g_MessageBuilder = new messageBuilder();
-            g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
-            g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
+            //g_MessageBuilder = new messageBuilder();
+            //g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
+            //g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_close);
 
-            Vehicule.OnNewVehicle += new Vehicule.NewVehicleEventHandler(Vehicule_OnNewVehicle);
-            //pictBoxEtatConn.BackColor = Color.Red;  
+            
         }
 
-        void Vehicule_OnNewVehicle(object sender, IntChangeEventArgs e)
-        {
-	        textBox1.Text = e.IntValue.ToString();
-        }
+        
 
         void Form1_close(object e, FormClosingEventArgs arg)
         {
-            g_Serial.StopListenSerial();
+            //g_Serial.StopListenSerial();
         }
 
         #region #### Delegate ####
@@ -156,18 +149,7 @@ namespace Xbee
         /* Appui sur le bouton Connection */
         private void btn_connection_Click(object sender, EventArgs e)
         {
-            if (g_Serial.PortSerie.IsOpen)
-            {
-                g_Serial.StopListenSerial();
-                 btn_connection.Text = "Connection";
-            }
-            else
-            {
-                g_Serial.ComPort = (String)liste_portSerie.SelectedItem;
-                g_Serial.ModeApi = CB_Xbee.Checked;
-                g_Serial.StartListenSerial();
-                btn_connection.Text = "Fermeture";
-            }
+            
         }
 
         /* Appui sur le bouton Actualiser */
@@ -180,32 +162,32 @@ namespace Xbee
         /* Bouton Mouvement UP / DOWN */
         private void btn_up_Click(object sender, EventArgs e)
         {
-            g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(true,0x50,0x50));
+            //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(true,0x50,0x50));
         }
         private void btn_down_Click(object sender, EventArgs e)
         {
-            g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(false, 0x50, 0x50));
+            //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(false, 0x50, 0x50));
         }
 
 
         /* Bouton Mouvement LEFT /  RIGHT */
         private void btn_left_Click(object sender, EventArgs e)
         {
-            g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(true, 0x5A));
+            //g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(true, 0x5A));
         }
         private void btn_right_Click(object sender, EventArgs e)
         {
-            g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(false, 0x5A));
+            //g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(false, 0x5A));
         }
 
         /* Bouton pour la pince */
         private void btn_pince_close_Click(object sender, EventArgs e)
         {
-            g_Serial.addMessageToSend(g_MessageBuilder.createCloseClawMessage());
+            //g_Serial.addMessageToSend(g_MessageBuilder.createCloseClawMessage());
         }
         private void btn_pince_open_Click(object sender, EventArgs e)
         {
-           g_Serial.addMessageToSend(g_MessageBuilder.createOpenClawMessage());
+           //g_Serial.addMessageToSend(g_MessageBuilder.createOpenClawMessage());
         }
 
         #endregion
@@ -218,8 +200,8 @@ namespace Xbee
 
         private void updateSourceAndDestination()
         {
-            g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
-            g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
+           // g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
+            //g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
         }
         private void txt_idSrc_TextChanged(object sender, EventArgs e)
         {

@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Communication.Arduino.protocol;
+using xbee.Communication;
 
-namespace Communication.Events
+namespace xbee.Communication.Events
 {
-    class NewTrameReceiveEventArgs : EventArgs
+    class NewTrameArduinoReceveidEventArgs : EventArgs
     {
         private TrameProtocole _trame;
 
-        public NewTrameReceiveEventArgs(TrameProtocole trame)
+        public NewTrameArduinoReceveidEventArgs(TrameProtocole trame)
 		{
             _trame = trame;
 		}
 
-        public TrameProtocole trame
+        public TrameProtocole Trame
 		{
 			get {
                 return _trame;

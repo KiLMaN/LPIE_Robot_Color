@@ -46,20 +46,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Communication\messageBuilder.cs" />
+    <Compile Include="Communication\ArduinoBot.cs" />
+    <Compile Include="Communication\ArduinoManager.cs" />
+    <Compile Include="Communication\AutomateCommunication.cs" />
     <Compile Include="Communication\Messages.cs" />
+    <Compile Include="Communication\SerialManagment.cs" />
+    <Compile Include="Communication\SerialXbee.cs" />
+    <Compile Include="Communication\TrameDecoder.cs" />
+    <Compile Include="Communication\TrameEncoder.cs" />
     <Compile Include="Communication\XbeeAPI.cs" />
+    <Compile Include="Events\NewTrameArduinoReceivedEventArgs.cs" />
+    <Compile Include="Events\NewDataReceivedEventArgs.cs" />
     <Compile Include="home_window.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="home_window.designer.cs">
       <DependentUpon>home_window.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewTrameReceiveEventArgs.cs" />
+    <Compile Include="Events\NewTrameReceivedEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Communication\Protocol.cs" />
-    <Compile Include="Communication\SerialXbee.cs" />
     <EmbeddedResource Include="home_window.resx">
       <DependentUpon>home_window.cs</DependentUpon>
     </EmbeddedResource>

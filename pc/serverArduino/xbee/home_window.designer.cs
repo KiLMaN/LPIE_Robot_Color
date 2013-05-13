@@ -1,4 +1,4 @@
-﻿namespace Xbee
+﻿namespace xbee
 {
     partial class Form1
     {
