@@ -9,3 +9,10 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Debug
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\bin\Debug\utils.pdb
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\xbee.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\xbee.pdb
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\xbee.exe
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\xbee.pdb
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\Xbee.Form1.resources
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\xbee.Properties.Resources.resources
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\xbee\obj\x86\Debug\GenerateResource.write.1.tlog

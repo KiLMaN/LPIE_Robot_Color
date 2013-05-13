@@ -11,8 +11,12 @@
             
             for (int i = 0; i < ListeThread.Length; i++)
             {
-                if (ListeThread[i].IsAlive)
-                    ListeThread[i].Abort();
+                try
+                {
+                    if (ListeThread[i].IsAlive)
+                        ListeThread[i].Abort();
+                }
+                catch { };
             }
             if (disposing && (components != null))
             {
@@ -38,6 +42,8 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.LblFPS = new System.Windows.Forms.Label();
             this.BtnStop = new System.Windows.Forms.Button();
+            this.Blobs = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImgNb)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).BeginInit();
@@ -165,11 +171,32 @@
             this.BtnStop.UseVisualStyleBackColor = true;
             this.BtnStop.Click += new System.EventHandler(this.BtnStop_Click);
             // 
+            // Blobs
+            // 
+            this.Blobs.AutoSize = true;
+            this.Blobs.Location = new System.Drawing.Point(843, 30);
+            this.Blobs.Name = "Blobs";
+            this.Blobs.Size = new System.Drawing.Size(33, 13);
+            this.Blobs.TabIndex = 13;
+            this.Blobs.Text = "Blobs";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(846, 4);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(157, 23);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "Chargement image";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1359, 657);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.Blobs);
             this.Controls.Add(this.BtnStop);
             this.Controls.Add(this.LblFPS);
             this.Controls.Add(this.numericUpDown1);
@@ -209,6 +236,8 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label LblFPS;
         private System.Windows.Forms.Button BtnStop;
+        private System.Windows.Forms.Label Blobs;
+        private System.Windows.Forms.Button button1;
     }
 }
 
