@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using utils;
 
-using AForge.Math;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
+using AForge.Math.Geometry;
+using AForge;
 
 namespace video
 {
@@ -21,20 +18,23 @@ namespace video
     {
         private FilterInfoCollection VideoCaptureDevices;
         private VideoCaptureDevice FinalVideo;
+
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
 
-        private const int nbThread = 4;
+        private const int nbThread = 1;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
 
+        private Logger gLogger;
         double millLastPic = 0;
 
         public Form1()
         {
-            int i;
             InitializeComponent();
+            gLogger = new Logger();
+            Logger.GlobalLogger = gLogger;
             // Initialisation des webcams
             if (ListerWebCam() == false)
             {
@@ -42,7 +42,6 @@ namespace video
                 button_Ok.Enabled = false;
                 MessageBox.Show("Aucune caméra détectée.");
             }
-
         }
         /* -------------------------- Fonction WebCam -------------------------- */
 
@@ -127,9 +126,6 @@ namespace video
             lastThread++;
             lastThread %=  nbThread;
 
-            // Instantiation d'un objet Image
-            //ImgWebCam img = new ImgWebCam((Bitmap) eventArgs.Frame.Clone(), nbImageCapture);
-
             // Traitement et Affichage des images   
             try
             {
@@ -137,7 +133,6 @@ namespace video
                 {
                     this.Invoke((UpdateFPS)affichageFPS);
                 }
-               // this.Invoke((TraitementImg)imgTraitment, img);
             }
             catch { }
             
@@ -151,14 +146,14 @@ namespace video
            img.ColeurVersNB();
            img.DetectionContour((short)numericUpDown1.Value);
 
+           Blobs.Text = "" + img.detectionGlyph();
            try
            {
                if (imageShow < img.getNumeroImg())
                {
                    imageShow = img.getNumeroImg();
-                   // this.Invoke((afficageImg)imgAffiche, img.getImageReel(), ImageReel);
-                   // this.Invoke((afficageImg)imgAffiche, img.getImageNB().ToManagedImage(),ImgNb);
                    this.Invoke((afficageImg)imgAffiche, img.getImageContour().ToManagedImage(), ImgContour);
+                   this.Invoke((afficageImg)imgAffiche, img.getImageReel(), ImgNb) ;
                }
              
             }
@@ -228,6 +223,15 @@ namespace video
             chargementListeResolution(ListeWebCam.SelectedIndex);
         }
 
-     
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Bitmap im = new Bitmap(@"C:\Users\maximeleblanc\Desktop\Img.png");
+            UnmanagedImage img = UnmanagedImage.FromManagedImage(im);
+            ImgNb.Image = img.ToManagedImage();
+
+            imgTraitment(new ImgWebCam(im, imageShow + 1));
+
+        }
+
     }
 }

@@ -6,6 +6,26 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.exe
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.pdb
+<<<<<<< HEAD
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.exe
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.pdb
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\video.exe
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\video.pdb
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Controls.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Imaging.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Imaging.IPPrototyper.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Math.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Video.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.Form1.resources
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.Properties.Resources.resources
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\utils.dll
+C:\Users\maximeleblanc\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\utils.pdb
+=======
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Controls.dll
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.dll
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Imaging.dll
@@ -14,3 +34,4 @@ C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debu
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Video.DirectShow.dll
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\bin\Debug\AForge.Video.dll
 C:\Users\brice\Documents\GitHub\LPIE_Robot_Color\pc\serverArduino\video\obj\x86\Debug\video.Form1.resources
+>>>>>>> c2ca0e17207c72f64249fc7d1d4eda7fe5398311
