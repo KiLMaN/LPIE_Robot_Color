@@ -14,7 +14,7 @@ namespace video
         int glyphSize = 5;
         int Idenfitifant;
         UnmanagedImage imgGlyph;
-
+        
         public Glyph(UnmanagedImage glyphImage)
         {
             imgGlyph = glyphImage;
@@ -24,107 +24,89 @@ namespace video
         {
             imgGlyph = img;
         }
+        public UnmanagedImage getImage()
+        {
+            return imgGlyph;
+        }
         public int getIdentifiant()
         {
             return Idenfitifant;
         }
         public void ReconnaissanceGlyph(List<IntPoint> corners, UnmanagedImage img)
         {
-            Recognize(img);
+            Recognize(corners[0],img);
         }
 
-        public void Recognize(UnmanagedImage img)
+        public void Recognize(IntPoint corners, UnmanagedImage img)
         {
-            Rectangle rect = new Rectangle(0, 0, imgGlyph.Width, imgGlyph.Height);
-            // Détection des de la taille du glyph
-            int glyphStartX = rect.Left;
-            int glyphStartY = rect.Top;
-            int glyphWidth = rect.Width;
-            int glyphHeight = rect.Height;
+            Logger.GlobalLogger.debug("Nouvelle analyse");
+            Logger.GlobalLogger.debug("");
+            Logger.GlobalLogger.debug("");
+            List<IntPoint> LstPoint = new List<IntPoint>();
+            string chaine,chainebis;
+            int moyenne;
+            IntPoint ip1 = new IntPoint();
+            IntPoint ip2 = new IntPoint();
+            IntPoint ip3 = new IntPoint();
+            int marge = (imgGlyph.Width * 5) / 100;
 
             // Calucul de la taille des cellules
-            int cellWidth = glyphWidth / glyphSize;
-            int cellHeight = glyphHeight / glyphSize;
-
-            // allow some gap for each cell, which is not scanned => Marge de taille
-            int cellOffsetX = (int)(cellWidth * 0.2);
-            int cellOffsetY = (int)(cellHeight * 0.2);
-
-            // Définition d'une taille de zone de scan
-            int cellScanX = (int)(cellWidth * 0.6);
-            int cellScanY = (int)(cellHeight * 0.6);
-            int cellScanArea = cellScanX * cellScanY;
-
+            int cellWidth = (imgGlyph.Width - marge) / glyphSize;
+            int cellHeight = (imgGlyph.Height - marge) / glyphSize;
             // Définition d'une matrice contenant les valeurs de l'image
             int[,] cellIntensity = new int[glyphSize, glyphSize];
 
-            unsafe
-            {
-                int stride = img.Stride;
 
-                byte* srcBase = (byte*)img.ImageData.ToPointer() +
-                    (glyphStartY + cellOffsetY) * stride +
-                    glyphStartX + cellOffsetX;
-                byte* srcLine;
-                byte* src;
-
-                // for all glyph's rows
-                for (int gi = 0; gi < glyphSize; gi++)
-                {
-                    srcLine = srcBase + cellHeight * gi * stride;
-
-                    // for all lines in the row
-                    for (int y = 0; y < cellScanY; y++)
-                    {
-                        // for all glyph columns
-                        for (int gj = 0; gj < glyphSize; gj++)
-                        {
-                            src = srcLine + cellWidth * gj;
-
-                            // for all pixels in the column
-                            for (int x = 0; x < cellScanX; x++, src++)
-                            {
-                                cellIntensity[gi, gj] += *src;
-                            }
-                        }
-
-                        srcLine += stride;
-                    }
-                }
-            }
-
-            byte[,] glyphValues = new byte[glyphSize, glyphSize];
-            float confidence = 1f;
-
-            for (int gi = 0; gi < glyphSize; gi++)
-            {
-                for (int gj = 0; gj < glyphSize; gj++)
-                {
-                    float fullness = (float)
-                        (cellIntensity[gi, gj] / 255) / cellScanArea;
-                    float conf = (float)System.Math.Abs(fullness - 0.5) + 0.5f;
-
-                    glyphValues[gi, gj] = (byte)((fullness > 0.5f) ? 1 : 0);
-
-                    if (conf < confidence)
-                        confidence = conf;
-                }
-            }
-
-            Logger.GlobalLogger.debug("" + ((cellWidth - (2 * cellOffsetX)) * 90));
-            // Binarisation des résultats
+            // Découpage du glyph en zone
             for (int i = 0; i < glyphSize; i++)
             {
-                String tmp = "";
+                ip1.X = cellWidth * i + marge;
+                ip2.X = cellWidth * (i + 1) + marge;
                 for (int j = 0; j < glyphSize; j++)
                 {
-                    tmp += glyphValues[i, j] + "\t";
-                    //cellIntensity[i, j] = (cellIntensity[i, j] > ((cellWidth - (2 * cellOffsetX)) * 90)) ? 1 : 0;
-                   // tmp += cellIntensity[i, j]  + "\t";
+                    ip1.Y = cellHeight * j + marge;
+                    ip2.Y = cellHeight * (j + 1) + marge;
+
+                    LstPoint.Add(ip1);
+                    LstPoint.Add(ip2);
+
+                    moyenne = 0;
+                    int count = 0;
+
+                    for (int x = (marge + cellWidth * i + 1); x < (marge + cellWidth * (i + 1) - 2); x += 2)
+                    {
+                        for (int y = (marge + cellHeight * j + 1); y < (marge + cellHeight * (1 + j) - 2); y += 2)
+                        {
+                            ip3.X = x;
+                            ip3.Y = y;
+                            count++;
+                    
+                            moyenne += imgGlyph.GetPixel(ip3).R;
+                            if (i == 2 && j == 3)
+                                imgGlyph.SetPixel(ip3, Color.Red);
+                        }
+                    }
+                    cellIntensity[i, j] = moyenne;
                 }
-                Logger.GlobalLogger.debug(tmp);
             }
-            
+
+            // Debug
+            {
+                for (int gi = 0; gi < glyphSize; gi++)
+                {
+                    chaine = "";
+                    chainebis = "";
+                    for (int gj = 0; gj < glyphSize; gj++)
+                    {
+                        chainebis += cellIntensity[gi, gj] + "\t";
+                        cellIntensity[gi, gj] = (cellIntensity[gi, gj] > 127 ) ? 0 : 1;
+                        chaine += cellIntensity[gi, gj] + "\t";
+                    }
+                    //Logger.GlobalLogger.debug(chainebis);
+                    Logger.GlobalLogger.debug(chaine);
+                }
+
+            }
         }
     }
 }
