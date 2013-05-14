@@ -49,6 +49,7 @@
     <Compile Include="Communication\ArduinoBot.cs" />
     <Compile Include="Communication\ArduinoManager.cs" />
     <Compile Include="Communication\AutomateCommunication.cs" />
+    <Compile Include="Communication\MessageBuilder.cs" />
     <Compile Include="Communication\Messages.cs" />
     <Compile Include="Communication\SerialManagment.cs" />
     <Compile Include="Communication\SerialXbee.cs" />

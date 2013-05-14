@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Windows.Forms;
 using utils;
 using xbee.Communication;
+using xbee.Communication.Events;
 
 
 
@@ -15,15 +16,12 @@ namespace xbee
 
     public partial class Form1 : Form
     {
-
-
-
-       
-
-
         //private SerialXbee g_Serial = new SerialXbee();
         //private messageBuilder g_MessageBuilder;
         public Logger g_Logger = new Logger(); // Logger global
+
+        private ArduinoManager _ArduinoManager;
+        private AutomateCommunication _AutomateComm;
         
 
         public Form1()
@@ -34,18 +32,26 @@ namespace xbee
             Logger.GlobalLogger = g_Logger; // Met a la disposition le logger
             getListePortSerie();
 
-            //g_MessageBuilder = new messageBuilder();
-            //g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
-            //g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_close);
 
+            _ArduinoManager = new ArduinoManager();
+            _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager); // Initialise l'automate sur le port 0
+            _AutomateComm.OnNewTrameArduinoReceived += new AutomateCommunication.NewTrameArduinoReceivedEventHandler(_OnNewTrameArduinoReceived);
             
+            /* Set de la source */
+            _AutomateComm.IdPc = 0xFE;
+            MessageBuilder.src = 0xFE;
         }
 
-        
+        void _OnNewTrameArduinoReceived(object sender, NewTrameArduinoReceveidEventArgs e)
+        {
+            Logger.GlobalLogger.debug("Nouvelle trame recus ! :" + e.Trame.ToString());
+        }
 
         void Form1_close(object e, FormClosingEventArgs arg)
         {
+            _AutomateComm.Dispose();
+            _ArduinoManager = null;
             //g_Serial.StopListenSerial();
         }
 
@@ -80,7 +86,7 @@ namespace xbee
         #endregion
 
 
-
+        #region #### Port Série ####
         /** Recupere la liste des ports séries disponibles sur la machine et l'affiche dans la liste **/
         private void getListePortSerie()
         {
@@ -112,13 +118,13 @@ namespace xbee
         }
 
         /** Ouvre le port série séléctionné */
-       /* private void openSerialPort()
+        private void switchSerialPort()
         {
             // Déjà ouvert //
-            if (gPortSerie.IsOpen)
+            if (_AutomateComm.IsSerialPortOpen())
             {
-                Logger.GlobalLogger.debug("Fermeture du port : " + gPortSerie.PortName);
-                gPortSerie.Close();
+                Logger.GlobalLogger.debug("Fermeture du port serie !");
+                _AutomateComm.CloseSerialPort();
                 btn_connection.Text = "Connection";
                 liste_portSerie.Enabled = true;
                 btn_ActualiserListePortSerie.Enabled = true;
@@ -128,9 +134,7 @@ namespace xbee
                 try
                 {
                     Logger.GlobalLogger.debug("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
-                    gPortSerie.PortName = (string)liste_portSerie.SelectedItem;
-                    gPortSerie.BaudRate = BAUD_RATE;
-                    gPortSerie.Open();
+                    _AutomateComm.OpenSerialPort((string)liste_portSerie.SelectedItem);
                     btn_connection.Text = "Fermeture";
                     liste_portSerie.Enabled = false;
                     btn_ActualiserListePortSerie.Enabled = false;
@@ -142,14 +146,14 @@ namespace xbee
                     btn_ActualiserListePortSerie.Enabled = true;
                 }
             }
-        }*/
-
+        }
+        #endregion 
 
         #region #### Buttons ####
         /* Appui sur le bouton Connection */
         private void btn_connection_Click(object sender, EventArgs e)
         {
-            
+            switchSerialPort();
         }
 
         /* Appui sur le bouton Actualiser */
@@ -162,10 +166,20 @@ namespace xbee
         /* Bouton Mouvement UP / DOWN */
         private void btn_up_Click(object sender, EventArgs e)
         {
+
+            _AutomateComm.SendMessageToArduino(
+                MessageBuilder.createMoveMessage(true, 0x50, 0x50), 
+                _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+                );
+            ArduinoBot test = _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text));
             //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(true,0x50,0x50));
         }
         private void btn_down_Click(object sender, EventArgs e)
         {
+            _AutomateComm.SendMessageToArduino(
+                MessageBuilder.createMoveMessage(false, 0x50, 0x50),
+                _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+                );
             //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(false, 0x50, 0x50));
         }
 
@@ -173,20 +187,36 @@ namespace xbee
         /* Bouton Mouvement LEFT /  RIGHT */
         private void btn_left_Click(object sender, EventArgs e)
         {
+            _AutomateComm.SendMessageToArduino(
+               MessageBuilder.createTurnMessage(true, 0x5A),
+               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               );
             //g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(true, 0x5A));
         }
         private void btn_right_Click(object sender, EventArgs e)
         {
+            _AutomateComm.SendMessageToArduino(
+               MessageBuilder.createTurnMessage(false, 0x5A),
+               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               );
             //g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(false, 0x5A));
         }
 
         /* Bouton pour la pince */
         private void btn_pince_close_Click(object sender, EventArgs e)
         {
+            _AutomateComm.SendMessageToArduino(
+               MessageBuilder.createCloseClawMessage(),
+               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               );
             //g_Serial.addMessageToSend(g_MessageBuilder.createCloseClawMessage());
         }
         private void btn_pince_open_Click(object sender, EventArgs e)
         {
+            _AutomateComm.SendMessageToArduino(
+               MessageBuilder.createOpenClawMessage(),
+               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               );
            //g_Serial.addMessageToSend(g_MessageBuilder.createOpenClawMessage());
         }
 
@@ -198,20 +228,7 @@ namespace xbee
         }
 
 
-        private void updateSourceAndDestination()
-        {
-           // g_MessageBuilder.source = Convert.ToByte(txt_idSrc.Text);
-            //g_MessageBuilder.destination = Convert.ToByte(txt_idDst.Text);
-        }
-        private void txt_idSrc_TextChanged(object sender, EventArgs e)
-        {
-            updateSourceAndDestination();
-        }
-
-        private void txt_idDst_TextChanged(object sender, EventArgs e)
-        {
-            updateSourceAndDestination();
-        }
+       
 
 
 

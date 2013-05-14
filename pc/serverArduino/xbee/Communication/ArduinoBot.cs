@@ -11,23 +11,8 @@ namespace xbee.Communication
         STATE_ARDUINO_NONE          = 0x00, // Le robot ne fait rien
         STATE_ARDUINO_MOVE          = 0x01, // Le robot bouge
         STATE_ARDUINO_CLAW          = 0x02 // Le robot utilise ça pince
-
-        /*STATE_NONE                  = 0x00,
-
-        STATE_WATTING               = 0x01,
-
-        STATE_MOVING_TO_TARGET      = 0x02,
-        STATE_MOVING_TO_BASE        = 0x03,
-
-        STATE_LIFTING_TARGET        = 0x04,
-        STATE_LAYING_TARGET         = 0x05,
-
-        STATE_WAIT_ACK              = 0x10,
-
-        STATE_UNCONNECTED           = 0xE0*/
-        
     }
-    // Etat du protocole de communication du coté PC (Si envoi d'un
+    // Etat du protocole de communication du coté PC
     enum StateArduinoComm : byte
     {
         STATE_COMM_NONE             = 0x00, // Pas en attente
@@ -39,9 +24,6 @@ namespace xbee.Communication
 
     class ArduinoBot
     {
-        
-    
-    
         /* Permet de retrouver le robot dans les listes */
         public static Predicate<ArduinoBot> ById(byte id)
         {

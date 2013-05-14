@@ -51,10 +51,8 @@
             this.btn_ActualiserListePortSerie = new System.Windows.Forms.Button();
             this.liste_portSerie = new System.Windows.Forms.ComboBox();
             this.lbl_IdDest = new System.Windows.Forms.Label();
-            this.txt_idSrc = new System.Windows.Forms.TextBox();
             this.btn_connection = new System.Windows.Forms.Button();
             this.txt_idDst = new System.Windows.Forms.TextBox();
-            this.lbl_IdSrc = new System.Windows.Forms.Label();
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.TabLogs = new System.Windows.Forms.TabPage();
             this.txtbox_debug_log = new System.Windows.Forms.RichTextBox();
@@ -310,10 +308,8 @@
             this.groupBox1.Controls.Add(this.btn_ActualiserListePortSerie);
             this.groupBox1.Controls.Add(this.liste_portSerie);
             this.groupBox1.Controls.Add(this.lbl_IdDest);
-            this.groupBox1.Controls.Add(this.txt_idSrc);
             this.groupBox1.Controls.Add(this.btn_connection);
             this.groupBox1.Controls.Add(this.txt_idDst);
-            this.groupBox1.Controls.Add(this.lbl_IdSrc);
             this.groupBox1.Controls.Add(this.lbl_portSerie);
             this.groupBox1.Location = new System.Drawing.Point(8, 6);
             this.groupBox1.Name = "groupBox1";
@@ -367,15 +363,6 @@
             this.lbl_IdDest.TabIndex = 6;
             this.lbl_IdDest.Text = "ID dest :";
             // 
-            // txt_idSrc
-            // 
-            this.txt_idSrc.Location = new System.Drawing.Point(66, 47);
-            this.txt_idSrc.Name = "txt_idSrc";
-            this.txt_idSrc.Size = new System.Drawing.Size(100, 20);
-            this.txt_idSrc.TabIndex = 3;
-            this.txt_idSrc.Text = "254";
-            this.txt_idSrc.TextChanged += new System.EventHandler(this.txt_idSrc_TextChanged);
-            // 
             // btn_connection
             // 
             this.btn_connection.Location = new System.Drawing.Point(241, 18);
@@ -392,17 +379,7 @@
             this.txt_idDst.Name = "txt_idDst";
             this.txt_idDst.Size = new System.Drawing.Size(100, 20);
             this.txt_idDst.TabIndex = 4;
-            this.txt_idDst.Text = "255";
-            this.txt_idDst.TextChanged += new System.EventHandler(this.txt_idDst_TextChanged);
-            // 
-            // lbl_IdSrc
-            // 
-            this.lbl_IdSrc.AutoSize = true;
-            this.lbl_IdSrc.Location = new System.Drawing.Point(19, 50);
-            this.lbl_IdSrc.Name = "lbl_IdSrc";
-            this.lbl_IdSrc.Size = new System.Drawing.Size(41, 13);
-            this.lbl_IdSrc.TabIndex = 5;
-            this.lbl_IdSrc.Text = "ID src :";
+            this.txt_idDst.Text = "2";
             // 
             // lbl_portSerie
             // 
@@ -468,9 +445,7 @@
         private System.Windows.Forms.Button btn_connection;
         private System.Windows.Forms.Label lbl_portSerie;
         private System.Windows.Forms.Label lbl_IdDest;
-        private System.Windows.Forms.Label lbl_IdSrc;
         private System.Windows.Forms.TextBox txt_idDst;
-        private System.Windows.Forms.TextBox txt_idSrc;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btn_ActualiserListePortSerie;
         private System.Windows.Forms.GroupBox groupBox2;

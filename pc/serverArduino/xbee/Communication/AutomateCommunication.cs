@@ -8,7 +8,7 @@ using xbee.Communication.Events;
 
 namespace xbee.Communication
 {
-    class AutomateCommunication
+    class AutomateCommunication : IDisposable
     {
         #region #### Evenement ####
         //Le délégué pour stocker les références sur les méthodes
@@ -17,7 +17,12 @@ namespace xbee.Communication
         public event NewTrameArduinoReceivedEventHandler OnNewTrameArduinoReceived;
         #endregion 
 
-        private const byte _IdPc = 0xFE; // 254 : Id du PC
+        private byte _IdPc = 0xFE; // 254 : Id du PC
+        public byte IdPc
+        {
+            get{return _IdPc;}
+            set{_IdPc = value;}
+        }
 
         private SerialXbee _SerialXbee;
 
@@ -44,15 +49,25 @@ namespace xbee.Communication
             _ThreadMessagesRecus = new Thread(new ThreadStart(_ThreadCheckMessageRecus));
             _ThreadMessagesRecus.Start();
         }
+        public void Dispose()
+        {
+            _ThreadMessagesRecus.Abort();
+            _SerialXbee.Dispose();
+        }
 
         #region #### Gestion de le connexionSerial ####
-        public void OpenSerialPort()
+        public void OpenSerialPort(string portSerie)
         {
+            _SerialXbee.SetSerialName(portSerie);
             _SerialXbee.SetSerialConnexion(true);
         }
         public void CloseSerialPort()
         {
             _SerialXbee.SetSerialConnexion(false);
+        }
+        public bool IsSerialPortOpen()
+        {
+            return _SerialXbee.GetSerialState();
         }
         #endregion
 
@@ -99,11 +114,10 @@ namespace xbee.Communication
                     robot.stateBot = StateArduinoBot.STATE_ARDUINO_NONE;
                     robot.stateComm = StateArduinoComm.STATE_COMM_NONE;
 
-                    PCtoEMBMessageRespConn response = new PCtoEMBMessageRespConn();
-                    response.state = 0x01; // Valide 
+                    MessageProtocol reponse = MessageBuilder.createRespConnMessage(0x01);
 
                     // Ajout a la liste à envoyer 
-                    _SerialXbee.PushTrameToSend(_SerialXbee.EncodeTrame(_IdPc, trame.src, message));
+                    _SerialXbee.PushTrameToSend(_SerialXbee.EncodeTrame(_IdPc, trame.src, reponse));
                     return true; // Notification a l'application
                 }
                 else
@@ -197,6 +211,12 @@ namespace xbee.Communication
         #region #### Envoi de messages ####
         public void SendMessageToArduino(MessageProtocol mess, ArduinoBot bot)
         {
+            if (bot == null)
+            {
+                Logger.GlobalLogger.error("Robot inconu !");
+                return;
+            }
+
             if (bot.Connected)
             {
                 if (mess is PCtoEMBMessageAskSensor)

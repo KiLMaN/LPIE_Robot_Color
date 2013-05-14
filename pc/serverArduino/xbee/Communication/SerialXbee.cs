@@ -11,7 +11,7 @@ using xbee.Communication.Events;
 
 namespace xbee.Communication
 {
-    class SerialXbee
+    class SerialXbee : IDisposable
     {
         private Thread          _ThreadEnvoi;
         private const int       _ThreadDelay = 50;
@@ -26,8 +26,6 @@ namespace xbee.Communication
 
         public SerialXbee(string PortSerie,bool XbeeApiEnabled)
         {
-            
-
             // Creation des listes 
             _ListTramesRecues = new List<TrameProtocole>();
             _ListTramesToSend = new List<TrameProtocole>();
@@ -44,14 +42,31 @@ namespace xbee.Communication
             // Thread Pour l'envoi des messagess
             _ThreadEnvoi = new Thread(new ThreadStart(_ThreadEnvoiTrames));
             _ThreadEnvoi.Start();
-
-
+        }
+        ~SerialXbee()
+        {
+            StopThreadEnvoi();
+        }
+        public void Dispose()
+        {
+            StopThreadEnvoi();
+            _XbeeAPI.Dispose();
         }
 
+        #region #### Gestion Port Série ####
         public void SetSerialConnexion(bool state)
         {
             _XbeeAPI.SetSerialConnexion(state);
         }
+        public bool GetSerialState()
+        {
+            return _XbeeAPI.GetSerialState();
+        }
+        public void SetSerialName(string name)
+        {
+            _XbeeAPI.SetSerialName(name);
+        }
+        #endregion
 
         #region #### Evenement ####
         // Nouvelle trame 
@@ -61,7 +76,8 @@ namespace xbee.Communication
             int i = 0;
             // Parse les données
             while(i < datas.Length && !_TrameDecoder.parseIncomingData(datas[i]))
-            {}
+            { i++; }
+            // Condition si la trame est finie ou pas
             TrameProtocole TrameFinale = _TrameDecoder.getDecodedTrame();
 
             /* Ajout dans la liste des trames recus */
@@ -94,8 +110,13 @@ namespace xbee.Communication
             // Marquer la trame comme faite 
             // TODO la supprimer
             // Recupere la trame Numéroté num
-            TrameProtocole t = _ListTramesRecues.Find(TrameProtocole.TrameByNum(num));
+            /*TrameProtocole t = _ListTramesRecues.Find(TrameProtocole.TrameByNum(num));
+            t.state = 1; // La marque comme faite*/
+
+            int pos = _ListTramesRecues.FindIndex(TrameProtocole.TrameByNum(num));
+            TrameProtocole t = _ListTramesRecues[pos];
             t.state = 1; // La marque comme faite
+            _ListTramesRecues[pos] = t;
         }
         #endregion
 
@@ -103,7 +124,7 @@ namespace xbee.Communication
         /* Recuperrer une trame à envoyer */
         public TrameProtocole PopTrameToSend()
         {
-            return _ListTramesRecues.Find(TrameProtocole.TrameAFaire());
+            return _ListTramesToSend.Find(TrameProtocole.TrameAFaire());
         }
         /* Ajoute une trame à envoyer dans la liste */
         public void PushTrameToSend(TrameProtocole trame)
@@ -122,13 +143,19 @@ namespace xbee.Communication
             // Marquer la trame comme faite 
             // TODO la supprimer
             // Recupere la trame Numéroté num
-            TrameProtocole t = _ListTramesToSend.Find(TrameProtocole.TrameByNum(num));
+            int pos = _ListTramesToSend.FindIndex(TrameProtocole.TrameByNum(num));
+            TrameProtocole t = _ListTramesToSend[pos];           
             t.state = 1; // La marque comme faite
+            _ListTramesToSend[pos] = t;
         }
        
         #endregion
 
         #region #### Thread Envoi ####
+        public void StopThreadEnvoi()
+        {
+            _ThreadEnvoi.Abort();
+        }
         private void _ThreadEnvoiTrames()
         {
             while (true)
@@ -156,5 +183,7 @@ namespace xbee.Communication
             return _TrameEncoder.EncodeTrame(message, src,dst);
         }
         #endregion
+
+        
     }
 }

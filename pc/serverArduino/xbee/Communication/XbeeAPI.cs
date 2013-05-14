@@ -9,7 +9,7 @@ using utils;
 
 namespace xbee.Communication
 {
-    class XbeeAPI
+    class XbeeAPI : IDisposable
     {
         #region #### Evenement ####
         //Le délégué pour stocker les références sur les méthodes
@@ -67,7 +67,14 @@ namespace xbee.Communication
             else
                 _SerialManagment.Close();
         }
-
+        public bool GetSerialState()
+        {
+            return _SerialManagment.PortSerie.IsOpen;
+        }
+        public void SetSerialName(string name)
+        {
+            _SerialManagment.PortSerie.PortName = name;
+        }
         /* Appelé lorsque l'on recois des données */
         private void _SerialManagment_OnNewDataReceived(object sender, NewDataReceveidEventArgs args)
         {
@@ -83,7 +90,7 @@ namespace xbee.Communication
             {
                 if (args.DataCount < (11 + 9)) // Nombre Minimum d'octet d'une trame complette en mode APÏ
                     return;
-                while(parseReceivedApiData(_SerialManagment.getData(1)[0]))
+                while(!parseReceivedApiData(_SerialManagment.getData(1)[0]))
                 {}
                 dataFrame = _DataTrameApi;
                 //extractDataFromApiFrame(_SerialManagment.fetchData());
@@ -254,6 +261,12 @@ namespace xbee.Communication
                 }              
             }
             return isApiTrameCompleted();
+        }
+
+        public void Dispose()
+        {
+            SetSerialConnexion(false);
+            _SerialManagment.Dispose();
         }
     } 
 }
