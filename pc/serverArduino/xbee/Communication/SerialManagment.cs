@@ -58,6 +58,11 @@ namespace xbee.Communication
         {
             Close();
         }
+        public void Dispose()
+        {
+            Close();
+            //throw new NotImplementedException();
+        }
 
         #region #### Management ####
         /* Tente d'ouvrir un port Série*/
@@ -108,7 +113,7 @@ namespace xbee.Communication
             }
 
             // envoi de l'evenement à l'application
-            NewDataReceveidEventArgs e = new NewDataReceveidEventArgs(i);
+            NewDataReceveidEventArgs e = new NewDataReceveidEventArgs(_datasReceived.Count);
             OnNewDataReceived(this, e);
         }
         private void _PortSerie_ErrorReceived(object sender, SerialErrorReceivedEventArgs args)
@@ -167,10 +172,6 @@ namespace xbee.Communication
         }
         #endregion
 
-        public void Dispose()
-        {
-            Close();
-            //throw new NotImplementedException();
-        }
+
     }
 }
