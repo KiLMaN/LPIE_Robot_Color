@@ -26,11 +26,10 @@ namespace xbee.Communication
 
         private SerialXbee _SerialXbee;
 
-        private const int _ThreadDelay = 50;
+        private const int _ThreadMessageRecuDelay = 50; // Delais entre les verification de nouveau messages recus en millisecondes
         private Thread _ThreadMessagesRecus;
 
         private ArduinoManager _ArduinoManager;
-
         public ArduinoManager ArduinoManager
         {
             get { return _ArduinoManager; }
@@ -44,6 +43,7 @@ namespace xbee.Communication
             _ArduinoManager = ArduinoManager;
 
             _SerialXbee = new SerialXbee(portSerie, XbeeApiMode);
+            _SerialXbee.OnArduinoTimeout += new SerialXbee.NewArduinoTimeoutEventHandler(_OnArduinoTimeout);
 
             // Thread de gestion des messages 
             _ThreadMessagesRecus = new Thread(new ThreadStart(_ThreadCheckMessageRecus));
@@ -54,6 +54,14 @@ namespace xbee.Communication
             _ThreadMessagesRecus.Abort();
             _SerialXbee.Dispose();
         }
+
+        #region #### Evenements ####
+        public void _OnArduinoTimeout(object sender, NewArduinoTimeoutEventArgs e)
+        {
+            _ArduinoManager.disconnectArduinoBot(e.Id);
+        }
+        #endregion
+
 
         #region #### Gestion de le connexionSerial ####
         public void OpenSerialPort(string portSerie)
@@ -88,7 +96,7 @@ namespace xbee.Communication
                     }
                     _SerialXbee.TrameFaite(trame.num); // Marque la trame comme traitée
                 }
-                Thread.Sleep(_ThreadDelay);
+                Thread.Sleep(_ThreadMessageRecuDelay);
             }
         }
         /* Traite la trame et retourne si la trame doit remonter a la couche supérieure (true) */

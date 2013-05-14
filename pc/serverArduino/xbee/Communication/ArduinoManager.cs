@@ -31,5 +31,10 @@ namespace xbee.Communication
             _listArduino.Add(arduino);
         }
 
+        public void disconnectArduinoBot(byte id)
+        {
+            _listArduino.Find(ArduinoBot.ById(id)).Connected = false;
+        }
+
     }
 }

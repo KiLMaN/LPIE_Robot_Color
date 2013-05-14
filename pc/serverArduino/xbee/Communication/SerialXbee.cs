@@ -23,6 +23,17 @@ namespace xbee.Communication
         // Listes des messages en attente de traitement 
         private List<TrameProtocole> _ListTramesRecues;
         private List<TrameProtocole> _ListTramesToSend;
+        //private List<>
+
+        private const int _DelayRejeu = 10; // Temps d'attente en les rejeux
+        private const int _MaxRejeu = 3; // Nombre max de rejeux avant timeout (sans conter l'envoi initial)
+
+        #region #### Evenement ####
+        //Le délégué pour stocker les références sur les méthodes
+        public delegate void NewArduinoTimeoutEventHandler(object sender, NewArduinoTimeoutEventArgs e);
+        //L'évènement
+        public event NewArduinoTimeoutEventHandler OnArduinoTimeout;
+        #endregion
 
         public SerialXbee(string PortSerie,bool XbeeApiEnabled)
         {
@@ -126,10 +137,16 @@ namespace xbee.Communication
         {
             return _ListTramesToSend.Find(TrameProtocole.TrameAFaire());
         }
+        /* Recupere les trames qui ont été envoyés mais pas encore Ackités */
+        public List<TrameProtocole> FetchTrameSentNoAck()
+        {
+            return _ListTramesToSend.FindAll(TrameProtocole.TrameSentNoAck());
+        }
         /* Ajoute une trame à envoyer dans la liste */
         public void PushTrameToSend(TrameProtocole trame)
         {
             trame.state = 0;
+            trame.countRejeu = 0;
             _ListTramesToSend.Add(trame);
         }
         /* Des trames à envoyer disponnible ? */
@@ -146,9 +163,14 @@ namespace xbee.Communication
             int pos = _ListTramesToSend.FindIndex(TrameProtocole.TrameByNum(num));
             TrameProtocole t = _ListTramesToSend[pos];           
             t.state = 1; // La marque comme faite
+            t.time = DateTime.Now;
             _ListTramesToSend[pos] = t;
         }
-       
+        /* Supprimer la trame une fois ackité */
+        public void DeleteTrame(ushort num)
+        {
+            _ListTramesToSend.Remove(_ListTramesToSend.Find(TrameProtocole.TrameByNum(num)));
+        }
         #endregion
 
         #region #### Thread Envoi ####
@@ -160,11 +182,39 @@ namespace xbee.Communication
         {
             while (true)
             {
-                if (TrameToSendDisponible())
+                /* Envoi */
+                while (TrameToSendDisponible())
                 {
                     TrameProtocole trame = PopTrameToSend(); // recuperer une trame
                     _XbeeAPI.sendApiFrame(trame.dst, _TrameEncoder.MakeTrameBinaryWithEscape(trame));
                     TrameSend(trame.num); // La marquer comme faite
+                }
+
+                /* Rejeu */
+                List<TrameProtocole> TrameWaitingAck = FetchTrameSentNoAck();
+                for (int i = 0; i < TrameWaitingAck.Count; i++)
+                {
+                    if (( DateTime.Now - TrameWaitingAck[i].time) > TimeSpan.FromSeconds(_DelayRejeu))
+                    {
+                        if (TrameWaitingAck[i].countRejeu < _MaxRejeu)
+                        {
+                            TrameProtocole tmp = TrameWaitingAck[i];
+                            tmp.countRejeu++;
+                            tmp.state = 0; // Declenche l'envoi 
+
+                            TrameWaitingAck[i] = tmp;
+                        }
+                        else // Supprimer le message et deconnecter l'arduino
+                        {
+                            Logger.GlobalLogger.info("Pas de réponses de l'arduino, suppréssion !");
+
+                            DeleteTrame(TrameWaitingAck[i].num);
+                            // Envoi a la couche suppérieur pour passer l'arduino en non connecté
+                            NewArduinoTimeoutEventArgs e = new NewArduinoTimeoutEventArgs(TrameWaitingAck[i].dst);
+                            OnArduinoTimeout(this, e);
+                        }
+                        // Si on trop attendu : Renvoyer
+                    }
                 }
                 Thread.Sleep(_ThreadDelay);
             }

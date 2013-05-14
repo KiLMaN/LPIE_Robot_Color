@@ -17,8 +17,10 @@ namespace xbee.Communication
         public byte[] data;
         public ushort crc;
 
-        public int state;
+        public int state; // Etat de la trame (en attente : 0, envoyé : 1)
+        public DateTime time; // date de reception ou d'envoi 
         public const int BUFFER_DATA_IN = 50; // Nombre d'octets de data que le protocole peut envoyé en meme temps
+        public int countRejeu;
 
 
         // Override the ToString method:
@@ -49,7 +51,7 @@ namespace xbee.Communication
                 return o.state == 0;
             };
         }
-        public static Predicate<TrameProtocole> TrameFaite()
+        public static Predicate<TrameProtocole> TrameSentNoAck()
         {
             return delegate(TrameProtocole o)
             {
@@ -63,8 +65,6 @@ namespace xbee.Communication
                 return num == o.num;
             };
         }
-
-
     };
     /** Definition du protocole **/
     public enum ProtocoleCharEnum : byte
