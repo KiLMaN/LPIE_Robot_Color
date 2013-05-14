@@ -115,7 +115,7 @@ namespace video
                     if (diff > 20)
                     {
                         // Transformation de l'image reçu en un carré pour la reconnaissance
-                        QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(corners, 100, 100);
+                        QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(corners, 50, 50);
                         UnmanagedImage glyphImage = quadrilateralTransformation.Apply(imgNB);
                         // Filtre de contraste
                         OtsuThreshold otsuThresholdFilter = new OtsuThreshold();
@@ -123,19 +123,14 @@ namespace video
 
                         // Reconnaissance du Glyph
                         Glyph Gl = new Glyph(glyphImage);
-                        imgContour = glyphImage;
+                        
                         Gl.ReconnaissanceGlyph(corners,imgNB);
- 
-
+                        imgContour = Gl.getImage();
                         // Si le Glyph est valide
-                        if (Gl.getIdentifiant() > 0)
+                        //  if (Gl.getIdentifiant() > 0)
                         {
                             // Coloration des contours des zones détectées
-                            tmp.SetPixels(leftEdgePoints, Color.Red);
-                            tmp.SetPixels(rightEdgePoints, Color.Red);
-                            tmp.SetPixels(topEdgePoints, Color.Red);
-                            tmp.SetPixels(bottomEdgePoints, Color.Red);
-                            nbElement++;
+                            //tmp.SetPixels(a, Color.Red);
                         }
                     }
                 }
