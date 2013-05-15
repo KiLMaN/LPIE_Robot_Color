@@ -56,6 +56,7 @@
     <Compile Include="Communication\TrameDecoder.cs" />
     <Compile Include="Communication\TrameEncoder.cs" />
     <Compile Include="Communication\XbeeAPI.cs" />
+    <Compile Include="Events\ArduinoTimeoutEventArgs.cs" />
     <Compile Include="Events\NewArduinoTimeoutEventArgs.cs" />
     <Compile Include="Events\NewTrameArduinoReceivedEventArgs.cs" />
     <Compile Include="Events\NewDataReceivedEventArgs.cs" />

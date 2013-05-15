@@ -6,11 +6,6 @@ using utils;
 using xbee.Communication;
 using xbee.Communication.Events;
 
-
-
-
-
-
 namespace xbee
 {
 
@@ -37,6 +32,7 @@ namespace xbee
             _ArduinoManager = new ArduinoManager();
             _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager); // Initialise l'automate sur le port 0
             _AutomateComm.OnNewTrameArduinoReceived += new AutomateCommunication.NewTrameArduinoReceivedEventHandler(_OnNewTrameArduinoReceived);
+            _AutomateComm.OnArduinoTimeout +=new AutomateCommunication.ArduinoTimeoutEventHandler(_OnArduinoTimeout);
             
             /* Set de la source */
             _AutomateComm.IdPc = 0xFE;
@@ -46,6 +42,10 @@ namespace xbee
         void _OnNewTrameArduinoReceived(object sender, NewTrameArduinoReceveidEventArgs e)
         {
             Logger.GlobalLogger.debug("Nouvelle trame recus ! :" + e.Trame.ToString());
+        }
+        void _OnArduinoTimeout(object sender, ArduinoTimeoutEventArgs e)
+        {
+            Logger.GlobalLogger.debug("Arduino déconnecté ! :" + e.Bot.ToString());
         }
 
         void Form1_close(object e, FormClosingEventArgs arg)
@@ -84,7 +84,6 @@ namespace xbee
             } 
         }
         #endregion
-
 
         #region #### Port Série ####
         /** Recupere la liste des ports séries disponibles sur la machine et l'affiche dans la liste **/
@@ -162,7 +161,6 @@ namespace xbee
             getListePortSerie();
         }
 
-
         /* Bouton Mouvement UP / DOWN */
         private void btn_up_Click(object sender, EventArgs e)
         {
@@ -182,7 +180,6 @@ namespace xbee
                 );
             //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(false, 0x50, 0x50));
         }
-
 
         /* Bouton Mouvement LEFT /  RIGHT */
         private void btn_left_Click(object sender, EventArgs e)

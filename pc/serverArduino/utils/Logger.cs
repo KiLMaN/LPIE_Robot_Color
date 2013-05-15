@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Forms;
+using System.Drawing;
 using System.IO;
 using System.Diagnostics;
+using System.Threading;
 
 namespace utils
 {
@@ -32,34 +35,29 @@ namespace utils
             }
         }
 
-
-
-
-
+        #region #### RichTextBox ####
         public void attachToRTB(RichTextBox RTB)
         {
             m_RTB_list.Add(RTB);
-            RTB.AppendText("Logger Initialisé sur ce controle \n");
-
+            logToScreen("Logger Initialisé sur ce controle");
+            //RTB.AppendText("Logger Initialisé sur ce controle \n");
         }
-        private void logToScreen(string str)
+        #endregion
+
+        #region #### InterThread ####
+        delegate void d_writeToScreen(RichTextBox RTB, string str, Color couleur);
+        void writeToScreen(RichTextBox RTB, string str, Color couleur)
         {
-            // Faire le log to screen qui fonctionne interthread (invoke)
-            foreach (RichTextBox item in m_RTB_list)
-            {
-                try
-                {
-                    if (item != null)
-                        item.AppendText(str + '\n');
-                }
-                catch (Exception )
-                {
+            RTB.SelectionStart = RTB.TextLength;
+            RTB.SelectionLength = 0;
 
-                }
-            }
-
-
+            RTB.SelectionColor = couleur;
+            RTB.AppendText(str + '\n');
+            RTB.SelectionColor = RTB.ForeColor;     
         }
+        #endregion
+
+        #region #### Affichage dans un fichier ####
         private void logToFile(string Message)
         {
             try
@@ -73,14 +71,43 @@ namespace utils
             }
             catch (Exception) { }
         }
+        #endregion
 
-        private void log(string str)
+        #region #### Log Global ####
+        private void log(string str,Color couleur)
         {
-            logToScreen(str);
+            logToScreen(str,couleur);
             logToFile(str);
         }
+        private void logToScreen(string str, Color couleur)
+        {
+            //riteToScreen(str, couleur);
+            foreach (RichTextBox item in m_RTB_list)
+            {
+                try
+                {
+                    if (item != null)
+                    {
+                        if (item.InvokeRequired)
+                            item.Invoke(new d_writeToScreen(writeToScreen), new object[] { item, str, couleur });
+                        else
+                            writeToScreen(item, str, couleur);
+                    }
+                }
+                catch (Exception)
+                {
 
+                }
+            }
+            //System.Windows.Forms.invo();
+        }
+        private void logToScreen(string str)
+        {
+            logToScreen(str, Color.Black);
+        }
+        #endregion
 
+        #region #### Fonctions de logs automatique ####
         public void error(string message)
         {
             if (enableError)
@@ -90,7 +117,7 @@ namespace utils
                 var type = method.DeclaringType;
                 var name = method.Name;
 
-                log("[ERROR] [" + type.Name + "] [" + name + "] " + message);
+                log("[ERROR] [" + type.Name + "] [" + name + "] " + message, Color.Red);
             }
         }
         public void info(string message)
@@ -102,7 +129,7 @@ namespace utils
                 var type = method.DeclaringType;
                 var name = method.Name;
 
-                log("[INFO] [" + type.Name + "] [" + name + "] " + message);
+                log("[INFO] [" + type.Name + "] [" + name + "] " + message, Color.DarkBlue);
             }
         }
         public void debug(string message)
@@ -114,8 +141,9 @@ namespace utils
                 var type = method.DeclaringType;
                 var name = method.Name;
 
-                log("[DEBUG] [" + type.Name + "] [" + name + "] " + message);
+                log("[DEBUG] [" + type.Name + "] [" + name + "] " + message, Color.Gray);
             }
         }
+        #endregion
     }
 }
