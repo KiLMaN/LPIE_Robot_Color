@@ -90,7 +90,7 @@ namespace xbee.Communication
             {
                 if (args.DataCount < (11 + 9)) // Nombre Minimum d'octet d'une trame complette en mode APÏ
                     return;
-                while(!parseReceivedApiData(_SerialManagment.getData(1)[0]))
+                while(_SerialManagment.countData > 0 && !parseReceivedApiData(_SerialManagment.getData(1)[0]))
                 {}
                 dataFrame = _DataTrameApi;
                 //extractDataFromApiFrame(_SerialManagment.fetchData());

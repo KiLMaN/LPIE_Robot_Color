@@ -168,7 +168,7 @@ namespace xbee
         {
 
             _AutomateComm.SendMessageToArduino(
-                MessageBuilder.createMoveMessage(true, 0x50, 0x50), 
+                MessageBuilder.createMoveMessage(true, 0x50, 0x50),
                 _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
                 );
             ArduinoBot test = _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text));

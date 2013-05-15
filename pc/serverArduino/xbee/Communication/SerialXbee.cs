@@ -121,12 +121,6 @@ namespace xbee.Communication
         /* Marquer la trame comme traitée */
         public void TrameFaite(ushort num)
         {
-            // Marquer la trame comme faite 
-            // TODO la supprimer
-            // Recupere la trame Numéroté num
-            /*TrameProtocole t = _ListTramesRecues.Find(TrameProtocole.TrameByNum(num));
-            t.state = 1; // La marque comme faite*/
-
             int pos = _ListTramesRecues.FindIndex(TrameProtocole.TrameByNum(num));
             TrameProtocole t = _ListTramesRecues[pos];
             t.state = 1; // La marque comme faite
@@ -145,6 +139,11 @@ namespace xbee.Communication
         public List<TrameProtocole> FetchTrameSentNoAck()
         {
             return _ListTramesToSend.FindAll(TrameProtocole.TrameSentNoAck());
+        }
+        /* Recupere la liste des trames qui n'ont pas encore été envoyées */
+        public List<TrameProtocole> FetchTrameToSend()
+        {
+            return _ListTramesToSend.FindAll(TrameProtocole.TrameAFaire());
         }
         /* Ajoute une trame à envoyer dans la liste */
         public void PushTrameToSend(TrameProtocole trame)
@@ -166,9 +165,6 @@ namespace xbee.Communication
         /* Marquer la trame comme faite */
         public void TrameSend(ushort num)
         {
-            // Marquer la trame comme faite 
-            // TODO la supprimer
-            // Recupere la trame Numéroté num
             int pos = _ListTramesToSend.FindIndex(TrameProtocole.TrameByNum(num));
             TrameProtocole t = _ListTramesToSend[pos];           
             t.state = 1; // La marque comme faite
@@ -192,11 +188,15 @@ namespace xbee.Communication
             while (true)
             {
                 /* Envoi */
-                while (TrameToSendDisponible())
+                List<TrameProtocole> TrameWaitSend = FetchTrameToSend();
+                for (int i = 0; i < TrameWaitSend.Count; i++)
                 {
-                    TrameProtocole trame = PopTrameToSend(); // recuperer une trame
-                    _XbeeAPI.sendApiFrame(trame.dst, _TrameEncoder.MakeTrameBinaryWithEscape(trame));
-                    TrameSend(trame.num); // La marquer comme faite
+                    TrameProtocole trame = TrameWaitSend[i];
+                    
+                      //TrameProtocole trame = PopTrameToSend(); // recuperer une trame
+                        _XbeeAPI.sendApiFrame(trame.dst, _TrameEncoder.MakeTrameBinaryWithEscape(trame));
+                        TrameSend(trame.num); // La marquer comme faite
+                   
                 }
 
                 /* Rejeu */
@@ -244,6 +244,5 @@ namespace xbee.Communication
         }
         #endregion
 
-        
     }
 }
