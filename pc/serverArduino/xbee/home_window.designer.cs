@@ -31,7 +31,7 @@
             this.pictBoxEtatConn = new System.Windows.Forms.PictureBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.delayThreadSensor = new System.Windows.Forms.NumericUpDown();
             this.CB_EnableSensor = new System.Windows.Forms.CheckBox();
             this.proBar_UltraSon = new System.Windows.Forms.ProgressBar();
             this.proBar_IrSensor = new System.Windows.Forms.ProgressBar();
@@ -52,16 +52,16 @@
             this.liste_portSerie = new System.Windows.Forms.ComboBox();
             this.lbl_IdDest = new System.Windows.Forms.Label();
             this.btn_connection = new System.Windows.Forms.Button();
-            this.txt_idDst = new System.Windows.Forms.TextBox();
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.TabLogs = new System.Windows.Forms.TabPage();
             this.txtbox_debug_log = new System.Windows.Forms.RichTextBox();
+            this._listeArduinoConn = new System.Windows.Forms.ComboBox();
             this.Tabs.SuspendLayout();
             this.TabControle.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxEtatConn)).BeginInit();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.delayThreadSensor)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.TabLogs.SuspendLayout();
@@ -124,7 +124,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.numericUpDown1);
+            this.groupBox3.Controls.Add(this.delayThreadSensor);
             this.groupBox3.Controls.Add(this.CB_EnableSensor);
             this.groupBox3.Controls.Add(this.proBar_UltraSon);
             this.groupBox3.Controls.Add(this.proBar_IrSensor);
@@ -148,19 +148,19 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "ms";
             // 
-            // numericUpDown1
+            // delayThreadSensor
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(100, 17);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.delayThreadSensor.Location = new System.Drawing.Point(100, 17);
+            this.delayThreadSensor.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(72, 20);
-            this.numericUpDown1.TabIndex = 7;
-            this.numericUpDown1.Tag = "";
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.delayThreadSensor.Name = "delayThreadSensor";
+            this.delayThreadSensor.Size = new System.Drawing.Size(72, 20);
+            this.delayThreadSensor.TabIndex = 7;
+            this.delayThreadSensor.Tag = "";
+            this.delayThreadSensor.Value = new decimal(new int[] {
             200,
             0,
             0,
@@ -304,12 +304,12 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this._listeArduinoConn);
             this.groupBox1.Controls.Add(this.CB_Xbee);
             this.groupBox1.Controls.Add(this.btn_ActualiserListePortSerie);
             this.groupBox1.Controls.Add(this.liste_portSerie);
             this.groupBox1.Controls.Add(this.lbl_IdDest);
             this.groupBox1.Controls.Add(this.btn_connection);
-            this.groupBox1.Controls.Add(this.txt_idDst);
             this.groupBox1.Controls.Add(this.lbl_portSerie);
             this.groupBox1.Location = new System.Drawing.Point(8, 6);
             this.groupBox1.Name = "groupBox1";
@@ -373,14 +373,6 @@
             this.btn_connection.UseVisualStyleBackColor = true;
             this.btn_connection.Click += new System.EventHandler(this.btn_connection_Click);
             // 
-            // txt_idDst
-            // 
-            this.txt_idDst.Location = new System.Drawing.Point(66, 73);
-            this.txt_idDst.Name = "txt_idDst";
-            this.txt_idDst.Size = new System.Drawing.Size(100, 20);
-            this.txt_idDst.TabIndex = 4;
-            this.txt_idDst.Text = "2";
-            // 
             // lbl_portSerie
             // 
             this.lbl_portSerie.AutoSize = true;
@@ -411,6 +403,15 @@
             this.txtbox_debug_log.TabIndex = 0;
             this.txtbox_debug_log.Text = "";
             // 
+            // _listeArduinoConn
+            // 
+            this._listeArduinoConn.FormattingEnabled = true;
+            this._listeArduinoConn.Location = new System.Drawing.Point(172, 72);
+            this._listeArduinoConn.Name = "_listeArduinoConn";
+            this._listeArduinoConn.Size = new System.Drawing.Size(121, 21);
+            this._listeArduinoConn.TabIndex = 9;
+            this._listeArduinoConn.SelectedIndexChanged += new System.EventHandler(this._listeArduinoConn_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -426,7 +427,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxEtatConn)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.delayThreadSensor)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -445,7 +446,6 @@
         private System.Windows.Forms.Button btn_connection;
         private System.Windows.Forms.Label lbl_portSerie;
         private System.Windows.Forms.Label lbl_IdDest;
-        private System.Windows.Forms.TextBox txt_idDst;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btn_ActualiserListePortSerie;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -466,9 +466,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictBoxEtatConn;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown delayThreadSensor;
         private System.Windows.Forms.CheckBox CB_EnableSensor;
         private System.Windows.Forms.CheckBox CB_Xbee;
+        private System.Windows.Forms.ComboBox _listeArduinoConn;
     }
 }
 
