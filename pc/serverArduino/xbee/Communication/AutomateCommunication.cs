@@ -145,10 +145,29 @@ namespace xbee.Communication
 
                 if (robot.Connected) // Robot connecté
                 {
-                    // TODO : Se charger de la gestion des messages (envoi en cous, et envoi ackité)
                     robot.DateLastMessageReceived = DateTime.Now;
-                    if (robot.stateComm == StateArduinoComm.STATE_COMM_WAIT_ACK) // On attendais un ACK
-                        robot.stateComm = StateArduinoComm.STATE_COMM_NONE;
+
+                    EMBtoPCMessageGlobalAck msg = ((EMBtoPCMessageGlobalAck)message);
+                    if (msg.valueAck == 0x00) // !akitement negatif Message erreur
+                    {
+                        Logger.GlobalLogger.error("Ackitement Negatif !");
+                    }
+                    else if (msg.valueAck == 0x01)
+                    {
+                        if (robot.stateComm == StateArduinoComm.STATE_COMM_WAIT_ACK) // On attendais un ACK
+                            robot.stateComm = StateArduinoComm.STATE_COMM_NONE;
+
+                        _SerialXbee.DeleteTrame(msg.idTrame);
+                    }
+                    else if (msg.valueAck == 0x02)
+                    {
+                        Logger.GlobalLogger.error("CRC corrompu, on r'envois !");
+                    }
+                    else
+                    {
+                        Logger.GlobalLogger.error("Ackitement inconnu !");
+                    }
+                    
 
                     return false;
                 }
@@ -255,7 +274,9 @@ namespace xbee.Communication
                     Logger.GlobalLogger.error("Envoi d'un message non connu !");
                 }
 
-                _SerialXbee.PushTrameToSend(_SerialXbee.EncodeTrame(_IdPc, bot.id, mess));
+                TrameProtocole trame = _SerialXbee.EncodeTrame(_IdPc, bot.id, mess);
+                trame.num = bot.CountSend++;
+                _SerialXbee.PushTrameToSend(trame);
             }
             else
             {

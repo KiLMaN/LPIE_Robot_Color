@@ -22,6 +22,10 @@ namespace xbee.Communication
         private int _protocolState = 0;
 
         private bool _bTrameCompleted = false;
+        public bool bIsCompleted
+        {
+            get { return _bTrameCompleted; }
+        }
         /* Stockage de la trame temporairement */
         private TrameProtocole _trameReceived;
 
@@ -178,9 +182,15 @@ namespace xbee.Communication
         public TrameProtocole getDecodedTrame()
         {
             if (_bTrameCompleted)
-                return _trameReceived;
+            {
+                TrameProtocole Trame = _trameReceived;
+                _protocolState = 0;
+                _bTrameCompleted = false;
+                _trameReceived = new TrameProtocole();
+                return Trame;
+            }
             else
-                throw new NotSupportedException("Trame pas compete !");
+                throw new NotSupportedException("Trame pas complete !");
         }
 
         /* decode une trame en Message */
@@ -192,8 +202,9 @@ namespace xbee.Communication
                 case (byte)EMBtoPCmessHeads.ACK:
                     message = new EMBtoPCMessageGlobalAck();
                     message.headerMess = trame.data[0];
-                    ((EMBtoPCMessageGlobalAck)message).idCommand = trame.data[1];
-                    ((EMBtoPCMessageGlobalAck)message).valueAck = trame.data[2];
+                    ((EMBtoPCMessageGlobalAck)message).idTrame = (ushort)(trame.data[1] << 8);
+                    ((EMBtoPCMessageGlobalAck)message).idTrame += trame.data[2];
+                    ((EMBtoPCMessageGlobalAck)message).valueAck = trame.data[3];
                     break;
                 case (byte)EMBtoPCmessHeads.ASK_CONN:
                     message = new EMBtoPCMessageAskConn();

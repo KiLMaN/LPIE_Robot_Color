@@ -245,19 +245,20 @@ namespace xbee.Communication
         /* Global Ack */
         public class EMBtoPCMessageGlobalAck : EMBtoPCmess
         {
-            public byte idCommand = 0;
+            public ushort idTrame = 0;
             public byte valueAck = 0;
             public override byte[] getBytes()
             {
-                byte[] data = { this.idCommand, this.valueAck };
+                byte[] data = { (byte)(this.idTrame >> 8), (byte)(this.idTrame | 0xFF), this.valueAck };
                 return base.getBytes().Concat(data).ToArray();
             }
             public static explicit operator EMBtoPCMessageGlobalAck(byte[] data) // cast Explicite
             {
                 EMBtoPCMessageGlobalAck ret = new EMBtoPCMessageGlobalAck();
                 ret.headerMess = data[0];
-                ret.idCommand = data[1];
-                ret.valueAck = data[2];
+                ret.idTrame = (ushort)(data[1] << 8);
+                ret.idTrame += (ushort)data[2];
+                ret.valueAck = data[3];
                 return ret;
             }
         }
