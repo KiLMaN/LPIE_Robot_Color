@@ -99,6 +99,7 @@ namespace xbee.Communication
             // envoi de l'evenement à la couche suppérieure de l'application
             NewTrameReceivedEventArgs e = new NewTrameReceivedEventArgs(dataFrame.ToArray());
             OnNewTrameReceived(this, e);
+            _DataTrameApi.Clear();
             
         }
 

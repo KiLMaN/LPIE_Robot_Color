@@ -89,6 +89,9 @@ namespace xbee.Communication
             while(i < datas.Length && !_TrameDecoder.parseIncomingData(datas[i]))
             { i++; }
             // Condition si la trame est finie ou pas
+            if (!_TrameDecoder.bIsCompleted) // Trame non complette on attends
+                return;
+           
             TrameProtocole TrameFinale = _TrameDecoder.getDecodedTrame();
 
             /* Ajout dans la liste des trames recus */
@@ -128,6 +131,7 @@ namespace xbee.Communication
             TrameProtocole t = _ListTramesRecues[pos];
             t.state = 1; // La marque comme faite
             _ListTramesRecues[pos] = t;
+            _ListTramesRecues.Remove(_ListTramesRecues.Find(TrameProtocole.TrameByNum(num)));
         }
         #endregion
 
@@ -153,6 +157,11 @@ namespace xbee.Communication
         public bool TrameToSendDisponible()
         {
             return _ListTramesToSend.Exists(TrameProtocole.TrameAFaire());
+        }
+        public void updateTrame(TrameProtocole trame)
+        {
+            int pos = _ListTramesToSend.FindIndex(TrameProtocole.TrameByNum(trame.num));
+            _ListTramesToSend[pos] = trame;
         }
         /* Marquer la trame comme faite */
         public void TrameSend(ushort num)
@@ -203,10 +212,11 @@ namespace xbee.Communication
                             tmp.state = 0; // Declenche l'envoi 
 
                             TrameWaitingAck[i] = tmp;
+                            updateTrame(TrameWaitingAck[i]);
                         }
                         else // Supprimer le message et deconnecter l'arduino
                         {
-                            Logger.GlobalLogger.info("Pas de réponses de l'arduino, suppréssion !");
+                            Logger.GlobalLogger.info("Pas de réponses de l'arduino, suppression !");
 
                             DeleteTrame(TrameWaitingAck[i].num);
                             // Envoi a la couche suppérieur pour passer l'arduino en non connecté
