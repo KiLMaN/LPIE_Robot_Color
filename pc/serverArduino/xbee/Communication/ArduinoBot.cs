@@ -33,6 +33,12 @@ namespace xbee.Communication
             };
         }
 
+        private ushort _CountSend = 0;
+        public ushort CountSend
+        {
+            set { _CountSend = value; }
+            get { return _CountSend; }
+        }
         private byte _id;
         private bool _connected;
         private DateTime _dateLastMessageReceived;

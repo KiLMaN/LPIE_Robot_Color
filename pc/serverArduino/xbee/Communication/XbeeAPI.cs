@@ -78,7 +78,7 @@ namespace xbee.Communication
         /* Appelé lorsque l'on recois des données */
         private void _SerialManagment_OnNewDataReceived(object sender, NewDataReceveidEventArgs args)
         {
-            Logger.GlobalLogger.debug("Données Reçus");
+            Logger.GlobalLogger.debug("Données Reçus",0);
             List<byte> dataFrame = new List<byte>();
             if (!_bApiEnabled)
             {
@@ -90,7 +90,7 @@ namespace xbee.Communication
             {
                 if (args.DataCount < (11 + 9)) // Nombre Minimum d'octet d'une trame complette en mode APÏ
                     return;
-                while(!parseReceivedApiData(_SerialManagment.getData(1)[0]))
+                while(_SerialManagment.countData > 0 && !parseReceivedApiData(_SerialManagment.getData(1)[0]))
                 {}
                 dataFrame = _DataTrameApi;
                 //extractDataFromApiFrame(_SerialManagment.fetchData());
@@ -99,6 +99,7 @@ namespace xbee.Communication
             // envoi de l'evenement à la couche suppérieure de l'application
             NewTrameReceivedEventArgs e = new NewTrameReceivedEventArgs(dataFrame.ToArray());
             OnNewTrameReceived(this, e);
+            _DataTrameApi.Clear();
             
         }
 
@@ -198,6 +199,7 @@ namespace xbee.Communication
             {
                 _bApiTrameStarted = true;
                 _bApiTrameCompleted = false;
+                _DataChecksumApi.Clear();
                 _ApiState = 1;
             }
             else
@@ -246,7 +248,7 @@ namespace xbee.Communication
                         break;
                     case 9: // Checksum
                         if (computeChecksumXbeeAPI(_DataChecksumApi.ToArray()) == data) // Verification CheckSum
-                            Logger.GlobalLogger.error("CheckSum Api OK !");
+                            Logger.GlobalLogger.debug("CheckSum Api OK !",1);
                    
                         else
                             Logger.GlobalLogger.error("CheckSum Api NOK !");

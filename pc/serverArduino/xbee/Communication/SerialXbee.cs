@@ -89,6 +89,9 @@ namespace xbee.Communication
             while(i < datas.Length && !_TrameDecoder.parseIncomingData(datas[i]))
             { i++; }
             // Condition si la trame est finie ou pas
+            if (!_TrameDecoder.bIsCompleted) // Trame non complette on attends
+                return;
+           
             TrameProtocole TrameFinale = _TrameDecoder.getDecodedTrame();
 
             /* Ajout dans la liste des trames recus */
@@ -118,16 +121,11 @@ namespace xbee.Communication
         /* Marquer la trame comme traitée */
         public void TrameFaite(ushort num)
         {
-            // Marquer la trame comme faite 
-            // TODO la supprimer
-            // Recupere la trame Numéroté num
-            /*TrameProtocole t = _ListTramesRecues.Find(TrameProtocole.TrameByNum(num));
-            t.state = 1; // La marque comme faite*/
-
             int pos = _ListTramesRecues.FindIndex(TrameProtocole.TrameByNum(num));
             TrameProtocole t = _ListTramesRecues[pos];
             t.state = 1; // La marque comme faite
             _ListTramesRecues[pos] = t;
+            _ListTramesRecues.Remove(_ListTramesRecues.Find(TrameProtocole.TrameByNum(num)));
         }
         #endregion
 
@@ -142,6 +140,11 @@ namespace xbee.Communication
         {
             return _ListTramesToSend.FindAll(TrameProtocole.TrameSentNoAck());
         }
+        /* Recupere la liste des trames qui n'ont pas encore été envoyées */
+        public List<TrameProtocole> FetchTrameToSend()
+        {
+            return _ListTramesToSend.FindAll(TrameProtocole.TrameAFaire());
+        }
         /* Ajoute une trame à envoyer dans la liste */
         public void PushTrameToSend(TrameProtocole trame)
         {
@@ -154,12 +157,14 @@ namespace xbee.Communication
         {
             return _ListTramesToSend.Exists(TrameProtocole.TrameAFaire());
         }
+        public void updateTrame(TrameProtocole trame)
+        {
+            int pos = _ListTramesToSend.FindIndex(TrameProtocole.TrameByNum(trame.num));
+            _ListTramesToSend[pos] = trame;
+        }
         /* Marquer la trame comme faite */
         public void TrameSend(ushort num)
         {
-            // Marquer la trame comme faite 
-            // TODO la supprimer
-            // Recupere la trame Numéroté num
             int pos = _ListTramesToSend.FindIndex(TrameProtocole.TrameByNum(num));
             TrameProtocole t = _ListTramesToSend[pos];           
             t.state = 1; // La marque comme faite
@@ -183,11 +188,15 @@ namespace xbee.Communication
             while (true)
             {
                 /* Envoi */
-                while (TrameToSendDisponible())
+                List<TrameProtocole> TrameWaitSend = FetchTrameToSend();
+                for (int i = 0; i < TrameWaitSend.Count; i++)
                 {
-                    TrameProtocole trame = PopTrameToSend(); // recuperer une trame
-                    _XbeeAPI.sendApiFrame(trame.dst, _TrameEncoder.MakeTrameBinaryWithEscape(trame));
-                    TrameSend(trame.num); // La marquer comme faite
+                    TrameProtocole trame = TrameWaitSend[i];
+                    
+                      //TrameProtocole trame = PopTrameToSend(); // recuperer une trame
+                        _XbeeAPI.sendApiFrame(trame.dst, _TrameEncoder.MakeTrameBinaryWithEscape(trame));
+                        TrameSend(trame.num); // La marquer comme faite
+                   
                 }
 
                 /* Rejeu */
@@ -203,11 +212,20 @@ namespace xbee.Communication
                             tmp.state = 0; // Declenche l'envoi 
 
                             TrameWaitingAck[i] = tmp;
+                            updateTrame(TrameWaitingAck[i]);
                         }
                         else // Supprimer le message et deconnecter l'arduino
                         {
-                            Logger.GlobalLogger.info("Pas de réponses de l'arduino, suppréssion !");
+                            Logger.GlobalLogger.info("Pas de réponses de l'arduino, suppression !");
 
+                            List<TrameProtocole> TrameArduino = FetchTrameToSend();
+                            for (int j = 0; j < TrameArduino.Count; j++)
+                            {
+                                // Suppression des trames en attentes
+                                if(TrameArduino[j].dst == TrameWaitingAck[i].dst)
+                                    DeleteTrame(TrameArduino[j].num);
+                            }
+                  
                             DeleteTrame(TrameWaitingAck[i].num);
                             // Envoi a la couche suppérieur pour passer l'arduino en non connecté
                             NewArduinoTimeoutEventArgs e = new NewArduinoTimeoutEventArgs(TrameWaitingAck[i].dst);
@@ -234,6 +252,5 @@ namespace xbee.Communication
         }
         #endregion
 
-        
     }
 }

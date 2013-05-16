@@ -5,11 +5,7 @@ using System.Windows.Forms;
 using utils;
 using xbee.Communication;
 using xbee.Communication.Events;
-
-
-
-
-
+using System.Threading;
 
 namespace xbee
 {
@@ -22,13 +18,16 @@ namespace xbee
 
         private ArduinoManager _ArduinoManager;
         private AutomateCommunication _AutomateComm;
-        
+
+        private Thread _ThreadSendSensorAsk;
+        private byte _CurrentArduinoId = 0;
 
         public Form1()
         {
              
             InitializeComponent();
             g_Logger.attachToRTB(txtbox_debug_log);
+            g_Logger.levelDebug = 1; // Enlever le gros debug
             Logger.GlobalLogger = g_Logger; // Met a la disposition le logger
             getListePortSerie();
 
@@ -37,6 +36,7 @@ namespace xbee
             _ArduinoManager = new ArduinoManager();
             _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager); // Initialise l'automate sur le port 0
             _AutomateComm.OnNewTrameArduinoReceived += new AutomateCommunication.NewTrameArduinoReceivedEventHandler(_OnNewTrameArduinoReceived);
+            _AutomateComm.OnArduinoTimeout +=new AutomateCommunication.ArduinoTimeoutEventHandler(_OnArduinoTimeout);
             
             /* Set de la source */
             _AutomateComm.IdPc = 0xFE;
@@ -45,11 +45,40 @@ namespace xbee
 
         void _OnNewTrameArduinoReceived(object sender, NewTrameArduinoReceveidEventArgs e)
         {
-            Logger.GlobalLogger.debug("Nouvelle trame recus ! :" + e.Trame.ToString());
+            Logger.GlobalLogger.debug("Nouvelle trame recus ! :" + e.Message.ToString());
+            if (e.Source.Connected)
+            {
+                if (!_listeArduinoConn.Items.Contains(e.Source.id))
+                    Invoke(new d_addBotToList(addBotToList), "" + e.Source.id);
+                    //_listeArduinoConn.Items.Add(e.Source.id);
+            }
+
+            if (e.Source.id == _CurrentArduinoId)
+            {
+                Invoke(new d_updateStateRobot(updateStateRobot), e.Source.Connected);
+            }
+
+            if (e.Message.headerMess == (byte)EMBtoPCmessHeads.RESP_SENSOR)
+            {
+                EMBtoPCMessageRespSensor mess = ((EMBtoPCMessageRespSensor)e.Message);
+                // Met a jour la valeur des capteur sur L'IHM
+                Invoke(new d_updateStateCapteur(updateStateCapteur), new object[]{mess.idSensor,mess.valueSensor });
+            }
+        }
+        void _OnArduinoTimeout(object sender, ArduinoTimeoutEventArgs e)
+        {
+            Logger.GlobalLogger.debug("Arduino déconnecté ! :" + e.Bot.ToString(),1);
+            if (e.Bot.id == _CurrentArduinoId)
+            {
+                Invoke(new d_updateStateRobot(updateStateRobot), e.Bot.Connected);
+            }
         }
 
         void Form1_close(object e, FormClosingEventArgs arg)
         {
+            if(_ThreadSendSensorAsk != null)
+                _ThreadSendSensorAsk.Abort();
+
             _AutomateComm.Dispose();
             _ArduinoManager = null;
             //g_Serial.StopListenSerial();
@@ -57,15 +86,9 @@ namespace xbee
 
         #region #### Delegate ####
         delegate void d_updateStateRobot(Boolean state);
-        void updateStateRobot(Boolean state)
-        {
-            if(state == true)
-                pictBoxEtatConn.BackColor = Color.Green; 
-            else
-                pictBoxEtatConn.BackColor = Color.Red; 
-        }
-
         delegate void d_updateStateCapteur(byte idCapteur, int valCapteur);
+        delegate void d_addBotToList(string txt);
+
         void updateStateCapteur(byte idCapteur, int valCapteur)
         {
             if (idCapteur == (byte)IDSensorsArduino.IR) // InfraRouge
@@ -83,8 +106,18 @@ namespace xbee
                 Logger.GlobalLogger.error("idCapteur  :" + idCapteur);
             } 
         }
+        void updateStateRobot(Boolean state)
+        {
+            if(state == true)
+                pictBoxEtatConn.BackColor = Color.Green; 
+            else
+                pictBoxEtatConn.BackColor = Color.Red; 
+        }
+        void addBotToList(string txt)
+        {
+            _listeArduinoConn.Items.Add(txt);
+        }
         #endregion
-
 
         #region #### Port Série ####
         /** Recupere la liste des ports séries disponibles sur la machine et l'affiche dans la liste **/
@@ -123,7 +156,7 @@ namespace xbee
             // Déjà ouvert //
             if (_AutomateComm.IsSerialPortOpen())
             {
-                Logger.GlobalLogger.debug("Fermeture du port serie !");
+                Logger.GlobalLogger.debug("Fermeture du port serie !",1);
                 _AutomateComm.CloseSerialPort();
                 btn_connection.Text = "Connection";
                 liste_portSerie.Enabled = true;
@@ -133,7 +166,7 @@ namespace xbee
             {
                 try
                 {
-                    Logger.GlobalLogger.debug("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
+                    Logger.GlobalLogger.debug("Ouverture du port : " + (string)liste_portSerie.SelectedItem,1);
                     _AutomateComm.OpenSerialPort((string)liste_portSerie.SelectedItem);
                     btn_connection.Text = "Fermeture";
                     liste_portSerie.Enabled = false;
@@ -162,34 +195,32 @@ namespace xbee
             getListePortSerie();
         }
 
-
         /* Bouton Mouvement UP / DOWN */
         private void btn_up_Click(object sender, EventArgs e)
         {
 
             _AutomateComm.SendMessageToArduino(
-                MessageBuilder.createMoveMessage(true, 0x50, 0x50), 
-                _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+                MessageBuilder.createMoveMessage(true, 0x50, 0x50),
+                _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                 );
-            ArduinoBot test = _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text));
+            ArduinoBot test = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
             //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(true,0x50,0x50));
         }
         private void btn_down_Click(object sender, EventArgs e)
         {
             _AutomateComm.SendMessageToArduino(
                 MessageBuilder.createMoveMessage(false, 0x50, 0x50),
-                _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+                _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                 );
             //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(false, 0x50, 0x50));
         }
-
 
         /* Bouton Mouvement LEFT /  RIGHT */
         private void btn_left_Click(object sender, EventArgs e)
         {
             _AutomateComm.SendMessageToArduino(
                MessageBuilder.createTurnMessage(true, 0x5A),
-               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
             //g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(true, 0x5A));
         }
@@ -197,7 +228,7 @@ namespace xbee
         {
             _AutomateComm.SendMessageToArduino(
                MessageBuilder.createTurnMessage(false, 0x5A),
-               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
             //g_Serial.addMessageToSend(g_MessageBuilder.createTurnMessage(false, 0x5A));
         }
@@ -207,7 +238,7 @@ namespace xbee
         {
             _AutomateComm.SendMessageToArduino(
                MessageBuilder.createCloseClawMessage(),
-               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
             //g_Serial.addMessageToSend(g_MessageBuilder.createCloseClawMessage());
         }
@@ -215,22 +246,56 @@ namespace xbee
         {
             _AutomateComm.SendMessageToArduino(
                MessageBuilder.createOpenClawMessage(),
-               _ArduinoManager.getArduinoBotById(Convert.ToByte(txt_idDst.Text))
+               _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
            //g_Serial.addMessageToSend(g_MessageBuilder.createOpenClawMessage());
         }
 
         #endregion
 
+        #region #### Thread Verification Capteurs ####
         private void CB_EnableSensor_CheckedChanged(object sender, EventArgs e)
         {
-
+            if(((CheckBox)sender).Checked)
+            //if (_ThreadSendSensorAsk == null)
+            {
+                _ThreadSendSensorAsk = new Thread(new ThreadStart(_ThreadCheckSensorAsk));
+                _ThreadSendSensorAsk.Start();
+            }
+            else
+            {
+                _ThreadSendSensorAsk.Abort();
+                _ThreadSendSensorAsk = null;
+            }
         }
+        void _ThreadCheckSensorAsk()
+        {
+            while (true)
+            {
+                ArduinoBot robot = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
+                if (robot != null)
+                {
+                    // TODO : Elever ?
+                    //if (robot.stateComm == StateArduinoComm.STATE_COMM_NONE)
+                    if(robot.Connected)
+                    {
+                        MessageProtocol mess = MessageBuilder.createAskSensorMessage((byte)IDSensorsArduino.IR);
+                        _AutomateComm.SendMessageToArduino(mess, robot);
 
+                        mess = MessageBuilder.createAskSensorMessage((byte)IDSensorsArduino.UltraSon);
+                        _AutomateComm.SendMessageToArduino(mess, robot);
+                    }
+                }
 
-       
+                Thread.Sleep((int)delayThreadSensor.Value);
+            }
+        }
+        #endregion
 
-
-
+        private void _listeArduinoConn_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _CurrentArduinoId = Convert.ToByte(_listeArduinoConn.SelectedItem);
+            Invoke(new d_updateStateRobot(updateStateRobot),_ArduinoManager.getArduinoBotById(_CurrentArduinoId).Connected);
+        }
     }
 }
