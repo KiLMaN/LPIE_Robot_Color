@@ -11,13 +11,14 @@ namespace video
 {
     class Glyph
     {
-        int glyphSize = 5;
+        int glyphSize;
         int Idenfitifant;
         UnmanagedImage imgGlyph;
         
-        public Glyph(UnmanagedImage glyphImage)
+        public Glyph(UnmanagedImage glyphImage, int Size )
         {
             imgGlyph = glyphImage;
+            glyphSize = Size;
             Idenfitifant = 0;
         }
         public void setImage(UnmanagedImage img)
@@ -34,42 +35,29 @@ namespace video
         }
         public void ReconnaissanceGlyph(List<IntPoint> corners, UnmanagedImage img)
         {
-            Recognize(corners[0],img);
+            lectureGlyph(Recognize(corners[0], img));
         }
 
-        public void Recognize(IntPoint corners, UnmanagedImage img)
+        public Boolean[,] Recognize(IntPoint corners, UnmanagedImage img)
         {
-            Logger.GlobalLogger.debug("Nouvelle analyse");
-            Logger.GlobalLogger.debug("");
-            Logger.GlobalLogger.debug("");
-            List<IntPoint> LstPoint = new List<IntPoint>();
-            string chaine,chainebis;
+            /* Retourne une matrice représentant le glyph*/
+
             int moyenne;
-            IntPoint ip1 = new IntPoint();
-            IntPoint ip2 = new IntPoint();
-            IntPoint ip3 = new IntPoint();
+            IntPoint ip = new IntPoint();
             int marge = (imgGlyph.Width * 5) / 100;
 
             // Calucul de la taille des cellules
             int cellWidth = (imgGlyph.Width - marge) / glyphSize;
             int cellHeight = (imgGlyph.Height - marge) / glyphSize;
             // Définition d'une matrice contenant les valeurs de l'image
-            int[,] cellIntensity = new int[glyphSize, glyphSize];
+            Boolean[,] cellIntensity = new Boolean[glyphSize, glyphSize];
 
 
             // Découpage du glyph en zone
             for (int i = 0; i < glyphSize; i++)
             {
-                ip1.X = cellWidth * i + marge;
-                ip2.X = cellWidth * (i + 1) + marge;
                 for (int j = 0; j < glyphSize; j++)
                 {
-                    ip1.Y = cellHeight * j + marge;
-                    ip2.Y = cellHeight * (j + 1) + marge;
-
-                    LstPoint.Add(ip1);
-                    LstPoint.Add(ip2);
-
                     moyenne = 0;
                     int count = 0;
 
@@ -77,36 +65,96 @@ namespace video
                     {
                         for (int y = (marge + cellHeight * j + 1); y < (marge + cellHeight * (1 + j) - 2); y += 2)
                         {
-                            ip3.X = x;
-                            ip3.Y = y;
+                            ip.X = x;
+                            ip.Y = y;
                             count++;
                     
-                            moyenne += imgGlyph.GetPixel(ip3).R;
-                            if (i == 2 && j == 3)
-                                imgGlyph.SetPixel(ip3, Color.Red);
+                            moyenne += imgGlyph.GetPixel(ip).R;
+                            //imgGlyph.SetPixel(ip3, Color.Red);
                         }
                     }
-                    cellIntensity[i, j] = moyenne;
+                    cellIntensity[i, j] = ( moyenne/count > 127 ) ? false : true;
                 }
             }
 
             // Debug
-            {
+            /*{
+                string chaine;
+                Logger.GlobalLogger.debug("");
+                Logger.GlobalLogger.debug("Nouvelle analyse");
+                Logger.GlobalLogger.debug("");
                 for (int gi = 0; gi < glyphSize; gi++)
                 {
                     chaine = "";
-                    chainebis = "";
                     for (int gj = 0; gj < glyphSize; gj++)
                     {
-                        chainebis += cellIntensity[gi, gj] + "\t";
-                        cellIntensity[gi, gj] = (cellIntensity[gi, gj] > 127 ) ? 0 : 1;
                         chaine += cellIntensity[gi, gj] + "\t";
                     }
-                    //Logger.GlobalLogger.debug(chainebis);
                     Logger.GlobalLogger.debug(chaine);
                 }
 
             }
+            */
+            return cellIntensity;
+        }
+
+        public Boolean[,] rotationMatrice(Boolean[,] matrice)
+        {
+            Boolean[,] matriceTmp = new Boolean[glyphSize, glyphSize];
+            for (int i = 0; i < glyphSize; i++)
+            {
+                for (int j = 0; j < glyphSize; j++)
+                {
+                    matriceTmp[glyphSize - j - 1, i] = matrice[i, j];
+                }
+            }
+            return matriceTmp;
+        }
+        public int lectureGlyph(Boolean[,] matrice)
+        {
+            /* Vérifie la validitée du glyph et lecture */
+            int i;
+            // Verification du contour exterieure
+            for (i = 0; i < glyphSize; i++)
+            {
+                if (matrice[i, 0] == false || matrice[i, (glyphSize - 1)] == false || matrice[0, i] == false || matrice[(glyphSize - 1), i] == false)
+                    return 0;
+            }
+
+
+            Boolean Erreur = false;
+            // Vérification si le glyph est présent dans la bibliothéque
+            for (i = 0; i < 4; i++)
+            {
+                
+                
+                for (int j = 0; j < BibliotequeGlyph.Biblioteque.Count; j++)
+                {
+                    Erreur = false;
+                    Boolean[,] me = BibliotequeGlyph.Biblioteque[j].matrice;
+                    for (int x = 1; x < glyphSize - 1 && !Erreur; x++)
+                    {
+                        for (int y = 1; y < glyphSize - 1 && !Erreur; y++)
+                        {
+                            if (BibliotequeGlyph.Biblioteque[j].matrice[x - 1, y - 1] != matrice[x, y])
+                            {
+                                Erreur = true;
+                            }
+
+                        }
+                    }
+                    if (Erreur == false) // Glyph trouvé
+                    {
+                        Idenfitifant = BibliotequeGlyph.Biblioteque[j].Identifiant;
+                        return Idenfitifant;
+                    }
+                    if (i < 3)
+                        matrice = rotationMatrice(matrice);
+                }
+            }
+
+           
+            return 0;
         }
     }
 }
