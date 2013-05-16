@@ -6,7 +6,7 @@ using xbee.Communication;
 
 namespace xbee.Communication.Events
 {
-    class NewDataReceveidEventArgs : EventArgs
+    public class NewDataReceveidEventArgs : EventArgs
     {
         private int _count;
 

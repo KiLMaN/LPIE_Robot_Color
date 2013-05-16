@@ -5,7 +5,7 @@ using System.Text;
 
 namespace xbee.Communication
 {
-    class ArduinoManager
+    public class ArduinoManager
     {
         // Liste contenant les arduinos
         private List<ArduinoBot> _listArduino;

@@ -6,7 +6,7 @@ using xbee.Communication;
 
 namespace xbee.Communication.Events
 {
-    class NewArduinoTimeoutEventArgs : EventArgs
+    public class NewArduinoTimeoutEventArgs : EventArgs
     {
         private byte _id;
 

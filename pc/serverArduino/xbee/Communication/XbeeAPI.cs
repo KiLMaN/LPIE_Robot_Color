@@ -39,6 +39,7 @@ namespace xbee.Communication
         const byte XBEE_FRAME_ID             = 0x00; // Compteur pour les retours 
 
         #endregion
+
         /* Décodeur Api */
         private bool _bApiTrameCompleted = false; // La trame est complette
         private bool _bApiTrameStarted = false; // On à commencer à traiter la trame 
@@ -50,7 +51,11 @@ namespace xbee.Communication
         
 
         private bool _bApiEnabled = true; // Mode API Activé 
-
+        public bool ApiEnabled
+        {
+            set { _bApiEnabled = value; }
+            get { return _bApiEnabled; }
+        }
         SerialManagment _SerialManagment; // Interface Série
 
         public XbeeAPI(string SerialName,bool ApiMode)

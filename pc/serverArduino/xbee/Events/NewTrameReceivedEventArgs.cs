@@ -6,7 +6,7 @@ using xbee.Communication;
 
 namespace xbee.Communication.Events
 {
-    class NewTrameReceivedEventArgs : EventArgs
+    public class NewTrameReceivedEventArgs : EventArgs
     {
         private byte[] _trameBytes;
 

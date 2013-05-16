@@ -6,7 +6,7 @@ using xbee.Communication;
 
 namespace xbee.Communication.Events
 {
-    class ArduinoTimeoutEventArgs : EventArgs
+    public class ArduinoTimeoutEventArgs : EventArgs
     {
         private ArduinoBot _bot;
 
