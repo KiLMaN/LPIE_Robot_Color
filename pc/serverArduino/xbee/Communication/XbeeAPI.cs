@@ -78,7 +78,7 @@ namespace xbee.Communication
         /* Appelé lorsque l'on recois des données */
         private void _SerialManagment_OnNewDataReceived(object sender, NewDataReceveidEventArgs args)
         {
-            Logger.GlobalLogger.debug("Données Reçus");
+            Logger.GlobalLogger.debug("Données Reçus",0);
             List<byte> dataFrame = new List<byte>();
             if (!_bApiEnabled)
             {
@@ -199,6 +199,7 @@ namespace xbee.Communication
             {
                 _bApiTrameStarted = true;
                 _bApiTrameCompleted = false;
+                _DataChecksumApi.Clear();
                 _ApiState = 1;
             }
             else
@@ -247,7 +248,7 @@ namespace xbee.Communication
                         break;
                     case 9: // Checksum
                         if (computeChecksumXbeeAPI(_DataChecksumApi.ToArray()) == data) // Verification CheckSum
-                            Logger.GlobalLogger.error("CheckSum Api OK !");
+                            Logger.GlobalLogger.debug("CheckSum Api OK !",1);
                    
                         else
                             Logger.GlobalLogger.error("CheckSum Api NOK !");

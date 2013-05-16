@@ -13,11 +13,13 @@ namespace utils
 {
     public class Logger
     {
-        public static bool enableDebug = true;
-        public static bool enableInfo = true;
-        public static bool enableError = true;
-
         public static Logger GlobalLogger;
+
+        public bool enableDebug = true;
+        public bool enableInfo = true;
+        public bool enableError = true;
+        public int levelDebug = 0;
+        
         private List<RichTextBox> m_RTB_list = new List<RichTextBox>();
         private StreamWriter _Fichier;
         private string _LogFile = "log.log";
@@ -132,16 +134,20 @@ namespace utils
                 log("[INFO] [" + type.Name + "] [" + name + "] " + message, Color.DarkBlue);
             }
         }
-        public void debug(string message)
+        public void debug(string message,int level = 0)
         {
             if (enableDebug)
             {
-                StackFrame frame = new StackFrame(1);
-                var method = frame.GetMethod();
-                var type = method.DeclaringType;
-                var name = method.Name;
+                if (level >= levelDebug)
+                {
 
-                log("[DEBUG] [" + type.Name + "] [" + name + "] " + message, Color.Gray);
+                    StackFrame frame = new StackFrame(1);
+                    var method = frame.GetMethod();
+                    var type = method.DeclaringType;
+                    var name = method.Name;
+
+                    log("[DEBUG] [" + type.Name + "] [" + name + "] " + message, Color.Gray);
+                }
             }
         }
         #endregion

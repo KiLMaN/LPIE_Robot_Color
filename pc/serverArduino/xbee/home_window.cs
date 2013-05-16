@@ -27,6 +27,7 @@ namespace xbee
              
             InitializeComponent();
             g_Logger.attachToRTB(txtbox_debug_log);
+            g_Logger.levelDebug = 1; // Enlever le gros debug
             Logger.GlobalLogger = g_Logger; // Met a la disposition le logger
             getListePortSerie();
 
@@ -48,7 +49,8 @@ namespace xbee
             if (e.Source.Connected)
             {
                 if (!_listeArduinoConn.Items.Contains(e.Source.id))
-                    _listeArduinoConn.Items.Add(e.Source.id);
+                    Invoke(new d_addBotToList(addBotToList), "" + e.Source.id);
+                    //_listeArduinoConn.Items.Add(e.Source.id);
             }
 
             if (e.Source.id == _CurrentArduinoId)
@@ -65,7 +67,7 @@ namespace xbee
         }
         void _OnArduinoTimeout(object sender, ArduinoTimeoutEventArgs e)
         {
-            Logger.GlobalLogger.debug("Arduino déconnecté ! :" + e.Bot.ToString());
+            Logger.GlobalLogger.debug("Arduino déconnecté ! :" + e.Bot.ToString(),1);
             if (e.Bot.id == _CurrentArduinoId)
             {
                 Invoke(new d_updateStateRobot(updateStateRobot), e.Bot.Connected);
@@ -84,15 +86,9 @@ namespace xbee
 
         #region #### Delegate ####
         delegate void d_updateStateRobot(Boolean state);
-        void updateStateRobot(Boolean state)
-        {
-            if(state == true)
-                pictBoxEtatConn.BackColor = Color.Green; 
-            else
-                pictBoxEtatConn.BackColor = Color.Red; 
-        }
-
         delegate void d_updateStateCapteur(byte idCapteur, int valCapteur);
+        delegate void d_addBotToList(string txt);
+
         void updateStateCapteur(byte idCapteur, int valCapteur)
         {
             if (idCapteur == (byte)IDSensorsArduino.IR) // InfraRouge
@@ -109,6 +105,17 @@ namespace xbee
             {
                 Logger.GlobalLogger.error("idCapteur  :" + idCapteur);
             } 
+        }
+        void updateStateRobot(Boolean state)
+        {
+            if(state == true)
+                pictBoxEtatConn.BackColor = Color.Green; 
+            else
+                pictBoxEtatConn.BackColor = Color.Red; 
+        }
+        void addBotToList(string txt)
+        {
+            _listeArduinoConn.Items.Add(txt);
         }
         #endregion
 
@@ -149,7 +156,7 @@ namespace xbee
             // Déjà ouvert //
             if (_AutomateComm.IsSerialPortOpen())
             {
-                Logger.GlobalLogger.debug("Fermeture du port serie !");
+                Logger.GlobalLogger.debug("Fermeture du port serie !",1);
                 _AutomateComm.CloseSerialPort();
                 btn_connection.Text = "Connection";
                 liste_portSerie.Enabled = true;
@@ -159,7 +166,7 @@ namespace xbee
             {
                 try
                 {
-                    Logger.GlobalLogger.debug("Ouverture du port : " + (string)liste_portSerie.SelectedItem);
+                    Logger.GlobalLogger.debug("Ouverture du port : " + (string)liste_portSerie.SelectedItem,1);
                     _AutomateComm.OpenSerialPort((string)liste_portSerie.SelectedItem);
                     btn_connection.Text = "Fermeture";
                     liste_portSerie.Enabled = false;
@@ -288,6 +295,7 @@ namespace xbee
         private void _listeArduinoConn_SelectedIndexChanged(object sender, EventArgs e)
         {
             _CurrentArduinoId = Convert.ToByte(_listeArduinoConn.SelectedItem);
+            Invoke(new d_updateStateRobot(updateStateRobot),_ArduinoManager.getArduinoBotById(_CurrentArduinoId).Connected);
         }
     }
 }

@@ -79,6 +79,15 @@ namespace xbee.Communication
         public void _OnArduinoTimeout(object sender, NewArduinoTimeoutEventArgs e)
         {
             _ArduinoManager.disconnectArduinoBot(e.Id);
+
+            // Supressions des messages en attente pour l'arduino qui viens de se deonnecter
+            for (int i = _MessagesEnAttenteEnvoi.Count -1; i >= 0; i--)
+            {
+                if (_MessagesEnAttenteEnvoi[i].robot.id == e.Id)
+                {
+                    _MessagesEnAttenteEnvoi.Remove(_MessagesEnAttenteEnvoi[i]);
+                }
+            }
             ArduinoTimeoutEventArgs e2 = new ArduinoTimeoutEventArgs(_ArduinoManager.getArduinoBotById(e.Id));
             OnArduinoTimeout(this, e2);
         }

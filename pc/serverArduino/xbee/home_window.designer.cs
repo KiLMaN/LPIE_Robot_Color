@@ -194,7 +194,7 @@
             // lbl_UltraSon
             // 
             this.lbl_UltraSon.AutoSize = true;
-            this.lbl_UltraSon.Location = new System.Drawing.Point(81, 75);
+            this.lbl_UltraSon.Location = new System.Drawing.Point(75, 75);
             this.lbl_UltraSon.Name = "lbl_UltraSon";
             this.lbl_UltraSon.Size = new System.Drawing.Size(13, 13);
             this.lbl_UltraSon.TabIndex = 3;
@@ -212,7 +212,7 @@
             // lbl_IR_Sensor
             // 
             this.lbl_IR_Sensor.AutoSize = true;
-            this.lbl_IR_Sensor.Location = new System.Drawing.Point(81, 46);
+            this.lbl_IR_Sensor.Location = new System.Drawing.Point(75, 46);
             this.lbl_IR_Sensor.Name = "lbl_IR_Sensor";
             this.lbl_IR_Sensor.Size = new System.Drawing.Size(13, 13);
             this.lbl_IR_Sensor.TabIndex = 1;
@@ -405,10 +405,11 @@
             // 
             // _listeArduinoConn
             // 
+            this._listeArduinoConn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this._listeArduinoConn.FormattingEnabled = true;
-            this._listeArduinoConn.Location = new System.Drawing.Point(172, 72);
+            this._listeArduinoConn.Location = new System.Drawing.Point(66, 73);
             this._listeArduinoConn.Name = "_listeArduinoConn";
-            this._listeArduinoConn.Size = new System.Drawing.Size(121, 21);
+            this._listeArduinoConn.Size = new System.Drawing.Size(88, 21);
             this._listeArduinoConn.TabIndex = 9;
             this._listeArduinoConn.SelectedIndexChanged += new System.EventHandler(this._listeArduinoConn_SelectedIndexChanged);
             // 

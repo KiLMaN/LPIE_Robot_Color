@@ -218,6 +218,14 @@ namespace xbee.Communication
                         {
                             Logger.GlobalLogger.info("Pas de réponses de l'arduino, suppression !");
 
+                            List<TrameProtocole> TrameArduino = FetchTrameToSend();
+                            for (int j = 0; j < TrameArduino.Count; j++)
+                            {
+                                // Suppression des trames en attentes
+                                if(TrameArduino[j].dst == TrameWaitingAck[i].dst)
+                                    DeleteTrame(TrameArduino[j].num);
+                            }
+                  
                             DeleteTrame(TrameWaitingAck[i].num);
                             // Envoi a la couche suppérieur pour passer l'arduino en non connecté
                             NewArduinoTimeoutEventArgs e = new NewArduinoTimeoutEventArgs(TrameWaitingAck[i].dst);
