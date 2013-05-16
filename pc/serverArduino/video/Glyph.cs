@@ -148,7 +148,7 @@ namespace video
                         Idenfitifant = BibliotequeGlyph.Biblioteque[j].Identifiant;
                         return Idenfitifant;
                     }
-                    if (i < 3)
+                    //if (i < 3)
                         matrice = rotationMatrice(matrice);
                 }
             }

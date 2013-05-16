@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
@@ -8,18 +7,18 @@ using utils;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Imaging;
-using AForge.Imaging.Filters;
-using AForge.Math.Geometry;
 using AForge;
+using System.Collections.Generic;
+
 
 namespace video
 {
     public partial class Form1 : Form
     {
+        private List<IntPoint> LimiteTerrain;
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
         private VideoCaptureDevice FinalVideo;
-
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
 
@@ -91,16 +90,19 @@ namespace video
             FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
             FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution.SelectedIndex].FrameRate;
             FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution.SelectedIndex].FrameSize;
-
-            // Création du Eventhandler
+     
+            //Création du Eventhandler
             FinalVideo.NewFrame += new NewFrameEventHandler(afficheImage);
             FinalVideo.Start();
-
+            
+            // TODO: Test MJPEG
+ 
             if (FinalVideo.IsRunning == false)
             {
                 MessageBox.Show("Erreur Ouverture camera");
                 return false;
             }
+            initialisationTerrain(FinalVideo.DesiredFrameSize.Height, FinalVideo.DesiredFrameSize.Width);
             return true;
         }
         #endregion
@@ -154,14 +156,16 @@ namespace video
            img.ColeurVersNB();
            img.DetectionContour((short)numericUpDown1.Value);
 
-           Blobs.Text = "" + img.detectionGlyph();
+           Blobs.Text = "" + img.detectionGlyph(LimiteTerrain);
            try
            {
                if (imageShow < img.getNumeroImg())
                {
                    imageShow = img.getNumeroImg();
+                   
                    this.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), ImgContour);
-                   this.Invoke((affichageImg)imgAffiche, img.getImageReel(), ImgNb);
+                   this.Invoke((affichageImg)imgAffiche, img.getImageReel(), ImageReel);
+                   
                }
              
             }
@@ -173,6 +177,31 @@ namespace video
         {
             /* Affichage de l'image dans la PictureBox*/
             box.Image = img;
+        }
+        #endregion
+
+        #region ##### Définition terrain #####
+        private void initialisationTerrain(int width, int height)
+        {
+            LimiteTerrain = new List<IntPoint>();
+            LimiteTerrain.Add( new IntPoint(0,0));
+            LimiteTerrain.Add(new IntPoint(0, width));
+            LimiteTerrain.Add(new IntPoint(height, width));
+            LimiteTerrain.Add(new IntPoint(height, 0));
+        }
+        private void DelimitationTerain_CLK(object sender, EventArgs e)
+        {
+            LimiteTerrain.Clear();
+        }
+        private void ImageReel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (LimiteTerrain.Count < 5)
+            {
+                int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
+                int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
+
+                LimiteTerrain.Add(new IntPoint(abs, ord));
+            }
         }
         #endregion
 
@@ -236,14 +265,18 @@ namespace video
         {
             /* Cargement d'une image locale */
             Bitmap im = new Bitmap(@"C:\Users\maximeleblanc\Desktop\Img.png");
-            UnmanagedImage img = UnmanagedImage.FromManagedImage(im);
-            ImgNb.Image = img.ToManagedImage();
+            UnmanagedImage img2 = UnmanagedImage.FromManagedImage(im);
+            ImageReel.Image = img2.ToManagedImage();
 
             imgTraitment(new ImgWebCam(im, imageShow + 1, tailleGlyph));
 
         }
 
         #endregion
+
+        
+
+        
 
     }
 }

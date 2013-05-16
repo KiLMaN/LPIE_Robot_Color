@@ -35,8 +35,6 @@
             this.ListeWebCam = new System.Windows.Forms.ComboBox();
             this.button_Ok = new System.Windows.Forms.Button();
             this.Resolution = new System.Windows.Forms.ComboBox();
-            this.ImgNb = new System.Windows.Forms.PictureBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.ImgContour = new System.Windows.Forms.PictureBox();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -46,10 +44,10 @@
             this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button2 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.Log = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImgNb)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -65,11 +63,12 @@
             this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageReel.TabIndex = 0;
             this.ImageReel.TabStop = false;
+            this.ImageReel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ImageReel_MouseDown);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 356);
+            this.label1.Location = new System.Drawing.Point(134, 361);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 1;
@@ -111,28 +110,10 @@
             this.Resolution.Size = new System.Drawing.Size(261, 21);
             this.Resolution.TabIndex = 5;
             // 
-            // ImgNb
-            // 
-            this.ImgNb.Location = new System.Drawing.Point(438, 21);
-            this.ImgNb.Name = "ImgNb";
-            this.ImgNb.Size = new System.Drawing.Size(413, 327);
-            this.ImgNb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImgNb.TabIndex = 6;
-            this.ImgNb.TabStop = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(435, 356);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(103, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Image noire et blanc";
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(860, 356);
+            this.label4.Location = new System.Drawing.Point(457, 356);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 9;
@@ -140,7 +121,7 @@
             // 
             // ImgContour
             // 
-            this.ImgContour.Location = new System.Drawing.Point(863, 21);
+            this.ImgContour.Location = new System.Drawing.Point(460, 21);
             this.ImgContour.Name = "ImgContour";
             this.ImgContour.Size = new System.Drawing.Size(413, 327);
             this.ImgContour.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -181,7 +162,7 @@
             // Blobs
             // 
             this.Blobs.AutoSize = true;
-            this.Blobs.Location = new System.Drawing.Point(843, 30);
+            this.Blobs.Location = new System.Drawing.Point(691, 38);
             this.Blobs.Name = "Blobs";
             this.Blobs.Size = new System.Drawing.Size(33, 13);
             this.Blobs.TabIndex = 13;
@@ -189,7 +170,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(846, 4);
+            this.button1.Location = new System.Drawing.Point(694, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(157, 23);
             this.button1.TabIndex = 14;
@@ -204,24 +185,33 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 78);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1287, 567);
+            this.tabControl1.Size = new System.Drawing.Size(915, 567);
             this.tabControl1.TabIndex = 15;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Controls.Add(this.ImageReel);
             this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.ImgNb);
-            this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.ImgContour);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1279, 541);
+            this.tabPage1.Size = new System.Drawing.Size(907, 541);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.Text = "Image";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(6, 356);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(122, 22);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Définition Terrain";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.DelimitationTerain_CLK);
             // 
             // tabPage2
             // 
@@ -229,9 +219,9 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1279, 541);
+            this.tabPage2.Size = new System.Drawing.Size(907, 541);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.Text = "Log";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // Log
@@ -246,7 +236,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1359, 657);
+            this.ClientSize = new System.Drawing.Size(941, 657);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.Blobs);
@@ -260,7 +250,6 @@
             this.Name = "Form1";
             this.Text = "Img";
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImgNb)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tabControl1.ResumeLayout(false);
@@ -280,8 +269,6 @@
         private System.Windows.Forms.ComboBox ListeWebCam;
         private System.Windows.Forms.Button button_Ok;
         private System.Windows.Forms.ComboBox Resolution;
-        private System.Windows.Forms.PictureBox ImgNb;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox ImgContour;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
@@ -293,6 +280,7 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.RichTextBox Log;
+        private System.Windows.Forms.Button button2;
     }
 }
 

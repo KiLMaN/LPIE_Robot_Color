@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Media;
 
-using AForge.Math;
-using AForge.Video;
-using AForge.Video.DirectShow;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge;
@@ -77,8 +70,9 @@ namespace video
 
             thresholdFilterGlyph.ApplyInPlace(imgContour);
         }
-        public int detectionGlyph()
+        public int detectionGlyph(List<IntPoint> LimiteTerrain)
         {
+            
             int nbElement = 0;
             UnmanagedImage tmp = UnmanagedImage.FromManagedImage(imgReel);
             SimpleShapeChecker shapeChecker = new SimpleShapeChecker( );
@@ -126,16 +120,28 @@ namespace video
                         Glyph Gl = new Glyph(glyphImage, GlyphSize);
                         
                         Gl.ReconnaissanceGlyph(corners,imgNB);
-                        imgContour = Gl.getImage();
+                        
                         // Si le Glyph est valide
                         if (Gl.getIdentifiant() > 0)
                         {
+                            imgContour = Gl.getImage();
                             // Coloration des contours des zones détectées
-                            tmp.SetPixels(corners, Color.Red);
+                            tmp.SetPixels(leftEdgePoints, Color.Red);
+                            tmp.SetPixels(rightEdgePoints, Color.Red);
+                            tmp.SetPixels(topEdgePoints, Color.Red);
+                            tmp.SetPixels(bottomEdgePoints, Color.Red);
                             nbElement++;
                         }
                     }
                 }
+            }
+
+            if (LimiteTerrain.Count == 4)
+            {
+                Drawing.Line(tmp, LimiteTerrain[0], LimiteTerrain[1], Color.DarkBlue);
+                Drawing.Line(tmp, LimiteTerrain[1], LimiteTerrain[2], Color.DarkBlue);
+                Drawing.Line(tmp, LimiteTerrain[2], LimiteTerrain[3], Color.DarkBlue);
+                Drawing.Line(tmp, LimiteTerrain[3], LimiteTerrain[0], Color.DarkBlue);
             }
             imgReel = tmp.ToManagedImage();
             return nbElement;
