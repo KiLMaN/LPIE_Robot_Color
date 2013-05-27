@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="crc16.cs" />
+    <Compile Include="Events\DrawPolylineEventArgs.cs" />
+    <Compile Include="Events\UpdatePositionEventArgs.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
