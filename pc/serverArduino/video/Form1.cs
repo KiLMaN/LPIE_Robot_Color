@@ -15,7 +15,7 @@ namespace video
 {
     public partial class Form1 : Form
     {
-        private List<IntPoint> LimiteTerrain;
+        private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
         private VideoCaptureDevice FinalVideo;
@@ -31,6 +31,8 @@ namespace video
         double millLastPic = 0;
 
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
+        private Thread ThreadClean;
+
         public Form1()
         {
             InitializeComponent();
@@ -50,6 +52,15 @@ namespace video
                 Logger.GlobalLogger.error("Aucune caméra détectée");
             }
         }
+
+        #region ##### Bibliotheque Glyphs #####
+        protected void cleanBibliothequeGlyph()
+        {
+            /* Nettoye les glyphs disparut de la bibliotheque de Glyphs */
+            // TODO: Netoyer la bibliotheque de glyph
+            Thread.Sleep(2000);
+        }
+        #endregion
         #region  ##### WebCam #####
 
         protected Boolean ListerWebCam()
@@ -84,6 +95,7 @@ namespace video
         }
         protected Boolean openWebCam(int NomCamera)
         {
+            LimiteTerrain.Clear();
             /* Ouvre le flux vidéo et initialise le EventHandler */
             
             // Creation de la source vidéo
@@ -91,7 +103,7 @@ namespace video
             FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution.SelectedIndex].FrameRate;
             FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution.SelectedIndex].FrameSize;
      
-            //Création du Eventhandler
+            // Création du Eventhandler
             FinalVideo.NewFrame += new NewFrameEventHandler(afficheImage);
             FinalVideo.Start();
             
@@ -102,7 +114,7 @@ namespace video
                 MessageBox.Show("Erreur Ouverture camera");
                 return false;
             }
-            initialisationTerrain(FinalVideo.DesiredFrameSize.Height, FinalVideo.DesiredFrameSize.Width);
+            
             return true;
         }
         #endregion
@@ -153,6 +165,7 @@ namespace video
         public delegate void TraitementImg(ImgWebCam img);
         public void imgTraitment(ImgWebCam img)
         {
+           img.homographie(LimiteTerrain);
            img.ColeurVersNB();
            img.DetectionContour((short)numericUpDown1.Value);
 
@@ -181,14 +194,7 @@ namespace video
         #endregion
 
         #region ##### Définition terrain #####
-        private void initialisationTerrain(int width, int height)
-        {
-            LimiteTerrain = new List<IntPoint>();
-            LimiteTerrain.Add( new IntPoint(0,0));
-            LimiteTerrain.Add(new IntPoint(0, width));
-            LimiteTerrain.Add(new IntPoint(height, width));
-            LimiteTerrain.Add(new IntPoint(height, 0));
-        }
+  
         private void DelimitationTerain_CLK(object sender, EventArgs e)
         {
             LimiteTerrain.Clear();
@@ -203,6 +209,7 @@ namespace video
                 LimiteTerrain.Add(new IntPoint(abs, ord));
             }
         }
+
         #endregion
 
         #region ##### Gestions des FPS #####
@@ -238,6 +245,10 @@ namespace video
                 ListeThread[i] = new Thread(TraitementThread);
                 ListeThread[i].Start(i);
             }
+
+            // Initialisatio du Thread de nettoyage
+            ThreadClean = new Thread(cleanBibliothequeGlyph);
+            ThreadClean.Start();
         }
         private void BtnStop_Click(object sender, EventArgs e)
         {
@@ -249,6 +260,7 @@ namespace video
                     ListeThread[i].Abort();
                     ListeImage[i] = null;
                 }
+                ThreadClean.Abort();
                 nbImageCapture = 0;
                 imageShow = 0;
 
@@ -272,11 +284,7 @@ namespace video
 
         }
 
-        #endregion
-
-        
-
-        
+        #endregion 
 
     }
 }

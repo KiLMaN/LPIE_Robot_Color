@@ -48,14 +48,26 @@ namespace video
         }
 
         /* -------------------------- Traitement image -------------------------- */
+        public void homographie(List<IntPoint> LimiteTerain)
+        {
+            imgNB = UnmanagedImage.FromManagedImage(imgReel);
+            /* Remplacement de l'image par le terain détecte dedans */
+            if (LimiteTerain.Count == 4)
+            {
+                QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(LimiteTerain, imgNB.Width, imgNB.Height);
+                imgNB = quadrilateralTransformation.Apply(imgNB);
+            }
+
+        }
         public void ColeurVersNB()
         {
             /* Convertie l'image en noir et blanc */
-            UnmanagedImage image = UnmanagedImage.FromManagedImage(imgReel);
 
-            imgNB = UnmanagedImage.Create(imgReel.Width, imgReel.Height,
+            UnmanagedImage image = UnmanagedImage.Create(imgReel.Width, imgReel.Height,
                     PixelFormat.Format8bppIndexed);
-            Grayscale.CommonAlgorithms.BT709.Apply(image, imgNB);
+            Grayscale.CommonAlgorithms.BT709.Apply(imgNB, image);
+
+            imgNB = image;
         }
         public void DetectionContour(int sueil)
         {

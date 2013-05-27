@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<content>
+	<glyph>
+		<id>1</id>
+		<type>1</type>
+		<lignes> 
+			<ligne>010</ligne>
+			<ligne>101</ligne>
+			<ligne>110</ligne>
+		</lignes>
+	</glyph>
+	<glyph>
+		<id>2</id>
+		<type>1</type>
+		<lignes> 
+			<ligne>001</ligne>
+			<ligne>100</ligne>
+			<ligne>110</ligne>
+		</lignes>
+	</glyph>
+	<glyph>
+		<id>3</id>
+		<type>1</type>
+		<lignes> 
+			<ligne>010</ligne>
+			<ligne>100</ligne>
+			<ligne>011</ligne>
+		</lignes>
+	</glyph>
+</content>

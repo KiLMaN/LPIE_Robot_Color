@@ -36,7 +36,7 @@ namespace video
             XmlDocument document = new XmlDocument();
             try
             {
-                document.Load("glyph/glyph.xml");
+                document.Load("glyph.xml");
                 XmlNode node = document.DocumentElement;
                
                 XmlNodeList nodeList = node.SelectNodes("glyph");

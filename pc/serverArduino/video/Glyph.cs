@@ -113,6 +113,7 @@ namespace video
         public int lectureGlyph(Boolean[,] matrice)
         {
             /* Vérifie la validitée du glyph et lecture */
+            
             int i;
             // Verification du contour exterieure
             for (i = 0; i < glyphSize; i++)
@@ -126,8 +127,6 @@ namespace video
             // Vérification si le glyph est présent dans la bibliothéque
             for (i = 0; i < 4; i++)
             {
-                
-                
                 for (int j = 0; j < BibliotequeGlyph.Biblioteque.Count; j++)
                 {
                     Erreur = false;
@@ -148,7 +147,7 @@ namespace video
                         Idenfitifant = BibliotequeGlyph.Biblioteque[j].Identifiant;
                         return Idenfitifant;
                     }
-                    //if (i < 3)
+                    if (i < 3)
                         matrice = rotationMatrice(matrice);
                 }
             }
