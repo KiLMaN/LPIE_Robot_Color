@@ -21,7 +21,6 @@ namespace video
             }
         }
         public static List<Tag> Biblioteque = new List<Tag>();
-       
 
         public int Size;
 
@@ -29,9 +28,11 @@ namespace video
         {
             Size = GlyphSize;
         }
+
+
+
         public void chargementListeGlyph()
         {
-
             Biblioteque.Clear();
             XmlDocument document = new XmlDocument();
             try

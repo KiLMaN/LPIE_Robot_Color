@@ -12,6 +12,7 @@ namespace video
     public class ImgWebCam
     {
         protected Bitmap imgReel;
+        protected UnmanagedImage UnImgReel;
         protected UnmanagedImage imgNB;
         protected UnmanagedImage imgContour;
         protected ulong numeroImage;
@@ -24,7 +25,6 @@ namespace video
             this.GlyphSize = Size;
             this.numeroImage = noImage;
         }
-
         private void setter(Bitmap image, ulong noImage)
         {
             this.imgReel = image;
@@ -33,6 +33,10 @@ namespace video
         public Bitmap getImageReel()
         {
             return this.imgReel;
+        }
+        public UnmanagedImage getUnImgReel()
+        {
+            return UnImgReel;
         }
         public UnmanagedImage getImageNB()
         {
@@ -47,15 +51,15 @@ namespace video
             return this.numeroImage;
         }
 
-        /* -------------------------- Traitement image -------------------------- */
+        #region ##### Traitement image #####
         public void homographie(List<IntPoint> LimiteTerain)
         {
-            imgNB = UnmanagedImage.FromManagedImage(imgReel);
+            UnImgReel = UnmanagedImage.FromManagedImage(imgReel);
             /* Remplacement de l'image par le terain détecte dedans */
             if (LimiteTerain.Count == 4)
             {
-                QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(LimiteTerain, imgNB.Width, imgNB.Height);
-                imgNB = quadrilateralTransformation.Apply(imgNB);
+                QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(LimiteTerain, UnImgReel.Width, UnImgReel.Height);
+                UnImgReel = quadrilateralTransformation.Apply(UnImgReel);
             }
 
         }
@@ -63,9 +67,9 @@ namespace video
         {
             /* Convertie l'image en noir et blanc */
 
-            UnmanagedImage image = UnmanagedImage.Create(imgReel.Width, imgReel.Height,
+            UnmanagedImage image = UnmanagedImage.Create(UnImgReel.Width, UnImgReel.Height,
                     PixelFormat.Format8bppIndexed);
-            Grayscale.CommonAlgorithms.BT709.Apply(imgNB, image);
+            Grayscale.CommonAlgorithms.BT709.Apply(UnImgReel, image);
 
             imgNB = image;
         }
@@ -82,12 +86,15 @@ namespace video
 
             thresholdFilterGlyph.ApplyInPlace(imgContour);
         }
-        public int detectionGlyph(List<IntPoint> LimiteTerrain)
+        #endregion
+
+        #region ##### Traitement Glyph #####
+            public int detectionGlyph(List<IntPoint> LimiteTerrain)
         {
-            
+
             int nbElement = 0;
-            UnmanagedImage tmp = UnmanagedImage.FromManagedImage(imgReel);
-            SimpleShapeChecker shapeChecker = new SimpleShapeChecker( );
+
+            SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
             BlobCounter blobCounter = new BlobCounter();
 
             blobCounter.MinHeight = 32;
@@ -100,7 +107,7 @@ namespace video
             Blob[] blobs = blobCounter.GetObjectsInformation();
 
             // 5 - check each blob
-            for ( int i = 0, n = blobs.Length; i < n; i++ )
+            for (int i = 0, n = blobs.Length; i < n; i++)
             {
                 List<IntPoint> edgePoints = blobCounter.GetBlobsEdgePoints(blobs[i]);
                 List<IntPoint> corners = null;
@@ -130,40 +137,33 @@ namespace video
 
                         // Reconnaissance du Glyph
                         Glyph Gl = new Glyph(glyphImage, GlyphSize);
-                        
-                        Gl.ReconnaissanceGlyph(corners,imgNB);
-                        
+
+                        Gl.ReconnaissanceGlyph(corners, imgNB);
+
                         // Si le Glyph est valide
                         if (Gl.getIdentifiant() > 0)
                         {
                             imgContour = Gl.getImage();
                             // Coloration des contours des zones détectées
-                            tmp.SetPixels(leftEdgePoints, Color.Red);
-                            tmp.SetPixels(rightEdgePoints, Color.Red);
-                            tmp.SetPixels(topEdgePoints, Color.Red);
-                            tmp.SetPixels(bottomEdgePoints, Color.Red);
+                            UnImgReel.SetPixels(leftEdgePoints, Color.Red);
+                            UnImgReel.SetPixels(rightEdgePoints, Color.Red);
+                            UnImgReel.SetPixels(topEdgePoints, Color.Red);
+                            UnImgReel.SetPixels(bottomEdgePoints, Color.Red);
                             nbElement++;
                         }
                     }
                 }
             }
-
-            if (LimiteTerrain.Count == 4)
-            {
-                Drawing.Line(tmp, LimiteTerrain[0], LimiteTerrain[1], Color.DarkBlue);
-                Drawing.Line(tmp, LimiteTerrain[1], LimiteTerrain[2], Color.DarkBlue);
-                Drawing.Line(tmp, LimiteTerrain[2], LimiteTerrain[3], Color.DarkBlue);
-                Drawing.Line(tmp, LimiteTerrain[3], LimiteTerrain[0], Color.DarkBlue);
-            }
-            imgReel = tmp.ToManagedImage();
             return nbElement;
         }
+        #endregion
+       
         
         
-        // Calculate average brightness difference between pixels outside and
-        // inside of the object bounded by specified left and right edge
         private float CalculateAverageEdgesBrightnessDifference(List<IntPoint> leftEdgePoints, List<IntPoint> rightEdgePoints, UnmanagedImage image)
         {
+            // Calculate average brightness difference between pixels outside and
+            // inside of the object bounded by specified left and right edge
             // create list of points, which are a bit on the left/right from edges
             List<IntPoint> leftEdgePoints1 = new List<IntPoint>();
             List<IntPoint> leftEdgePoints2 = new List<IntPoint>();

@@ -61,6 +61,7 @@ namespace video
             Thread.Sleep(2000);
         }
         #endregion
+       
         #region  ##### WebCam #####
 
         protected Boolean ListerWebCam()
@@ -177,8 +178,7 @@ namespace video
                    imageShow = img.getNumeroImg();
                    
                    this.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), ImgContour);
-                   this.Invoke((affichageImg)imgAffiche, img.getImageReel(), ImageReel);
-                   
+                   this.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), ImageReel);
                }
              
             }
