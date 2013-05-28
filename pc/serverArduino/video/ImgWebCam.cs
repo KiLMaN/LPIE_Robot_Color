@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-
+using System;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge;
@@ -15,10 +15,12 @@ namespace video
         protected UnmanagedImage UnImgReel;
         protected UnmanagedImage imgNB;
         protected UnmanagedImage imgContour;
+
         protected ulong numeroImage;
+        protected bool[] AutAffichage = new bool[] { true, true, true }; // ContourGlyph, CentreGlyph, PositionPince
         const int stepSize = 3;
         private int GlyphSize;
-
+        
         public ImgWebCam(Bitmap image, ulong noImage, int Size)
         {
             this.imgReel = image;
@@ -49,6 +51,17 @@ namespace video
         public ulong getNumeroImg()
         {
             return this.numeroImage;
+        }
+
+        protected void dessinePoint(IntPoint point, UnmanagedImage img,int nbPixel,Color col)
+        {
+            for (int i = point.X - nbPixel / 2; i < point.X + nbPixel / 2 + 1; i++)
+            {
+                for (int j = point.Y - nbPixel / 2; j < point.Y + nbPixel / 2 + 1; j++)
+                {
+                    img.SetPixel(i, j, col);
+                }
+            }
         }
 
         #region ##### Traitement image #####
@@ -89,11 +102,11 @@ namespace video
         #endregion
 
         #region ##### Traitement Glyph #####
-            public int detectionGlyph(List<IntPoint> LimiteTerrain)
+        public int detectionGlyph(List<IntPoint> LimiteTerrain)
         {
 
             int nbElement = 0;
-
+            double rotation = 0;
             SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
             BlobCounter blobCounter = new BlobCounter();
 
@@ -117,6 +130,8 @@ namespace video
                 {
                     // Détection des points de coutour
                     List<IntPoint> leftEdgePoints, rightEdgePoints, topEdgePoints, bottomEdgePoints;
+                    
+                    Line Horizontale = Line.FromPoints(new IntPoint(0,0),new IntPoint(10,0));
                     blobCounter.GetBlobsLeftAndRightEdges(blobs[i], out leftEdgePoints, out rightEdgePoints);
                     blobCounter.GetBlobsTopAndBottomEdges(blobs[i], out topEdgePoints, out bottomEdgePoints);
 
@@ -142,13 +157,50 @@ namespace video
 
                         // Si le Glyph est valide
                         if (Gl.getIdentifiant() > 0)
-                        {
+                        { 
+                            if (AutAffichage[0])
+                            {
+                                // Coloration des contours des zones détectées
+                                UnImgReel.SetPixels(leftEdgePoints, Color.Red);
+                                UnImgReel.SetPixels(rightEdgePoints, Color.Red);
+                                UnImgReel.SetPixels(topEdgePoints, Color.Red);
+                                UnImgReel.SetPixels(bottomEdgePoints, Color.Red);
+                            }
+
+                            // Détection du milieu
+                            Line line = Line.FromPoints(corners[0], corners[2]);
+                            Line line2 = Line.FromPoints(corners[1], corners[3]);
+                            IntPoint intersection = (IntPoint)line.GetIntersectionWith(line2);
+                            if (AutAffichage[1])
+                            {
+                                dessinePoint(intersection, UnImgReel, 4, Color.Yellow);
+                            }
+
+                            // Calcul de la rotation
+                            Line ComparasionAngle = Line.FromPoints(corners[0], corners[1]);
+                            rotation = (int) ComparasionAngle.GetAngleBetweenLines(Horizontale);
+                            rotation += 90 * Gl.getNbRotation();
+                            rotation *= (Math.PI / 180.0);
+
+
+                            // Calcul d'un point en bout de pince
+                            float[] Taille = new float[4];
+                            // TODO: Ratio proportionnel en fonction de l'inclinaison
+                            Taille[0] = corners[0].DistanceTo(corners[1]);
+                            //Taille[1] = corners[1].DistanceTo(corners[2]);
+                            //Taille[2] = corners[2].DistanceTo(corners[3]);
+                            //Taille[3] = corners[3].DistanceTo(corners[0]);
+
+                            float taille = (Taille[0] / BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille) * BibliotequeGlyph.Biblioteque[Gl.getPosition()].DistancePince;
+                            int x = -(int)(System.Math.Sin(rotation) * taille);
+                            int y = -(int)(System.Math.Cos(rotation) * taille);
+                            x += (int)intersection.X;
+                            y += (int)intersection.Y;
+                            if (AutAffichage[2])
+                            {
+                                dessinePoint(new IntPoint(x, y), UnImgReel, 4, Color.Cyan);
+                            }
                             imgContour = Gl.getImage();
-                            // Coloration des contours des zones détectées
-                            UnImgReel.SetPixels(leftEdgePoints, Color.Red);
-                            UnImgReel.SetPixels(rightEdgePoints, Color.Red);
-                            UnImgReel.SetPixels(topEdgePoints, Color.Red);
-                            UnImgReel.SetPixels(bottomEdgePoints, Color.Red);
                             nbElement++;
                         }
                     }

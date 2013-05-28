@@ -11,8 +11,10 @@ namespace video
 {
     class Glyph
     {
-        int glyphSize;
-        int Idenfitifant;
+        private int glyphSize;
+        private int Idenfitifant;
+        private int nbRotation = 0;
+        private int positionBibliotheque = -1;
         UnmanagedImage imgGlyph;
         
         public Glyph(UnmanagedImage glyphImage, int Size )
@@ -20,6 +22,14 @@ namespace video
             imgGlyph = glyphImage;
             glyphSize = Size;
             Idenfitifant = 0;
+        }
+        public int getPosition()
+        {
+            return positionBibliotheque;
+        }
+        public int getNbRotation()
+        {
+            return nbRotation%4;
         }
         public void setImage(UnmanagedImage img)
         {
@@ -70,7 +80,6 @@ namespace video
                             count++;
                     
                             moyenne += imgGlyph.GetPixel(ip).R;
-                            //imgGlyph.SetPixel(ip3, Color.Red);
                         }
                     }
                     cellIntensity[i, j] = ( moyenne/count > 127 ) ? false : true;
@@ -101,6 +110,7 @@ namespace video
         public Boolean[,] rotationMatrice(Boolean[,] matrice)
         {
             Boolean[,] matriceTmp = new Boolean[glyphSize, glyphSize];
+            this.nbRotation++;
             for (int i = 0; i < glyphSize; i++)
             {
                 for (int j = 0; j < glyphSize; j++)
@@ -139,20 +149,17 @@ namespace video
                             {
                                 Erreur = true;
                             }
-
                         }
                     }
                     if (Erreur == false) // Glyph trouvé
                     {
                         Idenfitifant = BibliotequeGlyph.Biblioteque[j].Identifiant;
+                        positionBibliotheque = j;
                         return Idenfitifant;
                     }
-                    if (i < 3)
-                        matrice = rotationMatrice(matrice);
+                    matrice = rotationMatrice(matrice);
                 }
             }
-
-           
             return 0;
         }
     }

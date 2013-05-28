@@ -15,6 +15,8 @@ namespace video
             public Boolean[,] matrice;
             public int Type; // 0 pour Robot ; 1 => Glyph
             public int Identifiant;
+            public int taille;
+            public int DistancePince = 0;
             public Tag(int size)
             {
                 matrice = new Boolean[size-2, size-2];
@@ -47,6 +49,8 @@ namespace video
                     XmlNode nodeGlyph = nodeList[i];
                     TagLec.Type = Convert.ToInt16(nodeGlyph.SelectNodes("type").Item(0).InnerText);
                     TagLec.Identifiant = Convert.ToInt16 ( nodeGlyph.SelectNodes("id").Item(0).InnerText);
+                    TagLec.taille = Convert.ToInt16(nodeGlyph.SelectNodes("taille").Item(0).InnerText);
+                    TagLec.DistancePince = Convert.ToInt16(nodeGlyph.SelectNodes("distancePince").Item(0).InnerText);
 
                     XmlNodeList LigneList = nodeGlyph.SelectNodes("lignes").Item(0).SelectNodes("ligne");
                     for (int j = 0; j < LigneList.Count; j++)

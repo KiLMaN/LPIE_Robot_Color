@@ -3,6 +3,8 @@
 	<glyph>
 		<id>1</id>
 		<type>1</type>
+    <taille>64</taille>
+    <distancePince>95</distancePince>
 		<lignes> 
 			<ligne>010</ligne>
 			<ligne>101</ligne>
@@ -12,6 +14,8 @@
 	<glyph>
 		<id>2</id>
 		<type>1</type>
+    <taille>64</taille>
+    <distancePince>95</distancePince>
 		<lignes> 
 			<ligne>001</ligne>
 			<ligne>100</ligne>
@@ -21,6 +25,8 @@
 	<glyph>
 		<id>3</id>
 		<type>1</type>
+    <taille>64</taille>
+    <distancePince>95</distancePince>
 		<lignes> 
 			<ligne>010</ligne>
 			<ligne>100</ligne>

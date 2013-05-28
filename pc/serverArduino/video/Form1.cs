@@ -28,10 +28,10 @@ namespace video
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
 
         private Logger gLogger;
+        private Thread ThreadClean;
         double millLastPic = 0;
 
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
-        private Thread ThreadClean;
 
         public Form1()
         {
