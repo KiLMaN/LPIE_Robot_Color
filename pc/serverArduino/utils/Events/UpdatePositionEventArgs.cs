@@ -5,17 +5,32 @@ using System.Text;
 
 namespace utils.Events
 {
+    public struct PositionElement
+    {
+        // Positions en milimetres par rapport au coin Haut / Gauche de l'image
+        public int X;
+        public int Y;
+    }
+
     #region #### Positions Robots ####
+    public struct PositionRobot
+    {
+        // Positions en milimetres par rapport au coin Haut / Gauche de l'image
+        public PositionElement Position;
+        // Angle en degré par rapport Vertical Nord de l'image (-180 Anti horaire , +180 Horaire)
+        public float Angle;
+    }
+
     public class UpdatePositionRobotEventArgs : EventArgs
     {
-        private List<object> _listeRobot;
+        private List<PositionRobot> _listeRobot;
 
-        public UpdatePositionRobotEventArgs(List<object> Robots)
+        public UpdatePositionRobotEventArgs(List<PositionRobot> Robots)
         {
             _listeRobot = Robots;
         }
 
-        public List<object> Robots
+        public List<PositionRobot> Robots
         {
             get { return _listeRobot; }
         }
@@ -25,14 +40,15 @@ namespace utils.Events
     #region #### Positions Cubes ####
     public class UpdatePositionCubesEventArgs : EventArgs
     {
-        private List<object> _listeCube;
 
-        public UpdatePositionCubesEventArgs(List<object> Cubes)
+        private List<PositionElement> _listeCube;
+
+        public UpdatePositionCubesEventArgs(List<PositionElement> Cubes)
         {
             _listeCube = Cubes;
         }
 
-        public List<object> Cubes
+        public List<PositionElement> Cubes
         {
             get { return _listeCube; }
         }
@@ -40,20 +56,52 @@ namespace utils.Events
     #endregion
 
     #region #### Positions Zones ####
+    public struct PositionZone
+    {
+        // Positions de chacun des points du contour de la zone
+        public PositionElement A;
+        public PositionElement B;
+        public PositionElement C;
+        public PositionElement D;
+    }
+
     public class UpdatePositionZonesEventArgs : EventArgs
     {
-        private List<object> _listeZone;
+        private List<PositionZone> _listeZone;
 
-        public UpdatePositionZonesEventArgs(List<object> Zones)
+        public UpdatePositionZonesEventArgs(List<PositionZone> Zones)
         {
             _listeZone = Zones;
         }
 
-        public List<object> Zones
+        public List<PositionZone> Zones
         {
             get { return _listeZone; }
         }
     }
     #endregion
 
+    #region #### Zone de Travail ####
+    public struct PositionZoneTravail
+    {
+        // Positions de chacun des points du contour de la zone
+        public PositionElement A;
+        public PositionElement B;
+    }
+
+    public class UpdatePositionZoneTravailEventArgs : EventArgs
+    {
+        private PositionZoneTravail _Zone;
+
+        public UpdatePositionZoneTravailEventArgs(PositionZoneTravail Zone)
+        {
+            _Zone = Zone;
+        }
+
+        public PositionZoneTravail Zone
+        {
+            get { return _Zone; }
+        }
+    }
+    #endregion
 }
