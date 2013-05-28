@@ -9,282 +9,41 @@ using AForge.Video.DirectShow;
 using AForge.Imaging;
 using AForge;
 using System.Collections.Generic;
+using utils.Events;
 
 
 namespace video
 {
     public partial class Form1 : Form
     {
-        private List<IntPoint> LimiteTerrain = new List<IntPoint>();
-        public static int tailleGlyph = 5;
-        private FilterInfoCollection VideoCaptureDevices;
-        private VideoCaptureDevice FinalVideo;
-        private ulong nbImageCapture = 0;
-        private ulong imageShow = 0;
-
-        private const int nbThread = 1;
-        private int lastThread = 0;
-        private Thread[] ListeThread = new Thread[nbThread];
-        private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
-
-        private Logger gLogger;
-        private Thread ThreadClean;
-        double millLastPic = 0;
-
-        private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
-
+        private VideoProg VP;
         public Form1()
         {
             InitializeComponent();
-            gLogger = new Logger();
-            gLogger.attachToRTB(Log);
-            Logger.GlobalLogger = gLogger;
-            
-            // Initialisation de la bibliothéque de glyph
-            Bibliotheque.chargementListeGlyph();
-
-            // Initialisation des webcams
-            if (ListerWebCam() == false)
-            {
-                button_Ok.IsAccessible = false;
-                button_Ok.Enabled = false;
-                MessageBox.Show("Aucune caméra détectée.");
-                Logger.GlobalLogger.error("Aucune caméra détectée");
-            }
+            VP = new VideoProg(ImageReel, ImgContour, numericUpDown1,LblFPS,Blobs);
+            VP.ListerWebCam(ListeWebCam,Resolution);
+            this.FormClosing += new FormClosingEventHandler(Form1Close);
         }
-
-        #region ##### Bibliotheque Glyphs #####
-        protected void cleanBibliothequeGlyph()
+        public void Form1Close(object e, FormClosingEventArgs s)
         {
-            /* Nettoye les glyphs disparut de la bibliotheque de Glyphs */
-            // TODO: Netoyer la bibliotheque de glyph
-            Thread.Sleep(2000);
+            VP.Dispose();
         }
-        #endregion
-       
-        #region  ##### WebCam #####
-
-        protected Boolean ListerWebCam()
-        {
-            /* Retourne la liste des webcams connecté en usb */
-            VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            foreach (FilterInfo VideoCaptureDevice in VideoCaptureDevices)
-            {
-                ListeWebCam.Items.Add(VideoCaptureDevice.Name);
-            }
-            
-            if(ListeWebCam.Items.Count > 0)
-            {
-                ListeWebCam.SelectedIndex = 0;
-                chargementListeResolution(0);
-                return true;
-            }
-            return false;
-        }
-        protected void chargementListeResolution(int NomCamera)
-        {
-            /* Charge la liste des résolutions disponibles en fonction de la WebCam selectionnée */
-            VideoCaptureDevice tmpVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
-            Resolution.Items.Clear();
-            foreach (VideoCapabilities Cap in tmpVideo.VideoCapabilities)
-            {
-                Resolution.Items.Add("" + Cap.FrameSize.Width + " * " + Cap.FrameSize.Height + " (" + Cap.FrameRate.ToString() + " FPS)");
-            }
-            if(Resolution.Items.Count > 0 )
-                Resolution.SelectedIndex = 0;
-
-        }
-        protected Boolean openWebCam(int NomCamera)
-        {
-            LimiteTerrain.Clear();
-            /* Ouvre le flux vidéo et initialise le EventHandler */
-            
-            // Creation de la source vidéo
-            FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
-            FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution.SelectedIndex].FrameRate;
-            FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution.SelectedIndex].FrameSize;
-     
-            // Création du Eventhandler
-            FinalVideo.NewFrame += new NewFrameEventHandler(afficheImage);
-            FinalVideo.Start();
-            
-            // TODO: Test MJPEG
- 
-            if (FinalVideo.IsRunning == false)
-            {
-                MessageBox.Show("Erreur Ouverture camera");
-                return false;
-            }
-            
-            return true;
-        }
-        #endregion
-
-        #region ##### Gestions des images  #####
-        public void TraitementThread(object id)
-        {
-            while (true)
-            {
-                // Traitement et Affichage des images  
-                try
-                {
-                    if (ListeImage[(int)id] != null)
-                    {
-                        this.Invoke((TraitementImg)imgTraitment, ListeImage[(int)id]);
-                        ListeImage[(int)id] = null;
-                        
-                    }
-                }
-                catch { }
-                Thread.Sleep(10);
-            }
-            
-        }
-        private void afficheImage(object sender, NewFrameEventArgs eventArgs)
-        {
-            /* Affiche l'image recu par la WebCam */
-
-            // Instancie un Thread
-            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
-            lastThread++;
-            lastThread %=  nbThread;
-
-            // Traitement et Affichage des images   
-            try
-            {
-                if ((nbImageCapture % 10) == 0)
-                {
-                    this.Invoke((UpdateFPS)affichageFPS);
-                }
-            }
-            catch { }
-            
-            
-            nbImageCapture++;
-        }
-
-        public delegate void TraitementImg(ImgWebCam img);
-        public void imgTraitment(ImgWebCam img)
-        {
-           img.homographie(LimiteTerrain);
-           img.ColeurVersNB();
-           img.DetectionContour((short)numericUpDown1.Value);
-
-           Blobs.Text = "" + img.detectionGlyph(LimiteTerrain);
-           try
-           {
-               if (imageShow < img.getNumeroImg())
-               {
-                   imageShow = img.getNumeroImg();
-                   
-                   this.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), ImgContour);
-                   this.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), ImageReel);
-               }
-             
-            }
-            catch { }
-        }
-
-        public delegate void affichageImg(Bitmap img, PictureBox box);
-        public void imgAffiche(Bitmap img, PictureBox box)
-        {
-            /* Affichage de l'image dans la PictureBox*/
-            box.Image = img;
-        }
-        #endregion
-
-        #region ##### Définition terrain #####
-  
-        private void DelimitationTerain_CLK(object sender, EventArgs e)
-        {
-            LimiteTerrain.Clear();
-        }
-        private void ImageReel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (LimiteTerrain.Count < 5)
-            {
-                int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
-                int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
-
-                LimiteTerrain.Add(new IntPoint(abs, ord));
-            }
-        }
-
-        #endregion
-
-        #region ##### Gestions des FPS #####
-        public delegate void UpdateFPS();
-        public void affichageFPS()
-        {
-             double delaisImage = DateTime.Now.TimeOfDay.TotalMilliseconds - millLastPic;
-             millLastPic = DateTime.Now.TimeOfDay.TotalMilliseconds;
-
-             double FPS = 1 / delaisImage * 1000 * 10 + 1;
-
-             LblFPS.Text = FPS + " FPS";
-        }
-        #endregion
-
         #region ##### Gestions des actions de la fenêtre #####
         private void ValideCamera_Click(object sender, EventArgs e)
         {
-            int i;
-
-            /* Demande le démarage du flux video de la WebCam */
-            if( FinalVideo != null && FinalVideo.IsRunning)
-                FinalVideo.SignalToStop();
-   
-            if (ListeWebCam.Items.Count != 0 && ListeWebCam.SelectedIndex >= 0)
-            {
-                openWebCam(ListeWebCam.SelectedIndex);    
-            }
-
-            // Initialisation des threads
-            for (i = 0; i < nbThread; i++)
-            {
-                ListeThread[i] = new Thread(TraitementThread);
-                ListeThread[i].Start(i);
-            }
-
-            // Initialisatio du Thread de nettoyage
-            ThreadClean = new Thread(cleanBibliothequeGlyph);
-            ThreadClean.Start();
+            VP.openVideoFlux(ListeWebCam.SelectedIndex,Resolution.SelectedIndex);
         }
         private void BtnStop_Click(object sender, EventArgs e)
         {
-            if (FinalVideo != null && FinalVideo.IsRunning)
-            {
-                FinalVideo.SignalToStop();
-                for (int i = 0; i < nbThread; i++)
-                {
-                    ListeThread[i].Abort();
-                    ListeImage[i] = null;
-                }
-                ThreadClean.Abort();
-                nbImageCapture = 0;
-                imageShow = 0;
-
-            }
+            VP.closeVideoFlux();
         }
-
         private void ListeWebCam_SelectedIndexChanged(object sender, EventArgs e)
         {
             /* Chargement des nouvelles résolutions de la caméra sélectionnée */
-            chargementListeResolution(ListeWebCam.SelectedIndex);
+            VP.chargementListeResolution(ListeWebCam.SelectedIndex,Resolution);
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            /* Cargement d'une image locale */
-            Bitmap im = new Bitmap(@"C:\Users\maximeleblanc\Desktop\Img.png");
-            UnmanagedImage img2 = UnmanagedImage.FromManagedImage(im);
-            ImageReel.Image = img2.ToManagedImage();
-
-            imgTraitment(new ImgWebCam(im, imageShow + 1, tailleGlyph));
-
-        }
-
         #endregion 
+       
 
     }
 }

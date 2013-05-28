@@ -6,6 +6,7 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge;
 using AForge.Math.Geometry;
+using utils.Events;
 
 namespace video
 {
@@ -102,7 +103,7 @@ namespace video
         #endregion
 
         #region ##### Traitement Glyph #####
-        public int detectionGlyph(List<IntPoint> LimiteTerrain)
+        public int detectionGlyph()
         {
 
             int nbElement = 0;

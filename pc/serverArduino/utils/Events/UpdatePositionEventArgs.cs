@@ -5,6 +5,13 @@ using System.Text;
 
 namespace utils.Events
 {
+    #region #### Evennements ####
+    public delegate void UpdatePositionRobotEventHandler(object sender, UpdatePositionRobotEventArgs e);
+    public delegate void UpdatePositionCubesEventHandler(object sender, UpdatePositionCubesEventArgs e);
+    public delegate void UpdatePositionZonesEventHandler(object sender, UpdatePositionZonesEventArgs e);
+    public delegate void UpdatePositionZoneTravailEventHandler(object sender, UpdatePositionZoneTravailEventArgs e);
+    #endregion
+
     public struct PositionElement
     {
         // Positions en milimetres par rapport au coin Haut / Gauche de l'image
