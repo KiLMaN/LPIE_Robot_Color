@@ -23,11 +23,12 @@ namespace video
         protected UnmanagedImage imgContour;
         protected ulong numeroImage;
         const int stepSize = 3;
+        private int GlyphSize;
 
-        public ImgWebCam(Bitmap image, ulong noImage)
+        public ImgWebCam(Bitmap image, ulong noImage, int Size)
         {
             this.imgReel = image;
-           
+            this.GlyphSize = Size;
             this.numeroImage = noImage;
         }
 
@@ -122,15 +123,16 @@ namespace video
                         otsuThresholdFilter.ApplyInPlace(glyphImage);
 
                         // Reconnaissance du Glyph
-                        Glyph Gl = new Glyph(glyphImage);
+                        Glyph Gl = new Glyph(glyphImage, GlyphSize);
                         
                         Gl.ReconnaissanceGlyph(corners,imgNB);
                         imgContour = Gl.getImage();
                         // Si le Glyph est valide
-                        //  if (Gl.getIdentifiant() > 0)
+                        if (Gl.getIdentifiant() > 0)
                         {
                             // Coloration des contours des zones détectées
-                            //tmp.SetPixels(a, Color.Red);
+                            tmp.SetPixels(corners, Color.Red);
+                            nbElement++;
                         }
                     }
                 }

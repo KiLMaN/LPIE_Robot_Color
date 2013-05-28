@@ -16,6 +16,7 @@ namespace video
 {
     public partial class Form1 : Form
     {
+        public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
         private VideoCaptureDevice FinalVideo;
 
@@ -30,20 +31,27 @@ namespace video
         private Logger gLogger;
         double millLastPic = 0;
 
+        private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
         public Form1()
         {
             InitializeComponent();
             gLogger = new Logger();
+            gLogger.attachToRTB(Log);
             Logger.GlobalLogger = gLogger;
+            
+            // Initialisation de la bibliothéque de glyph
+            Bibliotheque.chargementListeGlyph();
+
             // Initialisation des webcams
             if (ListerWebCam() == false)
             {
                 button_Ok.IsAccessible = false;
                 button_Ok.Enabled = false;
                 MessageBox.Show("Aucune caméra détectée.");
+                Logger.GlobalLogger.error("Aucune caméra détectée");
             }
         }
-        /* -------------------------- Fonction WebCam -------------------------- */
+        #region  ##### WebCam #####
 
         protected Boolean ListerWebCam()
         {
@@ -95,9 +103,9 @@ namespace video
             }
             return true;
         }
+        #endregion
 
-
-        /* -------------------------- Gestions des images  -------------------------- */
+        #region ##### Gestions des images  #####
         public void TraitementThread(object id)
         {
             while (true)
@@ -122,7 +130,7 @@ namespace video
             /* Affiche l'image recu par la WebCam */
 
             // Instancie un Thread
-            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture);
+            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
             lastThread++;
             lastThread %=  nbThread;
 
@@ -152,22 +160,23 @@ namespace video
                if (imageShow < img.getNumeroImg())
                {
                    imageShow = img.getNumeroImg();
-                   this.Invoke((afficageImg)imgAffiche, img.getImageContour().ToManagedImage(), ImgContour);
-                   this.Invoke((afficageImg)imgAffiche, img.getImageReel(), ImgNb) ;
+                   this.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), ImgContour);
+                   this.Invoke((affichageImg)imgAffiche, img.getImageReel(), ImgNb);
                }
              
             }
             catch { }
         }
 
-        public delegate void afficageImg(Bitmap img, PictureBox box);
+        public delegate void affichageImg(Bitmap img, PictureBox box);
         public void imgAffiche(Bitmap img, PictureBox box)
         {
             /* Affichage de l'image dans la PictureBox*/
             box.Image = img;
         }
+        #endregion
 
-        /* -------------------------- Gestions des FPS  -------------------------- */
+        #region ##### Gestions des FPS #####
         public delegate void UpdateFPS();
         public void affichageFPS()
         {
@@ -178,9 +187,9 @@ namespace video
 
              LblFPS.Text = FPS + " FPS";
         }
+        #endregion
 
-
-        /* -------------------------- Gestions des actions de la fenêtre  -------------------------- */
+        #region ##### Gestions des actions de la fenêtre #####
         private void ValideCamera_Click(object sender, EventArgs e)
         {
             int i;
@@ -225,13 +234,16 @@ namespace video
 
         private void button1_Click(object sender, EventArgs e)
         {
+            /* Cargement d'une image locale */
             Bitmap im = new Bitmap(@"C:\Users\maximeleblanc\Desktop\Img.png");
             UnmanagedImage img = UnmanagedImage.FromManagedImage(im);
             ImgNb.Image = img.ToManagedImage();
 
-            imgTraitment(new ImgWebCam(im, imageShow + 1));
+            imgTraitment(new ImgWebCam(im, imageShow + 1, tailleGlyph));
 
         }
+
+        #endregion
 
     }
 }
