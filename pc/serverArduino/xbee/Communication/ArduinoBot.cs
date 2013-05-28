@@ -6,14 +6,14 @@ using utils;
 
 namespace xbee.Communication
 {
-    enum StateArduinoBot : byte
+    public enum StateArduinoBot : byte
     {
         STATE_ARDUINO_NONE          = 0x00, // Le robot ne fait rien
         STATE_ARDUINO_MOVE          = 0x01, // Le robot bouge
         STATE_ARDUINO_CLAW          = 0x02 // Le robot utilise ça pince
     }
     // Etat du protocole de communication du coté PC
-    enum StateArduinoComm : byte
+    public enum StateArduinoComm : byte
     {
         STATE_COMM_NONE             = 0x00, // Pas en attente
         STATE_COMM_WAIT_ACK         = 0x01, // En attente d'un ack
@@ -22,7 +22,7 @@ namespace xbee.Communication
     }
 
 
-    class ArduinoBot
+    public class ArduinoBot
     {
         /* Permet de retrouver le robot dans les listes */
         public static Predicate<ArduinoBot> ById(byte id)

@@ -8,7 +8,7 @@ using xbee.Communication.Events;
 
 namespace xbee.Communication
 {
-    class AutomateCommunication : IDisposable
+    public class AutomateCommunication : IDisposable
     {
         #region #### Evenement ####
         //Le délégué pour stocker les références sur les méthodes
@@ -73,6 +73,10 @@ namespace xbee.Communication
             _ThreadKeepAlive.Abort();
             _ThreadMessagesRecus.Abort();
             _SerialXbee.Dispose();
+        }
+        public void setXbeeApiMode(bool state)
+        {
+            _SerialXbee.setXbeeApiMode(state);
         }
 
         #region #### Evenements ####

@@ -47,6 +47,7 @@
             this.btn_left = new System.Windows.Forms.Button();
             this.btn_up = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this._listeArduinoConn = new System.Windows.Forms.ComboBox();
             this.CB_Xbee = new System.Windows.Forms.CheckBox();
             this.btn_ActualiserListePortSerie = new System.Windows.Forms.Button();
             this.liste_portSerie = new System.Windows.Forms.ComboBox();
@@ -55,7 +56,6 @@
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.TabLogs = new System.Windows.Forms.TabPage();
             this.txtbox_debug_log = new System.Windows.Forms.RichTextBox();
-            this._listeArduinoConn = new System.Windows.Forms.ComboBox();
             this.Tabs.SuspendLayout();
             this.TabControle.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -318,6 +318,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Configuration";
             // 
+            // _listeArduinoConn
+            // 
+            this._listeArduinoConn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._listeArduinoConn.FormattingEnabled = true;
+            this._listeArduinoConn.Location = new System.Drawing.Point(66, 73);
+            this._listeArduinoConn.Name = "_listeArduinoConn";
+            this._listeArduinoConn.Size = new System.Drawing.Size(88, 21);
+            this._listeArduinoConn.TabIndex = 9;
+            this._listeArduinoConn.SelectedIndexChanged += new System.EventHandler(this._listeArduinoConn_SelectedIndexChanged);
+            // 
             // CB_Xbee
             // 
             this.CB_Xbee.AutoSize = true;
@@ -329,6 +339,7 @@
             this.CB_Xbee.TabIndex = 8;
             this.CB_Xbee.Text = "XbeeAPI";
             this.CB_Xbee.UseVisualStyleBackColor = true;
+            this.CB_Xbee.CheckedChanged += new System.EventHandler(this.CB_Xbee_CheckedChanged);
             // 
             // btn_ActualiserListePortSerie
             // 
@@ -345,10 +356,6 @@
             // 
             this.liste_portSerie.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.liste_portSerie.FormattingEnabled = true;
-            this.liste_portSerie.Items.AddRange(new object[] {
-            "aze",
-            "zae",
-            "rfdqs"});
             this.liste_portSerie.Location = new System.Drawing.Point(101, 19);
             this.liste_portSerie.Name = "liste_portSerie";
             this.liste_portSerie.Size = new System.Drawing.Size(134, 21);
@@ -402,16 +409,6 @@
             this.txtbox_debug_log.Size = new System.Drawing.Size(546, 298);
             this.txtbox_debug_log.TabIndex = 0;
             this.txtbox_debug_log.Text = "";
-            // 
-            // _listeArduinoConn
-            // 
-            this._listeArduinoConn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this._listeArduinoConn.FormattingEnabled = true;
-            this._listeArduinoConn.Location = new System.Drawing.Point(66, 73);
-            this._listeArduinoConn.Name = "_listeArduinoConn";
-            this._listeArduinoConn.Size = new System.Drawing.Size(88, 21);
-            this._listeArduinoConn.TabIndex = 9;
-            this._listeArduinoConn.SelectedIndexChanged += new System.EventHandler(this._listeArduinoConn_SelectedIndexChanged);
             // 
             // Form1
             // 

@@ -168,9 +168,19 @@ namespace xbee
                 {
                     Logger.GlobalLogger.debug("Ouverture du port : " + (string)liste_portSerie.SelectedItem,1);
                     _AutomateComm.OpenSerialPort((string)liste_portSerie.SelectedItem);
-                    btn_connection.Text = "Fermeture";
-                    liste_portSerie.Enabled = false;
-                    btn_ActualiserListePortSerie.Enabled = false;
+                    if (_AutomateComm.IsSerialPortOpen())
+                    {
+                        btn_connection.Text = "Fermeture";
+                        liste_portSerie.Enabled = false;
+                        btn_ActualiserListePortSerie.Enabled = false;
+                    }
+                    else
+                    {
+                        Logger.GlobalLogger.error("Erreur lors de l'ouverture du port série !");
+                        btn_connection.Text = "Connection";
+                        liste_portSerie.Enabled = true;
+                        btn_ActualiserListePortSerie.Enabled = true;
+                    }
                 }
                 catch (Exception E)
                 {
@@ -296,6 +306,11 @@ namespace xbee
         {
             _CurrentArduinoId = Convert.ToByte(_listeArduinoConn.SelectedItem);
             Invoke(new d_updateStateRobot(updateStateRobot),_ArduinoManager.getArduinoBotById(_CurrentArduinoId).Connected);
+        }
+
+        private void CB_Xbee_CheckedChanged(object sender, EventArgs e)
+        {
+            _AutomateComm.setXbeeApiMode(CB_Xbee.Checked);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace xbee.Communication
     /* Structure de la trame */
     public struct TrameProtocole
     {
-       
+
         public byte src;
         public byte dst;
         public ushort num;
@@ -81,189 +81,184 @@ namespace xbee.Communication
 
     /*class MessagesCommunication
     {*/
-       
 
-        //private ushort _cpt = 0;
-     
-       
-        #region #### Globales Robots ####
-        public enum IDSensorsArduino : byte
-        {
-            IR = 0x01,
-            UltraSon = 0x02
-        };
-        #endregion
+    #region #### Globales Robots ####
+    public enum IDSensorsArduino : byte
+    {
+        IR = 0x01,
+        UltraSon = 0x02
+    };
+    #endregion
 
-        #region #### Enumeration Messages Headers ####
-        public enum PCtoEMBmessHeads : byte
-        {
-            TURN = 0x51,
-            MOVE = 0x52,
-            CLOSE_CLAW = 0x61,
-            OPEN_CLAW = 0x62,
-            ASK_SENSOR = 0x31,
-            ASK_PING = 0x21,
-            RESP_CONN = 0x11
-        };
-        public enum EMBtoPCmessHeads : byte
-        {
-            ASK_CONN = 0x12,
-            RESP_PING = 0x22,
-            RESP_SENSOR = 0x32,
-            ACK = 0x41
-        };
-        #endregion
+    #region #### Enumeration Messages Headers ####
+    public enum PCtoEMBmessHeads : byte
+    {
+        TURN = 0x51,
+        MOVE = 0x52,
+        CLOSE_CLAW = 0x61,
+        OPEN_CLAW = 0x62,
+        ASK_SENSOR = 0x31,
+        ASK_PING = 0x21,
+        RESP_CONN = 0x11
+    };
+    public enum EMBtoPCmessHeads : byte
+    {
+        ASK_CONN = 0x12,
+        RESP_PING = 0x22,
+        RESP_SENSOR = 0x32,
+        ACK = 0x41
+    };
+    #endregion
 
-        #region #### Global Objects ####
-        /** Message de Base :
-         *  Contient un Header et une fonction getBytes() qui retourne la liste des bytes de la classe
-         **/
-        public class MessageProtocol
-        {
-            public byte headerMess;
+    #region #### Global Objects ####
+    /** Message de Base :
+        *  Contient un Header et une fonction getBytes() qui retourne la liste des bytes de la classe
+        **/
+    public class MessageProtocol
+    {
+        public byte headerMess;
 
-            public virtual byte[] getBytes()
-            {
-                return new byte[] { this.headerMess };
-            }
+        public virtual byte[] getBytes()
+        {
+            return new byte[] { this.headerMess };
         }
+    }
 
-        public abstract class PCtoEMBmess : MessageProtocol
-        {
-        }
-        public abstract class EMBtoPCmess : MessageProtocol
-        {
-        }
-        #endregion
+    public abstract class PCtoEMBmess : MessageProtocol
+    {
+    }
+    public abstract class EMBtoPCmess : MessageProtocol
+    {
+    }
+    #endregion
 
-        #region #### PCtoEMB Structures ####
-        /* Message En provenance du serveur vers les Arduinos */
+    #region #### PCtoEMB Structures ####
+    /* Message En provenance du serveur vers les Arduinos */
 
 
-        /* Connection Managment */
-        public class PCtoEMBMessageRespConn : PCtoEMBmess
+    /* Connection Managment */
+    public class PCtoEMBMessageRespConn : PCtoEMBmess
+    {
+        public byte state = 0;
+        public override byte[] getBytes()
         {
-            public byte state = 0;
-            public override byte[] getBytes()
-            {
-                byte[] data = { this.state };
-                return base.getBytes().Concat(data).ToArray();
-            }
+            byte[] data = { this.state };
+            return base.getBytes().Concat(data).ToArray();
         }
-        public class PCtoEMBMessagePing : PCtoEMBmess
-        {
+    }
+    public class PCtoEMBMessagePing : PCtoEMBmess
+    {
 
-        }
+    }
 
-        /* Deplacement Managment */
-        public class PCtoEMBMessageTurn : PCtoEMBmess
+    /* Deplacement Managment */
+    public class PCtoEMBMessageTurn : PCtoEMBmess
+    {
+        public byte direction;
+        public byte angle;
+        public override byte[] getBytes()
         {
-            public byte direction;
-            public byte angle;
-            public override byte[] getBytes()
-            {
-                byte[] data = { this.direction, this.angle };
-                return base.getBytes().Concat(data).ToArray();
-            }
+            byte[] data = { this.direction, this.angle };
+            return base.getBytes().Concat(data).ToArray();
         }
-        public class PCtoEMBMessageMove : PCtoEMBmess
+    }
+    public class PCtoEMBMessageMove : PCtoEMBmess
+    {
+        public byte sens;
+        public byte speed;
+        public byte distance;
+        public override byte[] getBytes()
         {
-            public byte sens;
-            public byte speed;
-            public byte distance;
-            public override byte[] getBytes()
-            {
-                byte[] data = { this.sens, this.speed, this.distance };
-                return base.getBytes().Concat(data).ToArray();
-            }
+            byte[] data = { this.sens, this.speed, this.distance };
+            return base.getBytes().Concat(data).ToArray();
         }
+    }
 
-        /* Claw Managment */
-        public class PCtoEMBMessageOpenClaw : PCtoEMBmess
-        {
-        }
-        public class PCtoEMBMessageCloseClaw : PCtoEMBmess
-        {
-        }
+    /* Claw Managment */
+    public class PCtoEMBMessageOpenClaw : PCtoEMBmess
+    {
+    }
+    public class PCtoEMBMessageCloseClaw : PCtoEMBmess
+    {
+    }
 
-        /* Sensor Managment */
-        public class PCtoEMBMessageAskSensor : PCtoEMBmess
+    /* Sensor Managment */
+    public class PCtoEMBMessageAskSensor : PCtoEMBmess
+    {
+        public byte idSensor = 0;
+        public override byte[] getBytes()
         {
-            public byte idSensor = 0;
-            public override byte[] getBytes()
-            {
-                byte[] data = { this.idSensor };
-                return base.getBytes().Concat(data).ToArray();
-            }
+            byte[] data = { this.idSensor };
+            return base.getBytes().Concat(data).ToArray();
         }
+    }
 
-        #endregion
+    #endregion
 
-        #region #### EMBtoPC Structures ####
-        /* Message en provenance des Arduino à destination du PC */
+    #region #### EMBtoPC Structures ####
+    /* Message en provenance des Arduino à destination du PC */
 
-        /* Connection Managment */
-        public class EMBtoPCMessageAskConn : EMBtoPCmess
+    /* Connection Managment */
+    public class EMBtoPCMessageAskConn : EMBtoPCmess
+    {
+        public static explicit operator EMBtoPCMessageAskConn(byte[] data) // cast Explicite
         {
-            public static explicit operator EMBtoPCMessageAskConn(byte[] data) // cast Explicite
-            {
-                EMBtoPCMessageAskConn ret = new EMBtoPCMessageAskConn();
-                ret.headerMess = data[0];
-                return ret;
-            }
+            EMBtoPCMessageAskConn ret = new EMBtoPCMessageAskConn();
+            ret.headerMess = data[0];
+            return ret;
         }
-        public class EMBtoPCMessageRespPing : EMBtoPCmess
+    }
+    public class EMBtoPCMessageRespPing : EMBtoPCmess
+    {
+        public static explicit operator EMBtoPCMessageRespPing(byte[] data) // cast Explicite
         {
-            public static explicit operator EMBtoPCMessageRespPing(byte[] data) // cast Explicite
-            {
-                EMBtoPCMessageRespPing ret = new EMBtoPCMessageRespPing();
-                ret.headerMess = data[0];
-                return ret;
-            }
+            EMBtoPCMessageRespPing ret = new EMBtoPCMessageRespPing();
+            ret.headerMess = data[0];
+            return ret;
         }
+    }
 
-        /* Sensor Managment */
-        public class EMBtoPCMessageRespSensor : EMBtoPCmess
+    /* Sensor Managment */
+    public class EMBtoPCMessageRespSensor : EMBtoPCmess
+    {
+        public byte idSensor = 0;
+        public byte valueSensor = 0;
+        public override byte[] getBytes()
         {
-            public byte idSensor = 0;
-            public byte valueSensor = 0;
-            public override byte[] getBytes()
-            {
-                byte[] data = { this.idSensor, this.valueSensor };
-                return base.getBytes().Concat(data).ToArray();
-            }
-            public static explicit operator EMBtoPCMessageRespSensor(byte[] data) // cast Explicite
-            {
-                EMBtoPCMessageRespSensor ret = new EMBtoPCMessageRespSensor();
-                ret.headerMess = data[0];
-                ret.idSensor = data[1];
-                ret.valueSensor = data[2];
-                return ret;
-            }
+            byte[] data = { this.idSensor, this.valueSensor };
+            return base.getBytes().Concat(data).ToArray();
         }
+        public static explicit operator EMBtoPCMessageRespSensor(byte[] data) // cast Explicite
+        {
+            EMBtoPCMessageRespSensor ret = new EMBtoPCMessageRespSensor();
+            ret.headerMess = data[0];
+            ret.idSensor = data[1];
+            ret.valueSensor = data[2];
+            return ret;
+        }
+    }
 
-        /* Global Ack */
-        public class EMBtoPCMessageGlobalAck : EMBtoPCmess
+    /* Global Ack */
+    public class EMBtoPCMessageGlobalAck : EMBtoPCmess
+    {
+        public ushort idTrame = 0;
+        public byte valueAck = 0;
+        public override byte[] getBytes()
         {
-            public ushort idTrame = 0;
-            public byte valueAck = 0;
-            public override byte[] getBytes()
-            {
-                byte[] data = { (byte)(this.idTrame >> 8), (byte)(this.idTrame | 0xFF), this.valueAck };
-                return base.getBytes().Concat(data).ToArray();
-            }
-            public static explicit operator EMBtoPCMessageGlobalAck(byte[] data) // cast Explicite
-            {
-                EMBtoPCMessageGlobalAck ret = new EMBtoPCMessageGlobalAck();
-                ret.headerMess = data[0];
-                ret.idTrame = (ushort)(data[1] << 8);
-                ret.idTrame += (ushort)data[2];
-                ret.valueAck = data[3];
-                return ret;
-            }
+            byte[] data = { (byte)(this.idTrame >> 8), (byte)(this.idTrame | 0xFF), this.valueAck };
+            return base.getBytes().Concat(data).ToArray();
         }
-        #endregion
-    /*}*/
+        public static explicit operator EMBtoPCMessageGlobalAck(byte[] data) // cast Explicite
+        {
+            EMBtoPCMessageGlobalAck ret = new EMBtoPCMessageGlobalAck();
+            ret.headerMess = data[0];
+            ret.idTrame = (ushort)(data[1] << 8);
+            ret.idTrame += (ushort)data[2];
+            ret.valueAck = data[3];
+            return ret;
+        }
+    }
+    #endregion
 
     class MessagesUtils
     {

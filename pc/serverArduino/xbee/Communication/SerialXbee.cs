@@ -64,6 +64,11 @@ namespace xbee.Communication
             _XbeeAPI.Dispose();
         }
 
+        public void setXbeeApiMode(bool state)
+        {
+            _XbeeAPI.ApiEnabled = state;
+        }
+
         #region #### Gestion Port Série ####
         public void SetSerialConnexion(bool state)
         {

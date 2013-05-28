@@ -6,7 +6,7 @@ using xbee.Communication;
 
 namespace xbee.Communication.Events
 {
-    class NewTrameArduinoReceveidEventArgs : EventArgs
+    public class NewTrameArduinoReceveidEventArgs : EventArgs
     {
         private MessageProtocol _message;
         private ArduinoBot _source;
