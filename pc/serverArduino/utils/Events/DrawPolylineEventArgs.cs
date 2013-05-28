@@ -5,16 +5,20 @@ using System.Text;
 
 namespace utils.Events
 {
+    #region #### Evenement ####
+    public delegate void DrawPolylineEventHandler(object sender, DrawPolylineEventArgs e);
+    #endregion
+
     public class DrawPolylineEventArgs
     {
-        private PolyligneDessin _polyligne;
+        private List<PolyligneDessin> _ListPolylignes;
 
-        public DrawPolylineEventArgs(PolyligneDessin Polyligne)
+        public DrawPolylineEventArgs(List<PolyligneDessin> ListPolyligne)
         {
-            _polyligne = Polyligne;
+            _ListPolylignes = ListPolyligne;
         }
 
-        public PolyligneDessin Polyligne
-        {get { return _polyligne; }}
+        public List<PolyligneDessin> ListPolyligne
+        { get { return _ListPolylignes; } }
     }
 }
