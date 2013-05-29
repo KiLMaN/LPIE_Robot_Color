@@ -6,7 +6,7 @@ using utils.Events;
 
 namespace IA
 {
-    class IntelArt
+    public class IntelArt
     {
         #region #### Evenements ####
         // Evenement pour le dessins sur l'image 

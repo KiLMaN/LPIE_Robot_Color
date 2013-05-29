@@ -13,7 +13,7 @@ using System.Drawing;
 
 namespace video
 {
-    class VideoProg : IDisposable
+    public class VideoProg : IDisposable
     {
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
