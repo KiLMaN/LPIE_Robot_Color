@@ -13,7 +13,7 @@ using System.Drawing;
 
 namespace video
 {
-    class VideoProg : IDisposable
+    public class VideoProg : IDisposable
     {
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
@@ -22,16 +22,17 @@ namespace video
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
 
-        private const int nbThread = 1;
+        private const int nbThread = 3;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
 
-        private Logger gLogger = new Logger();
+        //private Logger gLogger = new Logger();
         private Thread ThreadClean;
         double millLastPic = 0;
 
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
+        private List<PolyligneDessin> polyline = null;
 
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
@@ -48,10 +49,12 @@ namespace video
             this.FPS = fps;
             this.numericUpDown1 = Filtre;
             this.Debug = d;
-            Logger.GlobalLogger = gLogger;
+            if(Logger.GlobalLogger == null)
+                Logger.GlobalLogger = new Logger();
             Bibliotheque.chargementListeGlyph();
         }
         #endregion
+        
         #region ##### Communication #####
         public event UpdatePositionRobotEventHandler OnUpdatePositionRobots;
         public event UpdatePositionCubesEventHandler OnUpdatePositionCubes;
@@ -60,7 +63,7 @@ namespace video
 
         public void onDrawPolyline(object sender, DrawPolylineEventArgs s)
         {
-
+            polyline = s.ListPolyligne;
         }
         private void envoieListe(List<PositionRobot> lst)
         {
@@ -133,7 +136,7 @@ namespace video
             FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
             FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution].FrameRate;
             FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution].FrameSize;
-
+            FinalVideo.DisplayPropertyPage(IntPtr.Zero);
             // Création du Eventhandler
             FinalVideo.NewFrame += new NewFrameEventHandler(afficheImage);
             FinalVideo.Start();
@@ -165,7 +168,7 @@ namespace video
                     }
                 }
                 catch { }
-                Thread.Sleep(10);
+                //Thread.Sleep(10);
             }
 
         }
@@ -174,7 +177,7 @@ namespace video
             /* Affiche l'image recu par la WebCam */
 
             // Instancie un Thread
-            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
+            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph,polyline);
             lastThread++;
             lastThread %= nbThread;
 

@@ -20,9 +20,13 @@ namespace video
         public Form1()
         {
             InitializeComponent();
+            Logger l = new Logger();
+            l.attachToRTB(Log);
+            Logger.GlobalLogger = l;
             VP = new VideoProg(ImageReel, ImgContour, numericUpDown1,LblFPS,Blobs);
             VP.ListerWebCam(ListeWebCam,Resolution);
             this.FormClosing += new FormClosingEventHandler(Form1Close);
+            
         }
         public void Form1Close(object e, FormClosingEventArgs s)
         {
