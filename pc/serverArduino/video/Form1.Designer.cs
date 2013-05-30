@@ -32,21 +32,25 @@
             this.Blobs = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.Log = new System.Windows.Forms.RichTextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // ImageReel
             // 
             this.ImageReel.Location = new System.Drawing.Point(6, 21);
             this.ImageReel.Name = "ImageReel";
-            this.ImageReel.Size = new System.Drawing.Size(413, 327);
+            this.ImageReel.Size = new System.Drawing.Size(448, 327);
             this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageReel.TabIndex = 0;
             this.ImageReel.TabStop = false;
@@ -158,10 +162,11 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 78);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(915, 567);
+            this.tabControl1.Size = new System.Drawing.Size(1123, 738);
             this.tabControl1.TabIndex = 15;
             // 
             // tabPage1
@@ -173,10 +178,19 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(907, 541);
+            this.tabPage1.Size = new System.Drawing.Size(1115, 712);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Image";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // imageBox1
+            // 
+            this.imageBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageBox1.Location = new System.Drawing.Point(3, 3);
+            this.imageBox1.Name = "imageBox1";
+            this.imageBox1.Size = new System.Drawing.Size(1109, 706);
+            this.imageBox1.TabIndex = 2;
+            this.imageBox1.TabStop = false;
             // 
             // tabPage2
             // 
@@ -197,11 +211,22 @@
             this.Log.TabIndex = 0;
             this.Log.Text = "";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.imageBox1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1115, 712);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "tabPage3";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(941, 657);
+            this.ClientSize = new System.Drawing.Size(1137, 828);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.Blobs);
             this.Controls.Add(this.BtnStop);
@@ -219,7 +244,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -243,6 +270,8 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.RichTextBox Log;
+        private Emgu.CV.UI.ImageBox imageBox1;
+        private System.Windows.Forms.TabPage tabPage3;
     }
 }
 
