@@ -11,10 +11,17 @@ using System.Windows.Forms;
 using utils.Events;
 using System.Drawing;
 
+using Emgu.CV;
+using Emgu;
+using Emgu.Util;
+using Emgu.CV.UI;
+
 namespace video
 {
-    class VideoProg : IDisposable
+    public class VideoProg : IDisposable
     {
+
+
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
@@ -27,17 +34,24 @@ namespace video
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
 
-        private Logger gLogger = new Logger();
+        //private Logger gLogger = new Logger();
         private Thread ThreadClean;
         double millLastPic = 0;
 
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
+        private List<PolyligneDessin> polyline = null;
 
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
         private Label FPS = null;
         private Label Debug = null;
+
+// OPENCV
+        private Capture _capture = null; //Camera
+        public ImageBox imageDebug;
+        public HistogramBox histogramme;
+
 
         #region ##### Initialisation #####
         public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps, Label d)
@@ -48,10 +62,12 @@ namespace video
             this.FPS = fps;
             this.numericUpDown1 = Filtre;
             this.Debug = d;
-            Logger.GlobalLogger = gLogger;
+            if(Logger.GlobalLogger == null)
+                Logger.GlobalLogger = new Logger();
             Bibliotheque.chargementListeGlyph();
         }
         #endregion
+        
         #region ##### Communication #####
         public event UpdatePositionRobotEventHandler OnUpdatePositionRobots;
         public event UpdatePositionCubesEventHandler OnUpdatePositionCubes;
@@ -60,7 +76,7 @@ namespace video
 
         public void onDrawPolyline(object sender, DrawPolylineEventArgs s)
         {
-
+            polyline = s.ListPolyligne;
         }
         private void envoieListe(List<PositionRobot> lst)
         {
@@ -97,6 +113,7 @@ namespace video
 
         public void ListerWebCam(ComboBox lstWebCam, ComboBox LstResolution)
         {
+
             /* Retourne la liste des webcams connecté en usb */
             VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             lstWebCam.Items.Clear();
@@ -127,13 +144,28 @@ namespace video
         protected Boolean openWebCam(int NomCamera, int Resolution)
         {
             LimiteTerrain.Clear();
-            /* Ouvre le flux vidéo et initialise le EventHandler */
 
+            // TODO : selection de la caméra
+            _capture = new Capture(); // Utiliser la webcam de base
+            // Evenement lors de la reception d'une image
+            _capture.ImageGrabbed += ProcessFrame;
+
+            // Passage en MPG
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FOURCC, CvInvoke.CV_FOURCC('M','J','P','G'));
+            // Resolution
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1920);
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT,1080);
+           
+            _capture.Start();
+           
+
+            /* Ouvre le flux vidéo et initialise le EventHandler */
+            /*
             // Creation de la source vidéo
             FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
             FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution].FrameRate;
             FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution].FrameSize;
-
+            FinalVideo.DisplayPropertyPage(IntPtr.Zero);
             // Création du Eventhandler
             FinalVideo.NewFrame += new NewFrameEventHandler(afficheImage);
             FinalVideo.Start();
@@ -145,11 +177,10 @@ namespace video
                 MessageBox.Show("Erreur Ouverture camera");
                 return false;
             }
-
+            */
             return true;
         }
         #endregion
-
         #region ##### Gestions des images  #####
         public void TraitementThread(object id)
         {
@@ -169,12 +200,28 @@ namespace video
             }
 
         }
+        //public int numimage = 0;
+        private void ProcessFrame(object sender, EventArgs arg)
+        {
+            try
+            {
+                Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
+                imageDebug.Image = tmp ;
+                afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+            }
+            catch (Exception e)
+            {
+                Logger.GlobalLogger.error(e.Message);
+            }
+        }
+
+
         private void afficheImage(object sender, NewFrameEventArgs eventArgs)
         {
             /* Affiche l'image recu par la WebCam */
 
             // Instancie un Thread
-            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
+            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph,polyline);
             lastThread++;
             lastThread %= nbThread;
 
@@ -283,6 +330,7 @@ namespace video
         }
         public void closeVideoFlux()
         {
+            _capture.Stop();
             if (FinalVideo != null && FinalVideo.IsRunning)
             {
                 FinalVideo.SignalToStop();

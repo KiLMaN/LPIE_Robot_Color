@@ -7,6 +7,7 @@ using AForge.Imaging.Filters;
 using AForge;
 using AForge.Math.Geometry;
 using utils.Events;
+using utils;
 
 namespace video
 {
@@ -17,16 +18,18 @@ namespace video
         protected UnmanagedImage imgNB;
         protected UnmanagedImage imgContour;
 
+        protected List<PolyligneDessin> ListeDessin = null;
         protected ulong numeroImage;
         protected bool[] AutAffichage = new bool[] { true, true, true }; // ContourGlyph, CentreGlyph, PositionPince
         const int stepSize = 3;
         private int GlyphSize;
-        
-        public ImgWebCam(Bitmap image, ulong noImage, int Size)
+
+        public ImgWebCam(Bitmap image, ulong noImage, int Size, List<PolyligneDessin> polyline)
         {
             this.imgReel = image;
             this.GlyphSize = Size;
             this.numeroImage = noImage;
+            this.ListeDessin = polyline;
         }
         private void setter(Bitmap image, ulong noImage)
         {
@@ -63,6 +66,14 @@ namespace video
                     img.SetPixel(i, j, col);
                 }
             }
+        }
+        protected void dessinePolyline(UnmanagedImage img)
+        {
+            for (int i = 0; i < ListeDessin.Count; i++)
+            {
+               // Dessiner
+            }
+
         }
 
         #region ##### Traitement image #####
@@ -207,6 +218,7 @@ namespace video
                     }
                 }
             }
+            //dessinePolyline(UnImgReel);
             return nbElement;
         }
         #endregion
