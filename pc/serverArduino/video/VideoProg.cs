@@ -34,7 +34,6 @@ namespace video
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
         private List<PolyligneDessin> polyline = new List<PolyligneDessin>();
         private List<PositionRobot> LstRobot = new List<PositionRobot>();
-        private PositionRobot p = new PositionRobot();
         
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
@@ -99,28 +98,41 @@ namespace video
         {
             if (LstTmp == null)
                 return;
+            List<PositionRobot> ListEnvoi = new List<PositionRobot>();
             for (int i = 0; i < LstTmp.Count; i++)
             {
                 bool Trouve = false;
-
+                PositionRobot tmp = LstTmp[i];
                 for (int j = 0; j < LstRobot.Count; j++)
                 {
                     if (LstRobot[j].Identifiant == LstTmp[i].Identifiant)
                     {
-                        PositionRobot tmp =  LstTmp[i];
-                        p.Position.X = (int)(p.Position.X * ratioCmParPixel[0]);
-                        p.Position.Y = (int)(p.Position.Y * ratioCmParPixel[1]);
-                        LstRobot[j] = p;
+                        IntPoint itmp = new IntPoint((int)(LstTmp[i].Position.X * ratioCmParPixel[0]),(int)(LstTmp[i].Position.Y * ratioCmParPixel[1]));
+                        IntPoint p = new IntPoint(LstRobot[j].Position.X, LstRobot[j].Position.Y);
+                        if (p.DistanceTo(itmp) > 2) //  Sueil a 2 cm
+                        {
+                            tmp.DerniereModification = DateTime.Now;
+                            tmp.Position.X = itmp.X;
+                            tmp.Position.Y = itmp.Y;
+                            LstRobot[j] = tmp;
+                            ListEnvoi.Add(tmp);
+                        }
                         Trouve = true;
                         break;
                     }
                 }
                 if (Trouve == false)
                 {
-                    LstRobot.Add(LstTmp[i]);
+                    tmp.DerniereModification = DateTime.Now;
+                    ListEnvoi.Add(tmp);
+                    LstRobot.Add(tmp);
                 }
             }
-            envoieListe(LstRobot);
+            if (ListEnvoi.Count > 0)
+            {
+                Logger.GlobalLogger.debug("" + ListEnvoi.Count);
+                envoieListe(ListEnvoi);
+            }
         }
         private void UpdateTailleTerain(int x, int y)
         {
@@ -130,15 +142,6 @@ namespace video
             Pzt.B.X = (int)(x * ratioCmParPixel[0]);
             Pzt.B.Y = (int)(y * ratioCmParPixel[1]);
             envoieListe(Pzt);
-        }
-        #endregion
-
-        #region ##### Bibliotheque Glyphs #####
-        protected void cleanBibliothequeGlyph()
-        {
-            /* Nettoye les glyphs disparut de la bibliotheque de Glyphs */
-            // TODO: Netoyer la bibliotheque de glyph
-            Thread.Sleep(2000);
         }
         #endregion
 
@@ -270,8 +273,7 @@ namespace video
             }
             else
             {
-                // TOTO: Remplacer true par false;
-                img.detectionGlyph(true);
+                img.detectionGlyph(false);
             }
             
 
@@ -358,7 +360,7 @@ namespace video
             }
 
             // Initialisatio du Thread de nettoyage
-            ThreadClean = new Thread(cleanBibliothequeGlyph);
+            ThreadClean = new Thread(clean);
             ThreadClean.Start();
         }
         public void closeVideoFlux()
@@ -374,6 +376,37 @@ namespace video
                 ThreadClean.Abort();
                 nbImageCapture = 0;
                 imageShow = 0;
+            }
+        }
+
+        protected void clean()
+        {
+            List<PositionRobot> pos = new List<PositionRobot>();
+            while (true)
+            {
+                pos.Clear();
+                int i = 0;
+                TimeSpan t;
+                /* Nettoye les glyphs disparut de la bibliotheque de Glyphs */
+                foreach (PositionRobot tmp in LstRobot)
+                {
+                    t =  DateTime.Now - tmp.DerniereModification;
+                    if (t.Seconds > 10)
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        pos.Add(tmp);
+                    }
+                }
+                if (i > 0)
+                {
+                    LstRobot = pos;
+                    Logger.GlobalLogger.debug("Suppression de " + i + " Glyphs");
+                }
+                
+                Thread.Sleep(10000);
             }
         }
         public void Dispose()
