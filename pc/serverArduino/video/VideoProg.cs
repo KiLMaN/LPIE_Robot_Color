@@ -21,19 +21,21 @@ namespace video
         private VideoCaptureDevice FinalVideo;
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
+        private double[] ratioCmParPixel;
 
         private const int nbThread = 3;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
 
-        //private Logger gLogger = new Logger();
         private Thread ThreadClean;
         double millLastPic = 0;
 
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
-        private List<PolyligneDessin> polyline = null;
-
+        private List<PolyligneDessin> polyline = new List<PolyligneDessin>();
+        private List<PositionRobot> LstRobot = new List<PositionRobot>();
+        private PositionRobot p = new PositionRobot();
+        
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
@@ -67,23 +69,67 @@ namespace video
         }
         private void envoieListe(List<PositionRobot> lst)
         {
+            if (OnUpdatePositionRobots == null)
+                return;
             UpdatePositionRobotEventArgs a = new UpdatePositionRobotEventArgs(lst);
             OnUpdatePositionRobots(this, a);
         }
         private void envoieListe(List<PositionElement> lst)
         {
+            if (OnUpdatePositionCubes == null)
+                return;
             UpdatePositionCubesEventArgs a = new UpdatePositionCubesEventArgs(lst);
             OnUpdatePositionCubes(this, a);
         }
         private void envoieListe(List<PositionZone> lst)
         {
+            if (OnUpdatePositionZones == null)
+                return;
             UpdatePositionZonesEventArgs a = new UpdatePositionZonesEventArgs(lst);
             OnUpdatePositionZones(this, a);
         }
         private void envoieListe(PositionZoneTravail PositionTravail)
         {
+            if (OnUpdatePositionZoneTravail == null)
+                return;
             UpdatePositionZoneTravailEventArgs a = new UpdatePositionZoneTravailEventArgs(PositionTravail);
             OnUpdatePositionZoneTravail(this, a);
+        }
+        private void mergePosition(List<PositionRobot> LstTmp)
+        {
+            if (LstTmp == null)
+                return;
+            for (int i = 0; i < LstTmp.Count; i++)
+            {
+                bool Trouve = false;
+
+                for (int j = 0; j < LstRobot.Count; j++)
+                {
+                    if (LstRobot[j].Identifiant == LstTmp[i].Identifiant)
+                    {
+                        PositionRobot tmp =  LstTmp[i];
+                        p.Position.X = (int)(p.Position.X * ratioCmParPixel[0]);
+                        p.Position.Y = (int)(p.Position.Y * ratioCmParPixel[1]);
+                        LstRobot[j] = p;
+                        Trouve = true;
+                        break;
+                    }
+                }
+                if (Trouve == false)
+                {
+                    LstRobot.Add(LstTmp[i]);
+                }
+            }
+            envoieListe(LstRobot);
+        }
+        private void UpdateTailleTerain(int x, int y)
+        {
+            PositionZoneTravail Pzt = new PositionZoneTravail();
+            Pzt.A.X = 0;
+            Pzt.A.Y = 0;
+            Pzt.B.X = (int)(x * ratioCmParPixel[0]);
+            Pzt.B.Y = (int)(y * ratioCmParPixel[1]);
+            envoieListe(Pzt);
         }
         #endregion
 
@@ -130,6 +176,7 @@ namespace video
         protected Boolean openWebCam(int NomCamera, int Resolution)
         {
             LimiteTerrain.Clear();
+            ratioCmParPixel = new double[2] { 1, 1 };
             /* Ouvre le flux vidéo et initialise le EventHandler */
 
             // Creation de la source vidéo
@@ -148,7 +195,7 @@ namespace video
                 MessageBox.Show("Erreur Ouverture camera");
                 return false;
             }
-
+            UpdateTailleTerain(FinalVideo.DesiredFrameSize.Width, FinalVideo.DesiredFrameSize.Height);
             return true;
         }
         #endregion
@@ -167,8 +214,11 @@ namespace video
                         ListeImage[(int)id] = null;
                     }
                 }
-                catch { }
-                //Thread.Sleep(10);
+                catch (Exception e)
+                {
+                    Logger.GlobalLogger.error(e.Message);
+                }
+                Thread.Sleep(10);
             }
 
         }
@@ -177,7 +227,7 @@ namespace video
             /* Affiche l'image recu par la WebCam */
 
             // Instancie un Thread
-            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph,polyline);
+            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
             lastThread++;
             lastThread %= nbThread;
 
@@ -206,22 +256,40 @@ namespace video
             img.homographie(LimiteTerrain);
             img.ColeurVersNB();
             img.DetectionContour((short)numericUpDown1.Value);
-            Debug.Invoke((Deb)Deb2, "" + img.detectionGlyph());
 
-            try
+
+            if (ratioCmParPixel[0] == 1 && ratioCmParPixel[1] == 1)
             {
+                double[] tmp = img.detectionGlyph(true);
+                if (tmp != null)
+                {
+                    ratioCmParPixel = tmp;
+                    int[] TailleTerain = img.getTailleTerrain(tmp[0], tmp[1]);
+                    Logger.GlobalLogger.info("Taille terrain : " + TailleTerain[0] + " x " + TailleTerain[1] + " cm");
+                }
+            }
+            else
+            {
+                // TOTO: Remplacer true par false;
+                img.detectionGlyph(true);
+            }
+            
+
                 if (imageShow < img.getNumeroImg())
                 {
+                    mergePosition(img.getLstRobot());
+                    if (polyline !=null && polyline.Count > 0)
+                    {
+                        img.dessinePolyline(polyline);
+                    }
+
                     imageShow = img.getNumeroImg();
 
-                   if(imgContour !=null)
+                    if(imgContour !=null)
                         imgContour.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), imgContour);
-                   if(imgReel != null)
+                    if(imgReel != null)
                         imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
                 }
-
-            }
-            catch { }
         }
 
         public delegate void affichageImg(Bitmap img, PictureBox box);
@@ -242,9 +310,18 @@ namespace video
                 int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
 
                 LimiteTerrain.Add(new IntPoint(abs, ord));
+                if (LimiteTerrain.Count == 4)
+                {
+                    ratioCmParPixel[0] = 1;
+                    ratioCmParPixel[1] = 1;
+                }
             }
             else
+            {
                 LimiteTerrain.Clear();
+                ratioCmParPixel[0] = 1;
+                ratioCmParPixel[1] = 1;
+            }
         }
 
         #endregion

@@ -22,6 +22,10 @@ namespace utils.Events
     #region #### Positions Robots ####
     public struct PositionRobot
     {
+        // Identifiants du robots
+        public int Identifiant;
+        // Index de la dernière image ou il est present
+        public ulong DerniereImage;
         // Positions en milimetres par rapport au coin Haut / Gauche de l'image
         public PositionElement Position;
         // Angle en degré par rapport Vertical Nord de l'image (-180 Anti horaire , +180 Horaire)

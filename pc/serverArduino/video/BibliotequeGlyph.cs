@@ -31,8 +31,6 @@ namespace video
             Size = GlyphSize;
         }
 
-
-
         public void chargementListeGlyph()
         {
             Biblioteque.Clear();

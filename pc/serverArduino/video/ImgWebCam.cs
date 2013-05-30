@@ -18,19 +18,19 @@ namespace video
         protected UnmanagedImage imgNB;
         protected UnmanagedImage imgContour;
 
-        protected List<PolyligneDessin> ListeDessin = null;
         protected ulong numeroImage;
+        private List<PositionRobot> LstRbt = new List<PositionRobot>();
         protected bool[] AutAffichage = new bool[] { true, true, true }; // ContourGlyph, CentreGlyph, PositionPince
         const int stepSize = 3;
         private int GlyphSize;
 
-        public ImgWebCam(Bitmap image, ulong noImage, int Size, List<PolyligneDessin> polyline)
+        public ImgWebCam(Bitmap image, ulong noImage, int Size)
         {
             this.imgReel = image;
             this.GlyphSize = Size;
             this.numeroImage = noImage;
-            this.ListeDessin = polyline;
         }
+
         private void setter(Bitmap image, ulong noImage)
         {
             this.imgReel = image;
@@ -52,12 +52,17 @@ namespace video
         {
             return this.imgContour;
         }
+        public List<PositionRobot> getLstRobot()
+        {
+            return LstRbt;
+        }
         public ulong getNumeroImg()
         {
             return this.numeroImage;
         }
 
-        protected void dessinePoint(IntPoint point, UnmanagedImage img,int nbPixel,Color col)
+        #region ##### Dessin #####
+        public void dessinePoint(IntPoint point, UnmanagedImage img,int nbPixel,Color col)
         {
             for (int i = point.X - nbPixel / 2; i < point.X + nbPixel / 2 + 1; i++)
             {
@@ -67,14 +72,11 @@ namespace video
                 }
             }
         }
-        protected void dessinePolyline(UnmanagedImage img)
+        public void dessinePolyline(List<PolyligneDessin> Polyline)
         {
-            for (int i = 0; i < ListeDessin.Count; i++)
-            {
-               // Dessiner
-            }
-
+            
         }
+        #endregion
 
         #region ##### Traitement image #####
         public void homographie(List<IntPoint> LimiteTerain)
@@ -114,11 +116,10 @@ namespace video
         #endregion
 
         #region ##### Traitement Glyph #####
-        public int detectionGlyph()
+        public double[] detectionGlyph(bool CalculTailleTerrain)
         {
-
-            int nbElement = 0;
-            double rotation = 0;
+            bool Trouve = false;
+            double[] ratio = new double[2] { 0, 0 };
             SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
             BlobCounter blobCounter = new BlobCounter();
 
@@ -190,8 +191,9 @@ namespace video
 
                             // Calcul de la rotation
                             Line ComparasionAngle = Line.FromPoints(corners[0], corners[1]);
-                            rotation = (int) ComparasionAngle.GetAngleBetweenLines(Horizontale);
+                            Double rotation = (int) ComparasionAngle.GetAngleBetweenLines(Horizontale);
                             rotation += 90 * Gl.getNbRotation();
+                            Gl.rotation = rotation - 180;
                             rotation *= (Math.PI / 180.0);
 
 
@@ -199,32 +201,123 @@ namespace video
                             float[] Taille = new float[4];
                             // TODO: Ratio proportionnel en fonction de l'inclinaison
                             Taille[0] = corners[0].DistanceTo(corners[1]);
-                            //Taille[1] = corners[1].DistanceTo(corners[2]);
-                            //Taille[2] = corners[2].DistanceTo(corners[3]);
-                            //Taille[3] = corners[3].DistanceTo(corners[0]);
+                            Taille[1] = corners[1].DistanceTo(corners[2]);
+                            Taille[2] = corners[2].DistanceTo(corners[3]);
+                            Taille[3] = corners[3].DistanceTo(corners[0]);
 
                             float taille = (Taille[0] / BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille) * BibliotequeGlyph.Biblioteque[Gl.getPosition()].DistancePince;
                             int x = -(int)(System.Math.Sin(rotation) * taille);
                             int y = -(int)(System.Math.Cos(rotation) * taille);
                             x += (int)intersection.X;
                             y += (int)intersection.Y;
+                            Gl.Position = new int[2]{x,y};
                             if (AutAffichage[2])
                             {
                                 dessinePoint(new IntPoint(x, y), UnImgReel, 4, Color.Cyan);
                             }
                             imgContour = Gl.getImage();
-                            nbElement++;
+                            addGlyph(Gl);
+
+                            if (CalculTailleTerrain == true && Trouve == false)
+                            {
+                                Trouve = true;
+                                int tailleglyph = BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille;
+
+                                // Detection ratio axe verticale
+                                IntPoint top = (corners[0].Y < corners[1].Y ) ? corners[0] : corners[1];
+                                Line l = Line.FromPoints(top, new IntPoint(top.X,UnImgReel.Height));
+                                LineSegment t = new LineSegment(corners[2],corners[3]);
+
+                                AForge.Point? pointTmp = l.GetIntersectionWith(t);
+                                if (pointTmp == null)
+                                {
+                                    t = new LineSegment(corners[3], corners[0]);
+                                    pointTmp = l.GetIntersectionWith(t);
+                                    if (pointTmp == null)
+                                        Trouve = false;
+                                    else
+                                    {
+                                        ratio[0] = corners[0].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
+                                        ratio[0] = (ratio[0] / Taille[3]) * tailleglyph + (tailleglyph * tailleglyph);
+                                        ratio[0] = top.DistanceTo((IntPoint)pointTmp) / ratio[0];
+                                    }
+                                }
+                                else
+                                {
+                                    ratio[0] = corners[2].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
+                                    ratio[0] = (ratio[0] / Taille[2]) * tailleglyph + (tailleglyph * tailleglyph);
+                                    ratio[0] = top.DistanceTo((IntPoint)pointTmp) / ratio[0];
+                                }
+                                /*if (pointTmp != null)
+                                {
+                                    dessinePoint((IntPoint)pointTmp, UnImgReel, 4, Color.LightSalmon);
+                                    Drawing.Line(UnImgReel, top, new IntPoint(top.X, UnImgReel.Height), Color.Lavender);
+                                    dessinePoint(top, UnImgReel, 5, Color.GreenYellow);
+                                }
+                                 */
+
+                                // Detection ration axe horizontal
+                                if (Trouve == true)
+                                {
+                                    l = Line.FromPoints(corners[0], new IntPoint(UnImgReel.Width, corners[0].Y));
+                                    t = new LineSegment(corners[1], corners[2]);
+                                    pointTmp = (IntPoint?)l.GetIntersectionWith(t);
+                                    if (pointTmp == null)
+                                    {
+                                        t = new LineSegment(corners[2], corners[3]);
+                                        pointTmp = (IntPoint?)l.GetIntersectionWith(t);
+                                        if (pointTmp == null)
+                                            Trouve = false;
+                                        else
+                                        {
+                                            ratio[1] = corners[3].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
+                                            ratio[1] = (ratio[1] / Taille[2]) * tailleglyph + (tailleglyph * tailleglyph);
+                                            ratio[1] = top.DistanceTo((IntPoint)pointTmp) / ratio[1];
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ratio[1] = corners[1].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
+                                        ratio[1] = (ratio[1] / Taille[1]) * tailleglyph + (tailleglyph * tailleglyph);
+                                        ratio[1] = top.DistanceTo((IntPoint)pointTmp) / ratio[1];
+                                    }
+                                   /* if (Trouve == true)
+                                    {
+                                        if (pointTmp != null)
+                                            dessinePoint((IntPoint)pointTmp, UnImgReel, 4, Color.LightSalmon);
+                                        Drawing.Line(UnImgReel, corners[0], new IntPoint(UnImgReel.Width, corners[0].Y), Color.Lavender);
+                                        dessinePoint(corners[0], UnImgReel, 5, Color.GreenYellow);
+                                        
+                                    }  
+                                   */  
+                                }
+                            }
                         }
                     }
                 }
             }
-            //dessinePolyline(UnImgReel);
-            return nbElement;
+            return (Trouve == false) ? null : ratio;
         }
         #endregion
-       
-        
-        
+
+        #region #### Gestion info #####
+        private void addGlyph(Glyph g)
+        {
+            PositionRobot p = new PositionRobot();
+            p.Angle = (float) g.rotation;
+            p.Position = new PositionElement();
+            p.Position.X = g.Position[0];
+            p.Position.Y = g.Position[1];
+            p.Identifiant = g.getIdentifiant();
+
+            LstRbt.Add(p);
+        }
+        public int[] getTailleTerrain(double ratioX, double ratioY)
+        {
+            return new int[2] {(int) (UnImgReel.Width * ratioX) , (int) (UnImgReel.Height* ratioY) };
+        }
+        #endregion
+
         private float CalculateAverageEdgesBrightnessDifference(List<IntPoint> leftEdgePoints, List<IntPoint> rightEdgePoints, UnmanagedImage image)
         {
             // Calculate average brightness difference between pixels outside and

@@ -15,6 +15,8 @@ namespace video
         private int Idenfitifant;
         private int nbRotation = 0;
         private int positionBibliotheque = -1;
+        public int[] Position = new int[2];
+        public double rotation = 0;
         UnmanagedImage imgGlyph;
         
         public Glyph(UnmanagedImage glyphImage, int Size )
