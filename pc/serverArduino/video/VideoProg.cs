@@ -203,11 +203,16 @@ namespace video
         //public int numimage = 0;
         private void ProcessFrame(object sender, EventArgs arg)
         {
-            
-            Image<Emgu.CV.Structure.Bgr,Byte> tmp = _capture.RetrieveBgrFrame();
-            imageDebug.Image = tmp;
-            
-            afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+            try
+            {
+                Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
+                imageDebug.Image = tmp ;
+                afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+            }
+            catch (Exception e)
+            {
+                Logger.GlobalLogger.error(e.Message);
+            }
         }
 
 
@@ -325,6 +330,7 @@ namespace video
         }
         public void closeVideoFlux()
         {
+            _capture.Stop();
             if (FinalVideo != null && FinalVideo.IsRunning)
             {
                 FinalVideo.SignalToStop();
