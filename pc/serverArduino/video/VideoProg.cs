@@ -16,6 +16,7 @@ using Emgu.CV;
 using Emgu;
 using Emgu.Util;
 using AForge.Imaging.Filters;
+using Emgu.CV.UI;
 namespace video
 {
     public class VideoProg : IDisposable
@@ -47,6 +48,11 @@ namespace video
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
         private Label FPS = null;
+
+
+        public ImageBox imageDebug;
+
+        private Capture _capture;
 
         #region ##### Initialisation #####
         public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps)
@@ -189,8 +195,22 @@ namespace video
             ratioCmParPixel = new double[2] { 1, 1 };
             /* Ouvre le flux vidéo et initialise le EventHandler */
 
+            // TODO : selection de la caméra
+            _capture = new Capture(); // Utiliser la webcam de base
+            // Evenement lors de la reception d'une image
+            _capture.ImageGrabbed += ProcessFrame;
+
+            // Passage en MPG
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FOURCC, CvInvoke.CV_FOURCC('M', 'J', 'P', 'G'));
+            // Resolution
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1920);
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 1080);
+
+            _capture.Start();
+
+
             // Creation de la source vidéo
-            FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
+            /*FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
             FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution].FrameRate;
             FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution].FrameSize;
             FinalVideo.DisplayPropertyPage(IntPtr.Zero);
@@ -204,11 +224,13 @@ namespace video
             {
                 MessageBox.Show("Erreur Ouverture camera");
                 return false;
-            }
-            UpdateTailleTerain(FinalVideo.DesiredFrameSize.Width, FinalVideo.DesiredFrameSize.Height);
+            }*/
+            // TODO : reparer
+            //UpdateTailleTerain(FinalVideo.DesiredFrameSize.Width, FinalVideo.DesiredFrameSize.Height);
             return true;
         }
         #endregion
+
         #region ##### Gestions des images  #####
         public void TraitementThread(object id)
         {
