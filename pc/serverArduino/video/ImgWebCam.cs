@@ -53,45 +53,34 @@ namespace video
         {
             return this.imgContour;
         }
-        public UnmanagedImage getImageColor(int minHue, int maxHue, int minSat, int maxSat, int minLum, int maxLim)
+        public UnmanagedImage getImageColor(List<HSLFiltering> lst)
         {
-            //Create color filter
-            HSLFiltering HslFilter = new HSLFiltering();
-            //configre the filter
-            HslFilter.Hue = new IntRange(340, 20);
-            HslFilter.Saturation = new Range(0.5f,1.0f);
-           // HslFilter.Luminance = new Range(minLum, maxLim);
-            HslFilter.ApplyInPlace(ImgColor);
-
-            return ImgColor;
-            //apply color filter to the image
-            ColorFiltering colorFilter = new ColorFiltering();
-            colorFilter.Red = new IntRange(80, 255);
-            colorFilter.Green = new IntRange(0, 60);
-            colorFilter.Blue = new IntRange(0, 60);
-            colorFilter.ApplyInPlace(ImgColor);
-
-            
-            // create blob counter and configure it
-            BlobCounter blobCounter1 = new BlobCounter();
-            blobCounter1.MinWidth = 25;                    // set minimum size of
-            blobCounter1.MinHeight = 25;                   // objects we look for
-            blobCounter1.FilterBlobs = true;               // filter blobs by size
-            blobCounter1.ObjectsOrder = ObjectsOrder.Size; // order found object by size
-            // grayscaling
-            GrayscaleBT709 grayscaleFilter = new GrayscaleBT709();
-            // apply it to color filtered image
-            ImgColor = grayscaleFilter.Apply(ImgColor);
-            // locate blobs 
-            blobCounter1.ProcessImage(ImgColor);
-            Rectangle[] rects = blobCounter1.GetObjectsRectangles();     
-                // draw rectangle around the biggest blob
-            foreach( Rectangle objectRect  in rects)
+            UnmanagedImage tmpCol = null;
+            Color[]col = new Color[4]{Color.Red,Color.Pink,Color.Cyan,Color.Coral};
+            for(int i = 0; i < lst.Count;i++)
             {
-                Drawing.Rectangle(UnImgReel, objectRect, Color.Turquoise);
+                HSLFiltering Filter = lst[i];
+                tmpCol = ImgColor.Clone();
+                Filter.ApplyInPlace(tmpCol);
+
+                // create blob counter and configure it
+                BlobCounter blobCounter1 = new BlobCounter();
+                blobCounter1.MinWidth = 25;                    // set minimum size of
+                blobCounter1.MinHeight = 25;                   // objects we look for
+                blobCounter1.FilterBlobs = true;               // filter blobs by size
+                blobCounter1.ObjectsOrder = ObjectsOrder.Size; // order found object by size
+
+               
+                blobCounter1.ProcessImage(tmpCol);
+                Rectangle[] rects = blobCounter1.GetObjectsRectangles();
+                // draw rectangle around the biggest blob
+                foreach (Rectangle objectRect in rects)
+                {
+                    Drawing.Rectangle(UnImgReel, objectRect, col[i%col.Length]);
+                }
             }
 
-            return ImgColor;
+            return (tmpCol == null) ?  UnImgReel : tmpCol ;
         }
         public List<PositionRobot> getLstRobot()
         {

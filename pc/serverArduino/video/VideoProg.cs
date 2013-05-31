@@ -10,7 +10,8 @@ using AForge.Video;
 using System.Windows.Forms;
 using utils.Events;
 using System.Drawing;
-
+using AForge.Imaging;
+using AForge.Imaging.Filters;
 namespace video
 {
     public class VideoProg : IDisposable
@@ -34,29 +35,18 @@ namespace video
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
         private List<PolyligneDessin> polyline = new List<PolyligneDessin>();
         private List<PositionRobot> LstRobot = new List<PositionRobot>();
-        
+        private List<HSLFiltering> LstHslFiltering = new List<HSLFiltering>();
+
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
         private Label FPS = null;
-        private List<NumericUpDown> Param = new List<NumericUpDown>();
 
         #region ##### Initialisation #####
-        public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps, NumericUpDown a1)
+        public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps)
         {
-
-        }
-        public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps, NumericUpDown a1,NumericUpDown a2,NumericUpDown a3,NumericUpDown a4,NumericUpDown a5,NumericUpDown a6)
-        {
-            Param.Add(a1);
-            Param.Add(a2);
-            Param.Add(a3);
-            Param.Add(a4);
-            Param.Add(a5);
-            Param.Add(a6);
             this.imgReel = imgR;
-            this.imgReel.MouseDown += new MouseEventHandler(ImageReel_MouseDown);
-            this.imgReel.MouseDoubleClick += new MouseEventHandler(addcouleur);
+            this.imgReel.MouseDown += new MouseEventHandler(ClicImage);
             this.imgContour = img2;
             this.FPS = fps;
             this.numericUpDown1 = Filtre;
@@ -293,7 +283,7 @@ namespace video
                     imageShow = img.getNumeroImg();
 
                     if(imgContour !=null)
-                        imgContour.Invoke((affichageImg)imgAffiche, img.getImageColor((int)Param[0].Value, (int)Param[1].Value, (int)Param[2].Value, (int)Param[3].Value, (int)Param[4].Value, (int)Param[5].Value).ToManagedImage(), imgContour);
+                        imgContour.Invoke((affichageImg)imgAffiche, img.getImageColor(LstHslFiltering).ToManagedImage(), imgContour);
                     if(imgReel != null)
                         imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
                 }
@@ -347,14 +337,32 @@ namespace video
         #endregion
 
         #region #### A definir #####
+        public void ClicImage(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ImageReel_MouseDown( sender, e);
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                addcouleur(sender, e);
+            }
+        }
         public void addcouleur(object sender, MouseEventArgs e)
         {
-           // int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
-           // int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
-           // Color pixelColor = GetClickedPixel(e.Location);
+            int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
+            int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
+            Bitmap bm = new Bitmap(((PictureBox)sender).Image);
+            Color tmp = bm.GetPixel(abs, ord);
+            
+            HSL col = HSL.FromRGB(new RGB(tmp));
+            Logger.GlobalLogger.debug("Couleur ajoutée : " + tmp.ToString() + " HLS : " + col.Hue + " " + col.Luminance + " " + col.Saturation);
 
-           // Bitmap bitmap = (Bitmap)picturebox1.Image;
-           // return bitmap.GetPixel(abs, ord);
+            HSLFiltering Filter = new HSLFiltering();
+            Filter.Hue = new IntRange( (col.Hue + 340) % 360, (col.Hue + 20)%360 );
+            Filter.Saturation = new Range(0.6f, 1f);
+            Filter.Luminance = new Range(0.1f, 1f);
+            LstHslFiltering.Add(Filter);
         }
         public void openVideoFlux(int indexCam, int IndexResolution)
         {
