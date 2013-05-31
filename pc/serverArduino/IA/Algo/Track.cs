@@ -5,9 +5,7 @@ using System.Text;
 
 namespace IA.Algo
 {
-    class AStar
+    class Track
     {
-
-
     }
 }

@@ -18,37 +18,35 @@ namespace IA
         /* Logger */
         Logger g_Logger;
 
-        ArduinoManager _ArduinoManager;
-        /* Automate pour la communication avec les robots */
-        AutomateCommunication _AutomateComm;
-
+        /* Toute l'IA */
+        IntelArt _IntelArt;
 
         public HomeIA()
         {
+            // Formulaire
             InitializeComponent();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_close);
 
+            // Debugger 
             g_Logger = new Logger();
             g_Logger.attachToRTB(RTB_log);
             g_Logger.levelDebug = 1;
             Logger.GlobalLogger = g_Logger;
-
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_close);
-
-            _ArduinoManager = new ArduinoManager();
-
-            _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager);
+            // IA
+            _IntelArt = new IntelArt();
+            
 
             getListePortSerie(ctlListePorts);
         }
 
         void Form1_close(object e, FormClosingEventArgs arg)
         {
-            _AutomateComm.Dispose();
-            _ArduinoManager = null;
+            _IntelArt.Dispose();
+            _IntelArt = null;
             //g_Serial.StopListenSerial();
         }
 
-
+        #region #### Port Serie ####
         /* Remplis la liste de type ComboBox avec la liste des ports Série dispo */
         private void getListePortSerie(ComboBox ComboARemplir)
         {
@@ -78,10 +76,10 @@ namespace IA
         private void switchSerialPort()
         {
             // Déjà ouvert //
-            if (_AutomateComm.IsSerialPortOpen())
+            if (_IntelArt.IsSerialPortOpen())
             {
-                Logger.GlobalLogger.debug("Fermeture du port serie !", 1);
-                _AutomateComm.CloseSerialPort();
+                Logger.GlobalLogger.info("Fermeture du port serie !");
+                _IntelArt.CloseSerialPort();
                 btn_connection.Text = "Connection";
                 ctlListePorts.Enabled = true;
                 btn_ActualiserListePortSerie.Enabled = true;
@@ -90,9 +88,9 @@ namespace IA
             {
                 try
                 {
-                    Logger.GlobalLogger.debug("Ouverture du port : " + (string)ctlListePorts.SelectedItem, 1);
-                    _AutomateComm.OpenSerialPort((string)ctlListePorts.SelectedItem);
-                    if (_AutomateComm.IsSerialPortOpen())
+                    Logger.GlobalLogger.info("Ouverture du port : " + (string)ctlListePorts.SelectedItem);
+                    _IntelArt.OpenSerialPort((string)ctlListePorts.SelectedItem);
+                    if (_IntelArt.IsSerialPortOpen())
                     {
                         btn_connection.Text = "Fermeture";
                         ctlListePorts.Enabled = false;
@@ -122,8 +120,8 @@ namespace IA
 
         private void CB_Xbee_CheckedChanged(object sender, EventArgs e)
         {
-            _AutomateComm.setXbeeApiMode(CB_Xbee.Checked);
+            _IntelArt.SetXbeeApiMode(CB_Xbee.Checked);
         }
-
+        #endregion
     }
 }

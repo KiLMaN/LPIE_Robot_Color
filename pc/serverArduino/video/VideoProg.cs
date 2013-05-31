@@ -25,11 +25,11 @@ namespace video
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
-        private VideoCaptureDevice FinalVideo;
+        private VideoCaptureDevice FinalVideo = null;
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
 
-        private const int nbThread = 1;
+        private const int nbThread =1;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
@@ -200,19 +200,19 @@ namespace video
             }
 
         }
-        //public int numimage = 0;
         private void ProcessFrame(object sender, EventArgs arg)
         {
-            try
+            //try
             {
                 Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
                 imageDebug.Image = tmp ;
+                
                 afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
             }
-            catch (Exception e)
+            /*catch (Exception e)
             {
                 Logger.GlobalLogger.error(e.Message);
-            }
+            }*/
         }
 
 

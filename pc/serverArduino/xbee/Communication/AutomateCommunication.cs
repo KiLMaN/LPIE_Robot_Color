@@ -76,6 +76,7 @@ namespace xbee.Communication
         }
         public void setXbeeApiMode(bool state)
         {
+            Logger.GlobalLogger.info("Passage du mode Xbee API en :" + state);
             _SerialXbee.setXbeeApiMode(state);
         }
 
