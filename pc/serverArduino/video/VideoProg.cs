@@ -39,17 +39,27 @@ namespace video
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
         private Label FPS = null;
-        private Label Debug = null;
+        private List<NumericUpDown> Param = new List<NumericUpDown>();
 
         #region ##### Initialisation #####
-        public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps, Label d)
+        public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps, NumericUpDown a1)
         {
+
+        }
+        public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps, NumericUpDown a1,NumericUpDown a2,NumericUpDown a3,NumericUpDown a4,NumericUpDown a5,NumericUpDown a6)
+        {
+            Param.Add(a1);
+            Param.Add(a2);
+            Param.Add(a3);
+            Param.Add(a4);
+            Param.Add(a5);
+            Param.Add(a6);
             this.imgReel = imgR;
             this.imgReel.MouseDown += new MouseEventHandler(ImageReel_MouseDown);
+            this.imgReel.MouseDoubleClick += new MouseEventHandler(addcouleur);
             this.imgContour = img2;
             this.FPS = fps;
             this.numericUpDown1 = Filtre;
-            this.Debug = d;
             if(Logger.GlobalLogger == null)
                 Logger.GlobalLogger = new Logger();
             Bibliotheque.chargementListeGlyph();
@@ -248,11 +258,6 @@ namespace video
 
             nbImageCapture++;
         }
-        public delegate void Deb(string chaine);
-        public void Deb2(string chaine)
-        {
-            Debug.Text = chaine;
-        }
         public delegate void TraitementImg(ImgWebCam img);
         public void imgTraitment(ImgWebCam img)
         {
@@ -288,7 +293,7 @@ namespace video
                     imageShow = img.getNumeroImg();
 
                     if(imgContour !=null)
-                        imgContour.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), imgContour);
+                        imgContour.Invoke((affichageImg)imgAffiche, img.getImageColor((int)Param[0].Value, (int)Param[1].Value, (int)Param[2].Value, (int)Param[3].Value, (int)Param[4].Value, (int)Param[5].Value).ToManagedImage(), imgContour);
                     if(imgReel != null)
                         imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
                 }
@@ -342,6 +347,15 @@ namespace video
         #endregion
 
         #region #### A definir #####
+        public void addcouleur(object sender, MouseEventArgs e)
+        {
+           // int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
+           // int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
+           // Color pixelColor = GetClickedPixel(e.Location);
+
+           // Bitmap bitmap = (Bitmap)picturebox1.Image;
+           // return bitmap.GetPixel(abs, ord);
+        }
         public void openVideoFlux(int indexCam, int IndexResolution)
         {
             int i;

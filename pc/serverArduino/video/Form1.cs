@@ -23,7 +23,7 @@ namespace video
             Logger l = new Logger();
             l.attachToRTB(Log);
             Logger.GlobalLogger = l;
-            VP = new VideoProg(ImageReel, ImgContour, numericUpDown1,LblFPS,Blobs);
+            VP = new VideoProg(ImageReel, ImgContour, numericUpDown1, LblFPS, numericUpDown2, numericUpDown3, numericUpDown4, numericUpDown5, numericUpDown6, numericUpDown7);
             VP.ListerWebCam(ListeWebCam,Resolution);
             this.FormClosing += new FormClosingEventHandler(Form1Close);
             

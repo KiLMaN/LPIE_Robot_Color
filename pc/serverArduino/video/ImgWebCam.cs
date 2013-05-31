@@ -15,6 +15,7 @@ namespace video
     {
         protected Bitmap imgReel;
         protected UnmanagedImage UnImgReel;
+        protected UnmanagedImage ImgColor;
         protected UnmanagedImage imgNB;
         protected UnmanagedImage imgContour;
 
@@ -52,6 +53,46 @@ namespace video
         {
             return this.imgContour;
         }
+        public UnmanagedImage getImageColor(int minHue, int maxHue, int minSat, int maxSat, int minLum, int maxLim)
+        {
+            //Create color filter
+            HSLFiltering HslFilter = new HSLFiltering();
+            //configre the filter
+            HslFilter.Hue = new IntRange(340, 20);
+            HslFilter.Saturation = new Range(0.5f,1.0f);
+           // HslFilter.Luminance = new Range(minLum, maxLim);
+            HslFilter.ApplyInPlace(ImgColor);
+
+            return ImgColor;
+            //apply color filter to the image
+            ColorFiltering colorFilter = new ColorFiltering();
+            colorFilter.Red = new IntRange(80, 255);
+            colorFilter.Green = new IntRange(0, 60);
+            colorFilter.Blue = new IntRange(0, 60);
+            colorFilter.ApplyInPlace(ImgColor);
+
+            
+            // create blob counter and configure it
+            BlobCounter blobCounter1 = new BlobCounter();
+            blobCounter1.MinWidth = 25;                    // set minimum size of
+            blobCounter1.MinHeight = 25;                   // objects we look for
+            blobCounter1.FilterBlobs = true;               // filter blobs by size
+            blobCounter1.ObjectsOrder = ObjectsOrder.Size; // order found object by size
+            // grayscaling
+            GrayscaleBT709 grayscaleFilter = new GrayscaleBT709();
+            // apply it to color filtered image
+            ImgColor = grayscaleFilter.Apply(ImgColor);
+            // locate blobs 
+            blobCounter1.ProcessImage(ImgColor);
+            Rectangle[] rects = blobCounter1.GetObjectsRectangles();     
+                // draw rectangle around the biggest blob
+            foreach( Rectangle objectRect  in rects)
+            {
+                Drawing.Rectangle(UnImgReel, objectRect, Color.Turquoise);
+            }
+
+            return ImgColor;
+        }
         public List<PositionRobot> getLstRobot()
         {
             return LstRbt;
@@ -82,13 +123,14 @@ namespace video
         public void homographie(List<IntPoint> LimiteTerain)
         {
             UnImgReel = UnmanagedImage.FromManagedImage(imgReel);
+            
             /* Remplacement de l'image par le terain détecte dedans */
             if (LimiteTerain.Count == 4)
             {
                 QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(LimiteTerain, UnImgReel.Width, UnImgReel.Height);
                 UnImgReel = quadrilateralTransformation.Apply(UnImgReel);
             }
-
+            ImgColor = UnImgReel.Clone();
         }
         public void ColeurVersNB()
         {
