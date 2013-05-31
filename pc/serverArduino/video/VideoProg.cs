@@ -11,11 +11,17 @@ using System.Windows.Forms;
 using utils.Events;
 using System.Drawing;
 using AForge.Imaging;
+
+using Emgu.CV;
+using Emgu;
+using Emgu.Util;
 using AForge.Imaging.Filters;
 namespace video
 {
     public class VideoProg : IDisposable
     {
+
+
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
@@ -149,6 +155,7 @@ namespace video
 
         public void ListerWebCam(ComboBox lstWebCam, ComboBox LstResolution)
         {
+
             /* Retourne la liste des webcams connecté en usb */
             VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             lstWebCam.Items.Clear();
@@ -202,7 +209,6 @@ namespace video
             return true;
         }
         #endregion
-
         #region ##### Gestions des images  #####
         public void TraitementThread(object id)
         {
@@ -225,6 +231,22 @@ namespace video
             }
 
         }
+        //public int numimage = 0;
+        private void ProcessFrame(object sender, EventArgs arg)
+        {
+            try
+            {
+                Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
+                imageDebug.Image = tmp ;
+                afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+            }
+            catch (Exception e)
+            {
+                Logger.GlobalLogger.error(e.Message);
+            }
+        }
+
+
         private void afficheImage(object sender, NewFrameEventArgs eventArgs)
         {
             /* Affiche l'image recu par la WebCam */
@@ -387,6 +409,7 @@ namespace video
         }
         public void closeVideoFlux()
         {
+            _capture.Stop();
             if (FinalVideo != null && FinalVideo.IsRunning)
             {
                 FinalVideo.SignalToStop();
