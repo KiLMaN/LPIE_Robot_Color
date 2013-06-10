@@ -51,7 +51,7 @@
     <Compile Include="Algo\Objectif.cs" />
     <Compile Include="Algo\ObjectifList.cs" />
     <Compile Include="Algo\Track.cs" />
-    <Compile Include="Algo\TrakMaker.cs" />
+    <Compile Include="Algo\TrackMaker.cs" />
     <Compile Include="Algo\Zone.cs" />
     <Compile Include="Algo\ZoneList.cs" />
     <Compile Include="HomeIA.cs">
