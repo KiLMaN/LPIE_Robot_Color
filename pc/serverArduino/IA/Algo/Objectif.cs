@@ -15,8 +15,8 @@ namespace IA.Algo
             get { return _id; }
         }
         // Position de l'objectif
-        private PositionZone _position;
-        public PositionZone position
+        private PositionElement _position;
+        public PositionElement position
         {
             get { return _position; }
         }
@@ -26,13 +26,13 @@ namespace IA.Algo
         {
             _id = id;
         }
-        public Objectif(int id,PositionZone pos)
+        public Objectif(int id, PositionElement pos)
             :this(id)
         {
             setPosition(pos);
         }
 
-        public void setPosition(PositionZone pos)
+        public void setPosition(PositionElement pos)
         {
             _position = pos;
         }

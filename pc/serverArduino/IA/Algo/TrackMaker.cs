@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IA.Algo
 {
-    class TrakMaker
+    class TrackMaker
     {
     }
 }
