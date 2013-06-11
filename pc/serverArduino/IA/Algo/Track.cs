@@ -4,20 +4,34 @@ using System.Linq;
 using System.Text;
 using utils.Events;
 
-namespace IA.Algo
+namespace IA.Algo.AStar
 {
-    class Track
+    public class Track
     {
         private List<PositionElement> _Positions;
+        private bool _valide;
         public List<PositionElement> Positions
         {
             get { return _Positions; }
         }
+        public bool Valide
+        {
+            get { return _valide; }
+            set { _valide = value; }
+        }
 
         public Track()
         {
+            _valide = false;
             _Positions = new List<PositionElement>();
         }
+        public Track(List<PositionElement> points, bool valide)
+            :this()
+        {
+            _valide = valide;
+            _Positions = points;
+        }
+
 
         public void ajouterPoint(PositionElement point)
         {

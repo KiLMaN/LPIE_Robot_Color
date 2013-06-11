@@ -10,6 +10,10 @@ using utils;
 using System.IO.Ports;
 using xbee.Communication;
 using xbee.Communication.Events;
+using utils.Events;
+using IA.Algo;
+using IA.Algo.AStar;
+
 
 namespace IA
 {
@@ -30,7 +34,7 @@ namespace IA
             // Debugger 
             g_Logger = new Logger();
             g_Logger.attachToRTB(RTB_log);
-            g_Logger.levelDebug = 1;
+            g_Logger.levelDebug = 0;
             Logger.GlobalLogger = g_Logger;
             // IA
             _IntelArt = new IntelArt();
@@ -123,5 +127,159 @@ namespace IA
             _IntelArt.SetXbeeApiMode(CB_Xbee.Checked);
         }
         #endregion
+
+
+        private void dessinerLigne(Bitmap bmp,Point a,Point b,Color couleur,int taille = 3)
+        {
+            Graphics graphicsObj;
+            graphicsObj = Graphics.FromImage(bmp);
+            Pen myPen = new Pen(couleur, taille);
+            graphicsObj.DrawLine(myPen, a, b);
+            graphicsObj.Dispose();
+        }
+        private void dessinerPoint(Bitmap bmp, Point a, Brush couleur)
+        {
+            Graphics graphicsObj;
+            graphicsObj = Graphics.FromImage(bmp);
+            Pen myPen = new Pen(couleur, 1);
+            Brush brush = couleur;
+            graphicsObj.FillEllipse(brush, a.X - 5, a.Y - 5,10, 10);
+            graphicsObj.Dispose();
+        }
+
+        private void dessinerRectangle(Bitmap bmp, Point a, Brush couleur)
+        {
+            Graphics graphicsObj;
+            graphicsObj = Graphics.FromImage(bmp);
+            Pen myPen = new Pen(couleur, 1);
+            Brush brush = couleur;
+            graphicsObj.FillEllipse(brush, a.X - 5, a.Y - 5, 10, 10);
+            graphicsObj.Dispose();
+        }
+
+        private void dessinerTrack(Bitmap bmp, Track Trace)
+        {
+            if (Trace == null || Trace.Positions.Count < 2)
+                return;
+            for (int i = 1; i < Trace.Positions.Count; i++)
+            {
+                Point a = new Point(Trace.Positions[i - 1].X, Trace.Positions[i - 1].Y);
+                Point b = new Point(Trace.Positions[i].X, Trace.Positions[i].Y);
+                dessinerPoint(bmp, a,Brushes.BlueViolet);
+               dessinerLigne(bmp, a, b,Color.Red);
+               
+               
+            }
+            try
+            {
+                Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X, Trace.Positions[Trace.Positions.Count - 1].Y);
+                dessinerPoint(bmp, c, Brushes.BlueViolet);
+            }
+            catch (Exception)
+            {
+            }
+
+        }
+
+        private void btn_test_Click(object sender, EventArgs e)
+        {
+            PositionElement pStart = new PositionElement();
+            pStart.X = 30; pStart.Y = 550;
+
+            PositionElement pEnd = new PositionElement();
+            pEnd.X = 30; pEnd.Y = 30;
+
+            PositionZoneTravail pZone = new PositionZoneTravail();
+            pZone.A.X = 0;
+            pZone.A.Y = 0;
+            pZone.B.X = 800;
+            pZone.B.Y = 600;
+
+
+            //AStar astar = new AStar(pStart, pEnd, pZone);
+            //Track tr =  astar.CalculerTrajectoire();
+
+
+            Bitmap bitmap = new Bitmap(pZone.B.X, pZone.B.Y);
+            //dessinerTrack(bitmap, tr.Positions);
+            pictureBox1.Image = bitmap;
+
+           /* Point c = new Point(pEnd.X, pEnd.Y);
+            dessinerPoint(bitmap, c, Brushes.Red);
+
+            c = new Point(pStart.X, pStart.Y);
+            dessinerPoint(bitmap, c, Brushes.Green);*/
+            
+        }
+
+        PositionElement pStart = new PositionElement();
+        PositionElement pEnd = new PositionElement();
+        List<PositionElement> pAutre = new List<PositionElement>();
+
+        private void pictureBox1_Click(object sender, MouseEventArgs e)
+        {
+            int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
+            int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
+
+            //Logger.GlobalLogger.debug("ABS : " + abs + " ORD : " + ord);
+            if (e.Button == MouseButtons.Left)
+            {
+                pEnd.X = abs;
+                pEnd.Y = ord;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                pStart.X = abs;
+                pStart.Y = ord;
+            }
+            else if (e.Button == MouseButtons.Middle)
+            {
+                PositionElement pObstacle = new PositionElement();
+                pObstacle.X = abs;
+                pObstacle.Y = ord;
+                pAutre.Add(pObstacle);
+            }
+     
+
+            PositionZoneTravail pZone = new PositionZoneTravail();
+            pZone.A.X = 0;
+            pZone.A.Y = 0;
+            pZone.B.X = 800;
+            pZone.B.Y = 600;
+
+
+            AStar astar = new AStar(pStart, pEnd, pZone);
+            astar.AddObstacles(pAutre);
+            Track tr = astar.CalculerTrajectoire();
+            //Track tr = astar.CalculerTrajectoire();
+
+            List<QuadrillageCoord> quad = astar.CalculerQuadrillage();
+
+            
+
+
+            Bitmap bitmap = new Bitmap(pZone.B.X, pZone.B.Y);
+            dessinerTrack(bitmap, tr);
+            
+
+            foreach (QuadrillageCoord q in quad)
+            {
+                dessinerLigne(bitmap, q.A, q.B, Color.Gray, 1);
+            }
+
+            Point c = new Point(pEnd.X, pEnd.Y);
+            dessinerPoint(bitmap, c, Brushes.Red);
+
+            c = new Point(pStart.X, pStart.Y);
+            dessinerPoint(bitmap, c, Brushes.Green);
+
+            foreach (PositionElement obstacle in pAutre)
+            {
+                c = new Point(obstacle.X, obstacle.Y);
+                dessinerPoint(bitmap, c, Brushes.Gray);
+            }
+
+            pictureBox1.Image = bitmap;
+        }
     }
 }

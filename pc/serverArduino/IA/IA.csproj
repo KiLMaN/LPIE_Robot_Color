@@ -46,7 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algo\AStar.cs" />
+    <Compile Include="Algo\AStar\ASCase.cs" />
+    <Compile Include="Algo\AStar\ASMap.cs" />
+    <Compile Include="Algo\AStar\AStar.cs" />
     <Compile Include="Algo\Follower.cs" />
     <Compile Include="Algo\Objectif.cs" />
     <Compile Include="Algo\ObjectifList.cs" />
