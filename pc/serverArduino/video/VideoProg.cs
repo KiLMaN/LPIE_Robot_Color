@@ -96,27 +96,27 @@ namespace video
         }
         private void mergePosition(List<PositionRobot> LstTmp)
         {
-            if (LstTmp == null)
+            if (LstTmp.Count == 0)
                 return;
             List<PositionRobot> ListEnvoi = new List<PositionRobot>();
             for (int i = 0; i < LstTmp.Count; i++)
             {
                 bool Trouve = false;
                 PositionRobot tmp = LstTmp[i];
+                tmp.Position.X = (int)(ratioCmParPixel[0] * tmp.Position.X);
+                tmp.Position.Y = (int)(ratioCmParPixel[1] * tmp.Position.Y);
                 for (int j = 0; j < LstRobot.Count; j++)
                 {
                     if (LstRobot[j].Identifiant == LstTmp[i].Identifiant)
                     {
-                        IntPoint itmp = new IntPoint((int)(LstTmp[i].Position.X * ratioCmParPixel[0]),(int)(LstTmp[i].Position.Y * ratioCmParPixel[1]));
+                        IntPoint itmp = new IntPoint((int)(tmp.Position.X), (int)(tmp.Position.Y));
                         IntPoint p = new IntPoint(LstRobot[j].Position.X, LstRobot[j].Position.Y);
                         if (p.DistanceTo(itmp) > 2) //  Sueil a 2 cm
                         {
-                            tmp.DerniereModification = DateTime.Now;
-                            tmp.Position.X = itmp.X;
-                            tmp.Position.Y = itmp.Y;
                             LstRobot[j] = tmp;
                             ListEnvoi.Add(tmp);
                         }
+                        tmp.DerniereModification = DateTime.Now;
                         Trouve = true;
                         break;
                     }
@@ -255,8 +255,7 @@ namespace video
             img.ColeurVersNB();
             img.DetectionContour((short)numericUpDown1.Value);
 
-
-            if (ratioCmParPixel[0] == 1 && ratioCmParPixel[1] == 1)
+            if (ratioCmParPixel[0] == 1 || ratioCmParPixel[1] == 1)
             {
                 double[] tmp = img.detectionGlyph(true);
                 if (tmp != null)
@@ -303,8 +302,33 @@ namespace video
         {
             if (LimiteTerrain.Count < 4)
             {
-                int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
-                int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
+                int w_i = ((PictureBox)sender).Image.Width;
+                int h_i = ((PictureBox)sender).Image.Height;
+                int w_c = ((PictureBox)sender).Width;
+                int h_c = ((PictureBox)sender).Height;
+                float imageRatio = w_i / (float)h_i; // image W:H ratio
+                float containerRatio = w_c / (float)h_c; // container W:H ratio
+                int ord, abs;
+
+                if (imageRatio >= containerRatio)
+                {
+                    // horizontal image
+                    float scaleFactor = w_c / (float)w_i;
+                    float scaledHeight = h_i * scaleFactor;
+                    // calculate gap between top of container and top of image
+                    float filler = Math.Abs(h_c - scaledHeight) / 2;
+                    abs = (int)(e.X / scaleFactor);
+                    ord = (int)((e.Y - filler) / scaleFactor);
+                }
+                else
+                {
+                    // vertical image
+                    float scaleFactor = h_c / (float)h_i;
+                    float scaledWidth = w_i * scaleFactor;
+                    float filler = Math.Abs(w_c - scaledWidth) / 2;
+                    abs = (int)((e.X - filler) / scaleFactor);
+                    ord = (int)(e.Y / scaleFactor);
+                }
 
                 LimiteTerrain.Add(new IntPoint(abs, ord));
                 if (LimiteTerrain.Count == 4)
@@ -312,6 +336,7 @@ namespace video
                     ratioCmParPixel[0] = 1;
                     ratioCmParPixel[1] = 1;
                 }
+                
             }
             else
             {
@@ -350,8 +375,34 @@ namespace video
         }
         public void addcouleur(object sender, MouseEventArgs e)
         {
-            int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
-            int ord = (e.Location.Y * ((PictureBox)sender).Image.Height) / ((PictureBox)sender).Height;
+            int w_i = ((PictureBox)sender).Image.Width;
+            int h_i = ((PictureBox)sender).Image.Height;
+            int w_c = ((PictureBox)sender).Width;
+            int h_c = ((PictureBox)sender).Height;
+            float imageRatio = w_i / (float)h_i; // image W:H ratio
+            float containerRatio = w_c / (float)h_c; // container W:H ratio
+            int ord, abs;
+
+            if (imageRatio >= containerRatio)
+            {
+                // horizontal image
+                float scaleFactor = w_c / (float)w_i;
+                float scaledHeight = h_i * scaleFactor;
+                // calculate gap between top of container and top of image
+                float filler = Math.Abs(h_c - scaledHeight) / 2;
+                abs = (int)(e.X / scaleFactor);
+                ord = (int)((e.Y - filler) / scaleFactor);
+            }
+            else
+            {
+                // vertical image
+                float scaleFactor = h_c / (float)h_i;
+                float scaledWidth = w_i * scaleFactor;
+                float filler = Math.Abs(w_c - scaledWidth) / 2;
+                abs = (int)((e.X - filler) / scaleFactor);
+                ord = (int)(e.Y / scaleFactor);
+            }
+
             Bitmap bm = new Bitmap(((PictureBox)sender).Image);
             Color tmp = bm.GetPixel(abs, ord);
             
@@ -381,7 +432,7 @@ namespace video
                 ListeThread[i].Start(i);
             }
 
-            // Initialisatio du Thread de nettoyage
+            // Initialisation du Thread de nettoyage
             ThreadClean = new Thread(clean);
             ThreadClean.Start();
         }

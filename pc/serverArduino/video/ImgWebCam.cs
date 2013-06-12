@@ -56,8 +56,9 @@ namespace video
         public UnmanagedImage getImageColor(List<HSLFiltering> lst)
         {
             UnmanagedImage tmpCol = null;
+            int i;
             Color[]col = new Color[4]{Color.Red,Color.Pink,Color.Cyan,Color.Coral};
-            for(int i = 0; i < lst.Count;i++)
+            for( i = 0; i < lst.Count;i++)
             {
                 HSLFiltering Filter = lst[i];
                 tmpCol = ImgColor.Clone();
@@ -73,10 +74,11 @@ namespace video
                
                 blobCounter1.ProcessImage(tmpCol);
                 Rectangle[] rects = blobCounter1.GetObjectsRectangles();
+                
                 // draw rectangle around the biggest blob
                 foreach (Rectangle objectRect in rects)
                 {
-                    Drawing.Rectangle(UnImgReel, objectRect, col[i%col.Length]);
+                   Drawing.Rectangle(UnImgReel, rects[i], col[i % col.Length]);
                 }
             }
 
@@ -89,6 +91,20 @@ namespace video
         public ulong getNumeroImg()
         {
             return this.numeroImage;
+        }
+        public int max(int a, int b, int c, int d)
+        {
+            int max = (a > b) ? a : b;
+            max = (max > c) ? max : c;
+            max = (max > d) ? max : d;
+            return max;
+        }
+        public int min(int a, int b, int c, int d)
+        {
+            int min = (a < b) ? a : b;
+            min = (min < c) ? min : c;
+            min = (min < d) ? min : d;
+            return min;
         }
 
         #region ##### Dessin #####
@@ -162,7 +178,7 @@ namespace video
             // 4 - find all stand alone blobs
             blobCounter.ProcessImage(imgContour);
             Blob[] blobs = blobCounter.GetObjectsInformation();
-
+            
             // 5 - check each blob
             for (int i = 0, n = blobs.Length; i < n; i++)
             {
@@ -235,7 +251,7 @@ namespace video
                             Taille[1] = corners[1].DistanceTo(corners[2]);
                             Taille[2] = corners[2].DistanceTo(corners[3]);
                             Taille[3] = corners[3].DistanceTo(corners[0]);
-
+                            
                             float taille = (Taille[0] / BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille) * BibliotequeGlyph.Biblioteque[Gl.getPosition()].DistancePince;
                             int x = -(int)(System.Math.Sin(rotation) * taille);
                             int y = -(int)(System.Math.Cos(rotation) * taille);
@@ -253,81 +269,70 @@ namespace video
                             {
                                 Trouve = true;
                                 int tailleglyph = BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille;
+                                
+                                
+                                // Pythagore pour detection taille
+                                Rectangle a = blobs[i].Rectangle;
+                                double angle = - Gl.rotation + 180;
+                                List<IntPoint> coins = new List<IntPoint>();
+                                coins.Add(new IntPoint(100,100));
+                                coins.Add(new IntPoint(100, 100 + tailleglyph));
+                                coins.Add(new IntPoint(100 + tailleglyph , 100 + tailleglyph));
+                                coins.Add(new IntPoint(100 + tailleglyph, 100));
+                                IntPoint Centre = new IntPoint((coins[2].X + coins[0].X)/2, (coins[2].Y + coins[0].Y) / 2);
+                                int radius = (int)(0.5 * Math.Sqrt(coins[0].DistanceTo(coins[1]) * coins[0].DistanceTo(coins[1]) + coins[1].DistanceTo(coins[2]) * coins[1].DistanceTo(coins[2])));
+                                double alpha = Math.Atan2(coins[0].DistanceTo(coins[1]), coins[1].DistanceTo(coins[2])) * (180 / Math.PI);
 
-                                // Detection ratio axe verticale
-                                IntPoint top = (corners[0].Y < corners[1].Y ) ? corners[0] : corners[1];
-                                Line l = Line.FromPoints(top, new IntPoint(top.X,UnImgReel.Height));
-                                LineSegment t = new LineSegment(corners[2],corners[3]);
+                                double ang = 0;
+                                for(i = 0; i < 4; i++)
+                                {
+                                    IntPoint tmp = coins[i];
+                                    switch (i)
+                                    {
+                                        case 0:
+                                            ang = alpha - 180 + angle;
+                                            break;
+                                        case 1:
+                                            ang = + angle - alpha;
+                                            break;
+                                        case 2:
+                                            ang = + angle + alpha;
+                                            break;
+                                        case 3:
+                                            ang = - alpha + 180 + angle;
+                                            break;
+                                    }
+                                    ang *= (Math.PI / 180);
+                                    tmp.X = (int)(Centre.X + radius * Math.Cos(ang));
+                                    tmp.Y = (int)(Centre.Y + radius * Math.Sin(ang));
+                                    
+                                    coins[i] = tmp;
+                                }
+                                dessinePoint(coins[0], UnImgReel, 10, Color.OrangeRed);
+                                dessinePoint(coins[1], UnImgReel, 10, Color.Yellow);
+                                dessinePoint(coins[2], UnImgReel, 10, Color.Green);
+                                dessinePoint(coins[3], UnImgReel, 10, Color.Blue);
+                                
+                                Rectangle r = new Rectangle(min(coins[0].X, coins[1].X, coins[2].X, coins[3].X), min(coins[0].Y, coins[1].Y, coins[2].Y, coins[3].Y),
+                                                            max(coins[0].X, coins[1].X, coins[2].X, coins[3].X) - min(coins[0].X, coins[1].X, coins[2].X, coins[3].X),
+                                                            max(coins[0].Y, coins[1].Y, coins[2].Y, coins[3].Y) - min(coins[0].Y, coins[1].Y, coins[2].Y, coins[3].Y));
+                                Drawing.Rectangle(UnImgReel, r, Color.Yellow);
+                                ratio[0] = ((double)r.Width / (double)a.Width) * 1.48;
+                                ratio[1] = ((double)r.Height / (double)a.Height) * 1.48;
 
-                                AForge.Point? pointTmp = l.GetIntersectionWith(t);
-                                if (pointTmp == null)
-                                {
-                                    t = new LineSegment(corners[3], corners[0]);
-                                    pointTmp = l.GetIntersectionWith(t);
-                                    if (pointTmp == null)
-                                        Trouve = false;
-                                    else
-                                    {
-                                        ratio[0] = corners[0].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
-                                        ratio[0] = (ratio[0] / Taille[3]) * tailleglyph + (tailleglyph * tailleglyph);
-                                        ratio[0] = top.DistanceTo((IntPoint)pointTmp) / ratio[0];
-                                    }
-                                }
-                                else
-                                {
-                                    ratio[0] = corners[2].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
-                                    ratio[0] = (ratio[0] / Taille[2]) * tailleglyph + (tailleglyph * tailleglyph);
-                                    ratio[0] = top.DistanceTo((IntPoint)pointTmp) / ratio[0];
-                                }
-                                /*if (pointTmp != null)
-                                {
-                                    dessinePoint((IntPoint)pointTmp, UnImgReel, 4, Color.LightSalmon);
-                                    Drawing.Line(UnImgReel, top, new IntPoint(top.X, UnImgReel.Height), Color.Lavender);
-                                    dessinePoint(top, UnImgReel, 5, Color.GreenYellow);
-                                }
-                                 */
-
-                                // Detection ration axe horizontal
-                                if (Trouve == true)
-                                {
-                                    l = Line.FromPoints(corners[0], new IntPoint(UnImgReel.Width, corners[0].Y));
-                                    t = new LineSegment(corners[1], corners[2]);
-                                    pointTmp = (IntPoint?)l.GetIntersectionWith(t);
-                                    if (pointTmp == null)
-                                    {
-                                        t = new LineSegment(corners[2], corners[3]);
-                                        pointTmp = (IntPoint?)l.GetIntersectionWith(t);
-                                        if (pointTmp == null)
-                                            Trouve = false;
-                                        else
-                                        {
-                                            ratio[1] = corners[3].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
-                                            ratio[1] = (ratio[1] / Taille[2]) * tailleglyph + (tailleglyph * tailleglyph);
-                                            ratio[1] = top.DistanceTo((IntPoint)pointTmp) / ratio[1];
-                                        }
-                                    }
-                                    else
-                                    {
-                                        ratio[1] = corners[1].DistanceTo(new IntPoint((int)(pointTmp.Value.X), (int)(pointTmp.Value.Y)));
-                                        ratio[1] = (ratio[1] / Taille[1]) * tailleglyph + (tailleglyph * tailleglyph);
-                                        ratio[1] = top.DistanceTo((IntPoint)pointTmp) / ratio[1];
-                                    }
-                                   /* if (Trouve == true)
-                                    {
-                                        if (pointTmp != null)
-                                            dessinePoint((IntPoint)pointTmp, UnImgReel, 4, Color.LightSalmon);
-                                        Drawing.Line(UnImgReel, corners[0], new IntPoint(UnImgReel.Width, corners[0].Y), Color.Lavender);
-                                        dessinePoint(corners[0], UnImgReel, 5, Color.GreenYellow);
-                                        
-                                    }  
-                                   */  
-                                }
+                               
                             }
                         }
                     }
                 }
             }
-            return (Trouve == false) ? null : ratio;
+            if (Trouve == false || ratio[0] == 0 || ratio[0] == 1 || ratio[1] == 0 || ratio[1] == 1)
+            {
+                return null;
+            }
+            ratio[0] *= 0.7;
+            ratio[1] *= 0.7;
+            return ratio;
         }
         #endregion
 
@@ -345,7 +350,7 @@ namespace video
         }
         public int[] getTailleTerrain(double ratioX, double ratioY)
         {
-            return new int[2] {(int) (UnImgReel.Width * ratioX) , (int) (UnImgReel.Height* ratioY) };
+            return new int[2] { (int)(UnImgReel.Width * ratioX), (int)(UnImgReel.Height * ratioY)};
         }
         #endregion
 

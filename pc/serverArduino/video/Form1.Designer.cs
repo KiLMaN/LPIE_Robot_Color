@@ -38,7 +38,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // ImageReel
@@ -46,7 +45,7 @@
             this.ImageReel.Location = new System.Drawing.Point(6, 21);
             this.ImageReel.Name = "ImageReel";
             this.ImageReel.Size = new System.Drawing.Size(413, 327);
-            this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.ImageReel.TabIndex = 0;
             this.ImageReel.TabStop = false;
             // 
@@ -109,7 +108,7 @@
             this.ImgContour.Location = new System.Drawing.Point(460, 21);
             this.ImgContour.Name = "ImgContour";
             this.ImgContour.Size = new System.Drawing.Size(413, 327);
-            this.ImgContour.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ImgContour.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.ImgContour.TabIndex = 8;
             this.ImgContour.TabStop = false;
             // 
@@ -170,7 +169,6 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.Log);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -181,7 +179,7 @@
             // 
             // Log
             // 
-            this.Log.Location = new System.Drawing.Point(13, 17);
+            this.Log.Location = new System.Drawing.Point(933, 100);
             this.Log.Name = "Log";
             this.Log.Size = new System.Drawing.Size(719, 496);
             this.Log.TabIndex = 0;
@@ -191,7 +189,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(941, 657);
+            this.ClientSize = new System.Drawing.Size(1651, 942);
+            this.Controls.Add(this.Log);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.BtnStop);
             this.Controls.Add(this.LblFPS);
@@ -208,7 +207,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
