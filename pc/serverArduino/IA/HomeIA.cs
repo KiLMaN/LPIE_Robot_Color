@@ -147,13 +147,13 @@ namespace IA
             graphicsObj.Dispose();
         }
 
-        private void dessinerRectangle(Bitmap bmp, Point a, Brush couleur)
+        private void dessinerRectangle(Bitmap bmp,  Rectangle a,Brush couleur)
         {
             Graphics graphicsObj;
             graphicsObj = Graphics.FromImage(bmp);
             Pen myPen = new Pen(couleur, 1);
             Brush brush = couleur;
-            graphicsObj.FillEllipse(brush, a.X - 5, a.Y - 5, 10, 10);
+            graphicsObj.FillRectangle(brush,a );
             graphicsObj.Dispose();
         }
 
@@ -163,8 +163,8 @@ namespace IA
                 return;
             for (int i = 1; i < Trace.Positions.Count; i++)
             {
-                Point a = new Point(Trace.Positions[i - 1].X, Trace.Positions[i - 1].Y);
-                Point b = new Point(Trace.Positions[i].X, Trace.Positions[i].Y);
+                Point a = new Point(Trace.Positions[i - 1].X + astar.UnitCol / 2, Trace.Positions[i - 1].Y + astar.UnitRow / 2);
+                Point b = new Point(Trace.Positions[i].X + astar.UnitCol / 2, Trace.Positions[i].Y + astar.UnitRow / 2);
                 dessinerPoint(bmp, a,Brushes.BlueViolet);
                dessinerLigne(bmp, a, b,Color.Red);
                
@@ -172,7 +172,7 @@ namespace IA
             }
             try
             {
-                Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X, Trace.Positions[Trace.Positions.Count - 1].Y);
+                Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X + astar.UnitCol / 2, Trace.Positions[Trace.Positions.Count - 1].Y + astar.UnitRow / 2);
                 dessinerPoint(bmp, c, Brushes.BlueViolet);
             }
             catch (Exception)
@@ -215,7 +215,7 @@ namespace IA
         PositionElement pStart = new PositionElement();
         PositionElement pEnd = new PositionElement();
         List<PositionElement> pAutre = new List<PositionElement>();
-
+        AStar astar;
         private void pictureBox1_Click(object sender, MouseEventArgs e)
         {
             int abs = (e.Location.X * ((PictureBox)sender).Image.Width) / ((PictureBox)sender).Width;
@@ -248,7 +248,7 @@ namespace IA
             pZone.B.Y = 600;
 
 
-            AStar astar = new AStar(pStart, pEnd, pZone);
+            astar = new AStar(pStart, pEnd, pZone);
             astar.AddObstacles(pAutre);
             Track tr = astar.CalculerTrajectoire();
             //Track tr = astar.CalculerTrajectoire();
@@ -262,21 +262,22 @@ namespace IA
             dessinerTrack(bitmap, tr);
             
 
+            
+            Point c = new Point(pEnd.X, pEnd.Y);
+            //dessinerPoint(bitmap, c, Brushes.Red);
+            dessinerRectangle(bitmap, astar.CalculerRectangle(pEnd), Brushes.Red);
+            c = new Point(pStart.X, pStart.Y);
+            //dessinerPoint(bitmap, c, Brushes.Green);
+            
+            dessinerRectangle(bitmap,astar.CalculerRectangle(pStart),Brushes.Green);
+            foreach (PositionElement obstacle in pAutre)
+            {
+                dessinerRectangle(bitmap, astar.CalculerRectangle(obstacle), Brushes.Gray);
+                //dessinerPoint(bitmap, c, Brushes.Gray);
+            }
             foreach (QuadrillageCoord q in quad)
             {
                 dessinerLigne(bitmap, q.A, q.B, Color.Gray, 1);
-            }
-
-            Point c = new Point(pEnd.X, pEnd.Y);
-            dessinerPoint(bitmap, c, Brushes.Red);
-
-            c = new Point(pStart.X, pStart.Y);
-            dessinerPoint(bitmap, c, Brushes.Green);
-
-            foreach (PositionElement obstacle in pAutre)
-            {
-                c = new Point(obstacle.X, obstacle.Y);
-                dessinerPoint(bitmap, c, Brushes.Gray);
             }
 
             pictureBox1.Image = bitmap;

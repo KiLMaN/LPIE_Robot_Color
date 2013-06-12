@@ -295,10 +295,19 @@ namespace IA.Algo.AStar
         private NodeList<ASCase> _close; // Liste des cases Visitée 
 
         private int _NumCol = 50;
-        private int _NumRow = 50;
+        private int _NumRow = 100;
 
         private int _UnitByCol;
         private int _UnitbyRow;
+
+        public int UnitCol
+        {
+            get { return _UnitByCol; }
+        }
+        public int UnitRow
+        {
+            get { return _UnitbyRow; }
+        }
 
         public AStar(PositionElement Depart, PositionElement Arrivee,PositionZoneTravail ZoneTravail)
         {
@@ -466,6 +475,20 @@ namespace IA.Algo.AStar
             }
             return null; // Pas de trouvé
         }
+
+        public System.Drawing.Rectangle CalculerRectangle(PositionElement point)
+        {
+            ASCase p = this.ConvertToCase(point);
+            //ASCase Case = _map.getCase(p.X, p.Y);
+            PositionElement HautGauche = ConvertFromCase(p);
+            p.Point.X++;
+            p.Point.Y++;
+            PositionElement BasDroite = ConvertFromCase(p);
+
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(HautGauche.X,HautGauche.Y,BasDroite.X - HautGauche.X , BasDroite.Y - HautGauche.Y);
+            return rect;
+        }
+
         public List<QuadrillageCoord> CalculerQuadrillage()
         {
             List<QuadrillageCoord> Quad = new List<QuadrillageCoord>();
