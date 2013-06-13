@@ -17,10 +17,9 @@ namespace xbee.Communication
         public byte[] data;
         public ushort crc;
 
-        public int state; // Etat de la trame (en attente : 0, envoyé : 1)
-        public DateTime time; // date de reception ou d'envoi 
+
         public const int BUFFER_DATA_IN = 50; // Nombre d'octets de data que le protocole peut envoyé en meme temps
-        public int countRejeu;
+        
 
 
         // Override the ToString method:
@@ -43,28 +42,7 @@ namespace xbee.Communication
             this.dst = dst;
         }
 
-        /* Permet de retrouver le robot dans les listes */
-        public static Predicate<TrameProtocole> TrameAFaire()
-        {
-            return delegate(TrameProtocole o)
-            {
-                return o.state == 0;
-            };
-        }
-        public static Predicate<TrameProtocole> TrameSentNoAck()
-        {
-            return delegate(TrameProtocole o)
-            {
-                return o.state == 1;
-            };
-        }
-        public static Predicate<TrameProtocole> TrameByNum(ushort num)
-        {
-            return delegate(TrameProtocole o)
-            {
-                return num == o.num;
-            };
-        }
+        
     };
     /** Definition du protocole **/
     public enum ProtocoleCharEnum : byte
@@ -114,14 +92,49 @@ namespace xbee.Communication
     /** Message de Base :
         *  Contient un Header et une fonction getBytes() qui retourne la liste des bytes de la classe
         **/
+
     public class MessageProtocol
     {
-        public byte headerMess;
+        public int stateMessage; // Etat du message (en attente : 0, envoyé : 1)
+        public DateTime time; // date de reception ou d'envoi 
+        public int countRejeu; // Nombre de rejeu du message 
 
+        public byte headerMess; // header du message
+
+        public ushort numMessEnvoye = 0; // Numéro de trame attribuée lors de l'envoi
+
+        // Recuperation des valeurs a envoyer
         public virtual byte[] getBytes()
         {
             return new byte[] { this.headerMess };
         }
+
+
+        #region #### Predicate ####
+        // Recuperation des Message A Envoyer
+        public static Predicate<MessageProtocol> MessageAEnvoyer()
+        {
+            return delegate(MessageProtocol o)
+            {
+                return o.stateMessage == 0;
+            };
+        }
+        // Recuperation des Message Envoyés en attente des ACK
+        public static Predicate<MessageProtocol> MessageAttenteAck()
+        {
+            return delegate(MessageProtocol o)
+            {
+                return o.stateMessage == 1;
+            };
+        }
+        /*public static Predicate<MessageProtocol> TrameByNum(ushort num)
+        {
+            return delegate(MessageProtocol o)
+            {
+                return num == o.num;
+            };
+        }*/
+        #endregion
     }
 
     public abstract class PCtoEMBmess : MessageProtocol

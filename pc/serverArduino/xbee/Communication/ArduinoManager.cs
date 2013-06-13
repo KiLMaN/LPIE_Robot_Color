@@ -33,7 +33,7 @@ namespace xbee.Communication
 
         public void disconnectArduinoBot(byte id)
         {
-            _listArduino.Find(ArduinoBot.ById(id)).Connected = false;
+            _listArduino.Find(ArduinoBot.ById(id)).Disconnect();
         }
 
     }

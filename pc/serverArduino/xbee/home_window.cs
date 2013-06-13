@@ -209,7 +209,7 @@ namespace xbee
         private void btn_up_Click(object sender, EventArgs e)
         {
 
-            _AutomateComm.SendMessageToArduino(
+            _AutomateComm.PushSendMessageToArduino(
                 MessageBuilder.createMoveMessage(true, 0x50, 0x50),
                 _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                 );
@@ -218,7 +218,7 @@ namespace xbee
         }
         private void btn_down_Click(object sender, EventArgs e)
         {
-            _AutomateComm.SendMessageToArduino(
+            _AutomateComm.PushSendMessageToArduino(
                 MessageBuilder.createMoveMessage(false, 0x50, 0x50),
                 _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                 );
@@ -228,7 +228,7 @@ namespace xbee
         /* Bouton Mouvement LEFT /  RIGHT */
         private void btn_left_Click(object sender, EventArgs e)
         {
-            _AutomateComm.SendMessageToArduino(
+            _AutomateComm.PushSendMessageToArduino(
                MessageBuilder.createTurnMessage(true, 0x5A),
                _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
@@ -236,7 +236,7 @@ namespace xbee
         }
         private void btn_right_Click(object sender, EventArgs e)
         {
-            _AutomateComm.SendMessageToArduino(
+            _AutomateComm.PushSendMessageToArduino(
                MessageBuilder.createTurnMessage(false, 0x5A),
                _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
@@ -246,15 +246,27 @@ namespace xbee
         /* Bouton pour la pince */
         private void btn_pince_close_Click(object sender, EventArgs e)
         {
-            _AutomateComm.SendMessageToArduino(
+            _AutomateComm.PushSendMessageToArduino(
                MessageBuilder.createCloseClawMessage(),
+               _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
+               );
+            _AutomateComm.PushSendMessageToArduino(
+              MessageBuilder.createCloseClawMessage(),
+              _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
+              );
+            _AutomateComm.PushSendMessageToArduino(
+              MessageBuilder.createCloseClawMessage(),
+              _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
+              );
+            _AutomateComm.PushSendMessageToArduino(
+               MessageBuilder.createOpenClawMessage(),
                _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
             //g_Serial.addMessageToSend(g_MessageBuilder.createCloseClawMessage());
         }
         private void btn_pince_open_Click(object sender, EventArgs e)
         {
-            _AutomateComm.SendMessageToArduino(
+            _AutomateComm.PushSendMessageToArduino(
                MessageBuilder.createOpenClawMessage(),
                _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
@@ -290,10 +302,10 @@ namespace xbee
                     if(robot.Connected)
                     {
                         MessageProtocol mess = MessageBuilder.createAskSensorMessage((byte)IDSensorsArduino.IR);
-                        _AutomateComm.SendMessageToArduino(mess, robot);
+                        _AutomateComm.PushSendMessageToArduino(mess, robot);
 
                         mess = MessageBuilder.createAskSensorMessage((byte)IDSensorsArduino.UltraSon);
-                        _AutomateComm.SendMessageToArduino(mess, robot);
+                        _AutomateComm.PushSendMessageToArduino(mess, robot);
                     }
                 }
 
