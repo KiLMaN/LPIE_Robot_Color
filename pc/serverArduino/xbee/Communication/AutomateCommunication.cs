@@ -170,7 +170,7 @@ namespace xbee.Communication
                     robot.DateLastMessageReceived = DateTime.Now;
                     _ArduinoManager.addArduinoBot(robot);
                 }
-                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageAskConn par " + robot.id,1);
+                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageAskConn par " + robot.id);
                 if (!robot.Connected) // Robot non connecté, on l'ajoute dans la liste des connectés
                 {
                     robot.Connect();
@@ -197,7 +197,7 @@ namespace xbee.Communication
             }
             else if(message is EMBtoPCMessageGlobalAck)
             {
-                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageGlobalAck par " + robot.id, 1);
+                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageGlobalAck par " + robot.id);
 
                 if (robot == null)
                 {
@@ -244,7 +244,7 @@ namespace xbee.Communication
             }
             else if(message is EMBtoPCMessageRespPing)
             {
-                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageRespPing par " + robot.id, 1);
+                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageRespPing par " + robot.id);
                 if (robot == null)
                 {
                     Logger.GlobalLogger.error("Robot Inconnu in EMBtoPCMessageRespPing");
@@ -285,7 +285,7 @@ namespace xbee.Communication
             }
             else if (message is EMBtoPCMessageRespSensor)
             {
-                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageRespSensor par " + robot.id, 1);
+                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageRespSensor par " + robot.id);
                 if (robot == null)
                 {
                     Logger.GlobalLogger.error("Robot Inconnu in EMBtoPCMessageRespSensor");
@@ -347,7 +347,7 @@ namespace xbee.Communication
                             {
                                 MessageProtocol reponse = MessageBuilder.createAskPingMessage();
 
-                                Logger.GlobalLogger.debug("Envoi d'un Ping au robot " + listeArduino[i].id, 1);
+                                Logger.GlobalLogger.debug("Envoi d'un Ping au robot " + listeArduino[i].id);
                                 PushSendMessageToArduino(reponse, listeArduino[i]);
                                 //SendMessageToArduino(reponse, listeArduino[i]);
                             }
@@ -362,11 +362,18 @@ namespace xbee.Communication
                             {
                                 if (mess.countRejeu < _MaxRejeu)
                                 {
-                                    listeArduino[i].ResendMessageAttenteAck(mess);
+                                    //listeArduino[i].ResendMessageAttenteAck(mess);
                                     listeArduino[i].AddRejeuxMessageAttenteAck(mess);
                                     listeArduino[i].UpdateDateEnvoiMessageAttenteAck(mess);
 
                                     Logger.GlobalLogger.debug("Declenchement Renvoi ", 1);
+
+                                    //listeArduino[i].MessageAttenteAck(mess, listeArduino[i].CountSend);
+                                    TrameProtocole trame = _SerialXbee.EncodeTrame(_IdPc, listeArduino[i].id, listeArduino[i].CountSend, mess);
+                                    
+                                    _SerialXbee.PushTrameAEnvoyer(trame);
+
+                                   
                                     break;
                                 }
                                 else
@@ -390,7 +397,7 @@ namespace xbee.Communication
                                     //_SerialXbee.PushTrameAEnvoyer(_SerialXbee.EncodeTrame(_IdPc,listeArduino[i].id,listeArduino[i].CountSend,mess));
                                     
                                     SendMessageToArduino(mess, listeArduino[i]);
-                                    Logger.GlobalLogger.debug("Envoi d'un message",1);
+                                    Logger.GlobalLogger.debug("Envoi d'un message");
                                     break;
                                 }
                             }

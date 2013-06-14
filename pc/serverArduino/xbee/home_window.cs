@@ -250,19 +250,6 @@ namespace xbee
                MessageBuilder.createCloseClawMessage(),
                _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                );
-            _AutomateComm.PushSendMessageToArduino(
-              MessageBuilder.createCloseClawMessage(),
-              _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
-              );
-            _AutomateComm.PushSendMessageToArduino(
-              MessageBuilder.createCloseClawMessage(),
-              _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
-              );
-            _AutomateComm.PushSendMessageToArduino(
-               MessageBuilder.createOpenClawMessage(),
-               _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
-               );
-            //g_Serial.addMessageToSend(g_MessageBuilder.createCloseClawMessage());
         }
         private void btn_pince_open_Click(object sender, EventArgs e)
         {
@@ -297,7 +284,7 @@ namespace xbee
                 ArduinoBot robot = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
                 if (robot != null)
                 {
-                    // TODO : Elever ?
+                    // TODO : Enlever ?
                     //if (robot.stateComm == StateArduinoComm.STATE_COMM_NONE)
                     if(robot.Connected)
                     {
@@ -309,7 +296,7 @@ namespace xbee
                     }
                 }
 
-                Thread.Sleep((int)delayThreadSensor.Value);
+                Thread.Sleep((int)delayThreadSensor.Value*1000);
             }
         }
         #endregion

@@ -251,7 +251,7 @@ namespace xbee.Communication
                         break;
                     case 9: // Checksum
                         if (computeChecksumXbeeAPI(_DataChecksumApi.ToArray()) == data) // Verification CheckSum
-                            Logger.GlobalLogger.debug("CheckSum Api OK !",1);
+                            Logger.GlobalLogger.debug("CheckSum Api OK !");
                    
                         else
                             Logger.GlobalLogger.error("CheckSum Api NOK !");

@@ -28,7 +28,7 @@ namespace xbee.Communication
             String datas = "";
             for (int i = 0; i < length; i++)
             {
-                datas = String.Format("{0}\t ,{1:X2}", datas, data[i]);
+                datas = String.Format("{0} , {1:X2}", datas, data[i]);
             }
             return (String.Format("(Source :{0}, Destination :{1}, Numéro :{2}, Longeur :{3}, crc :{4:X4} , data :{5})", src, dst, num, length, crc, datas));
         }

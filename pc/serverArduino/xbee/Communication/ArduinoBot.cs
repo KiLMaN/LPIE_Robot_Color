@@ -113,14 +113,27 @@ namespace xbee.Communication
         #region #### Messages à envoyer ####
         public void PushMessageAEnvoyer(MessageProtocol mess)
         {
-            foreach(MessageProtocol m in _MessageEnAttenteEnvoi)
-            {
-                if (m.headerMess == mess.headerMess)
+            
+                foreach (MessageProtocol m in _MessageEnAttenteEnvoi)
                 {
-                    Logger.GlobalLogger.error("Tentative d'envoi d'un message au robot qui existe déja ");
-                    return;
+                    if (m.headerMess == mess.headerMess)
+                    {
+                        if (mess.headerMess == (byte)PCtoEMBmessHeads.ASK_SENSOR)
+                        {
+                            if (((PCtoEMBMessageAskSensor)mess).idSensor == ((PCtoEMBMessageAskSensor)m).idSensor)
+                            {
+                                Logger.GlobalLogger.error("Tentative d'envoi d'un message au robot qui existe déja ");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            Logger.GlobalLogger.error("Tentative d'envoi d'un message au robot qui existe déja ");
+                            return;
+                        }
+                    }
                 }
-            }
+            
             _MessageEnAttenteEnvoi.Add(mess);
                 
         }

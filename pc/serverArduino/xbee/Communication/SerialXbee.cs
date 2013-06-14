@@ -114,6 +114,7 @@ namespace xbee.Communication
         // Ajouter une trame à traiter //
         public void PushTrameRecus(TrameProtocole trame)
         {
+            Logger.GlobalLogger.debug("Reception d'une trame (" + trame.ToString() + ") ", 1);
             _ListTramesRecues.Add(trame);
         }
         // Des trames à traiter ? //
@@ -165,7 +166,7 @@ namespace xbee.Communication
                     TrameProtocole trame = PopTrameAEnvoyer();
                     Logger.GlobalLogger.debug("Envoi d'une trame ("+trame.ToString()+") ", 1);
                     _XbeeAPI.sendApiFrame(trame.dst, _TrameEncoder.MakeTrameBinaryWithEscape(trame));
-                    Logger.GlobalLogger.debug("OK",1);
+                    Logger.GlobalLogger.debug("OK");
                 }
 
                 Thread.Sleep(_ThreadDelay);
