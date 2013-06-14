@@ -87,25 +87,23 @@ namespace xbee.Communication
             List<byte> dataFrame = new List<byte>();
             if (!_bApiEnabled)
             {
-                if (args.DataCount < 11) // Nombre Minimum d'octet d'une trame complette 
-                    return;
+                //if (args.DataCount < 11) // Nombre Minimum d'octet d'une trame complette 
+                    //return;
                 dataFrame.AddRange(_SerialManagment.getData(_SerialManagment.countData)); // Copie des octets
             }
             else
             {
-                if (args.DataCount < (11 + 9)) // Nombre Minimum d'octet d'une trame complette en mode APÏ
-                    return;
+               // if (args.DataCount < (11 + 9)) // Nombre Minimum d'octet d'une trame complette en mode API
+                    //return;
                 while(_SerialManagment.countData > 0 && !parseReceivedApiData(_SerialManagment.getData(1)[0]))
                 {}
                 dataFrame = _DataTrameApi;
                 //extractDataFromApiFrame(_SerialManagment.fetchData());
             }
-
             // envoi de l'evenement à la couche suppérieure de l'application
             NewTrameReceivedEventArgs e = new NewTrameReceivedEventArgs(dataFrame.ToArray());
             OnNewTrameReceived(this, e);
             _DataTrameApi.Clear();
-            
         }
 
         /* Envoi d'une trame sur le port Série */
@@ -253,7 +251,7 @@ namespace xbee.Communication
                         break;
                     case 9: // Checksum
                         if (computeChecksumXbeeAPI(_DataChecksumApi.ToArray()) == data) // Verification CheckSum
-                            Logger.GlobalLogger.debug("CheckSum Api OK !",1);
+                            Logger.GlobalLogger.debug("CheckSum Api OK !");
                    
                         else
                             Logger.GlobalLogger.error("CheckSum Api NOK !");

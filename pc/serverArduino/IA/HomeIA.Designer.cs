@@ -46,24 +46,31 @@
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.RTB_log = new System.Windows.Forms.RichTextBox();
+            this.btn_test = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(674, 411);
+            this.tabControl1.Size = new System.Drawing.Size(1278, 732);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btn_test);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.listView1);
             this.tabPage1.Controls.Add(this.CB_Xbee);
@@ -74,7 +81,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(666, 385);
+            this.tabPage1.Size = new System.Drawing.Size(1270, 706);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "IA";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -201,7 +208,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(666, 385);
+            this.tabPage2.Size = new System.Drawing.Size(1270, 706);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Log";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -211,15 +218,48 @@
             this.RTB_log.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RTB_log.Location = new System.Drawing.Point(3, 3);
             this.RTB_log.Name = "RTB_log";
-            this.RTB_log.Size = new System.Drawing.Size(660, 379);
+            this.RTB_log.Size = new System.Drawing.Size(1264, 700);
             this.RTB_log.TabIndex = 0;
             this.RTB_log.Text = "";
+            // 
+            // btn_test
+            // 
+            this.btn_test.Location = new System.Drawing.Point(583, 6);
+            this.btn_test.Name = "btn_test";
+            this.btn_test.Size = new System.Drawing.Size(75, 23);
+            this.btn_test.TabIndex = 16;
+            this.btn_test.Text = "TEST";
+            this.btn_test.UseVisualStyleBackColor = true;
+            this.btn_test.Click += new System.EventHandler(this.btn_test_Click);
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.pictureBox1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1270, 706);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "tabPage3";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(1264, 700);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 18;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_Click);
             // 
             // HomeIA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(674, 411);
+            this.ClientSize = new System.Drawing.Size(1278, 732);
             this.Controls.Add(this.tabControl1);
             this.Name = "HomeIA";
             this.Text = "Robot Color IA";
@@ -227,6 +267,8 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -250,6 +292,9 @@
         private System.Windows.Forms.ColumnHeader _posX;
         private System.Windows.Forms.ColumnHeader _posY;
         private System.Windows.Forms.RichTextBox RTB_log;
+        private System.Windows.Forms.Button btn_test;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.PictureBox pictureBox1;
 
     }
 }

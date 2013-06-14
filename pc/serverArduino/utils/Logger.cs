@@ -25,6 +25,7 @@ namespace utils
         private string _LogFile = "log.log";
 
 
+
         public string LogFile
         {
             get

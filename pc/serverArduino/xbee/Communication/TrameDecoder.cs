@@ -135,7 +135,7 @@ namespace xbee.Communication
                         if (_protocolState == 8)
                         {
                             _protocolState = 0;
-                            _trameReceived.state = 0;
+                            //_trameReceived.state = 0;
                             _bTrameCompleted = true;
                         }
                         else
