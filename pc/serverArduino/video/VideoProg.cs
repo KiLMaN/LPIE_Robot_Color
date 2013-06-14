@@ -11,11 +11,18 @@ using System.Windows.Forms;
 using utils.Events;
 using System.Drawing;
 using AForge.Imaging;
+
+using Emgu.CV;
+using Emgu;
+using Emgu.Util;
 using AForge.Imaging.Filters;
+using Emgu.CV.UI;
 namespace video
 {
     public class VideoProg : IDisposable
     {
+
+
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
@@ -41,6 +48,11 @@ namespace video
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
         private Label FPS = null;
+
+
+        public ImageBox imageDebug;
+
+        private Capture _capture;
 
         #region ##### Initialisation #####
         public VideoProg(PictureBox imgR, PictureBox img2, NumericUpDown Filtre, Label fps)
@@ -149,6 +161,7 @@ namespace video
 
         public void ListerWebCam(ComboBox lstWebCam, ComboBox LstResolution)
         {
+
             /* Retourne la liste des webcams connecté en usb */
             VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             lstWebCam.Items.Clear();
@@ -182,8 +195,22 @@ namespace video
             ratioCmParPixel = new double[2] { 1, 1 };
             /* Ouvre le flux vidéo et initialise le EventHandler */
 
+            // TODO : selection de la caméra
+            _capture = new Capture(); // Utiliser la webcam de base
+            // Evenement lors de la reception d'une image
+            _capture.ImageGrabbed += ProcessFrame;
+
+            // Passage en MPG
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FOURCC, CvInvoke.CV_FOURCC('M', 'J', 'P', 'G'));
+            // Resolution
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1920);
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 1080);
+
+            _capture.Start();
+
+
             // Creation de la source vidéo
-            FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
+            /*FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
             FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution].FrameRate;
             FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution].FrameSize;
             FinalVideo.DisplayPropertyPage(IntPtr.Zero);
@@ -197,8 +224,9 @@ namespace video
             {
                 MessageBox.Show("Erreur Ouverture camera");
                 return false;
-            }
-            UpdateTailleTerain(FinalVideo.DesiredFrameSize.Width, FinalVideo.DesiredFrameSize.Height);
+            }*/
+            // TODO : reparer
+            //UpdateTailleTerain(FinalVideo.DesiredFrameSize.Width, FinalVideo.DesiredFrameSize.Height);
             return true;
         }
         #endregion
@@ -225,6 +253,22 @@ namespace video
             }
 
         }
+        //public int numimage = 0;
+        private void ProcessFrame(object sender, EventArgs arg)
+        {
+            try
+            {
+                Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
+                imageDebug.Image = tmp ;
+                afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+            }
+            catch (Exception e)
+            {
+                Logger.GlobalLogger.error(e.Message);
+            }
+        }
+
+
         private void afficheImage(object sender, NewFrameEventArgs eventArgs)
         {
             /* Affiche l'image recu par la WebCam */
@@ -438,6 +482,7 @@ namespace video
         }
         public void closeVideoFlux()
         {
+            _capture.Stop();
             if (FinalVideo != null && FinalVideo.IsRunning)
             {
                 FinalVideo.SignalToStop();
