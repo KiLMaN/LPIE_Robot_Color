@@ -197,14 +197,17 @@ TrameProtocole * MakeTrame(byte src, byte dst, word num, byte data[])
   if ((sizeof(data) / sizeof(data[0]))  > BUFFER_DATA_IN) // Taille trop grande
     return NULL;
 
+	// Creation d'une nouvelle trame, a liberer apres
+	TrameProtocole * trame = malloc(sizeof(TrameProtocole));
+	
   //TrameProtocole trame = new TrameProtocole();
-  m_TrameReceive.src = src;
-  m_TrameReceive.dst = dst;
-  m_TrameReceive.num = num;
-  m_TrameReceive.length = sizeof(data) / sizeof(data[0]);
-  memcpy(m_TrameReceive.data, data , m_TrameReceive.length);
-  m_TrameReceive.crc = crc16_protocole(m_TrameReceive);
-  return &m_TrameReceive;
+  trame->src = src;
+  trame->dst = dst;
+  trame->num = num;
+  trame->length = sizeof(data) / sizeof(data[0]);
+  memcpy(trame->data, data , trame->length);
+  trame->crc = crc16_protocole(*trame);
+  return trame;
 }
 
 /* Echape au besoin les valeurs pour les insérées dans la liste de bytes a transmètre */

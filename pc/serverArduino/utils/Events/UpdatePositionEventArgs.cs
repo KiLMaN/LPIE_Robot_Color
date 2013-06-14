@@ -17,6 +17,11 @@ namespace utils.Events
         // Positions en milimetres par rapport au coin Haut / Gauche de l'image
         public int X;
         public int Y;
+
+        public static implicit operator System.Drawing.Point(PositionElement d)  // implicit digit to byte conversion operator
+        {
+            return new System.Drawing.Point(d.X, d.Y);
+        }
     }
 
     #region #### Positions Robots ####

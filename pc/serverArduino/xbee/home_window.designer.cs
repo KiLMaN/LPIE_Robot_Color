@@ -144,9 +144,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(178, 20);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(20, 13);
+            this.label4.Size = new System.Drawing.Size(12, 13);
             this.label4.TabIndex = 8;
-            this.label4.Text = "ms";
+            this.label4.Text = "s";
             // 
             // delayThreadSensor
             // 
@@ -161,7 +161,7 @@
             this.delayThreadSensor.TabIndex = 7;
             this.delayThreadSensor.Tag = "";
             this.delayThreadSensor.Value = new decimal(new int[] {
-            200,
+            10,
             0,
             0,
             0});

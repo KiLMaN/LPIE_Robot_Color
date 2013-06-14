@@ -8,10 +8,8 @@ namespace xbee.Communication
 {
     class TrameEncoder
     {
-        private ushort _cpt = 0; // compteur du nombre de trames 
-
         /* Construit la trame à partir des valeurs données en params */
-        public TrameProtocole MakeTrame(byte src, byte dst, byte[] data)
+        public TrameProtocole MakeTrame(byte src, byte dst, ushort num, byte[] data)
         {
             if (data.Length > TrameProtocole.BUFFER_DATA_IN)
                 throw new Exception("Taille Maximum dépassée");
@@ -19,12 +17,12 @@ namespace xbee.Communication
             TrameProtocole trame = new TrameProtocole();
             trame.src = src;
             trame.dst = dst;
-            trame.num = _cpt++;
+            trame.num = num;
             trame.length = Convert.ToByte(data.Length);
             trame.data = data;
             trame.crc = MessagesUtils.crc16_protocole(trame);
 
-            trame.state = 0; // Initialise la trame en non envoyée 
+            //trame.state = 0; // Initialise la trame en non envoyée 
             return trame;
         }
 
@@ -64,31 +62,31 @@ namespace xbee.Communication
         }
 
         /* Encode un message En trame pour envoyer au Arduino */
-        public TrameProtocole EncodeTrame(MessageProtocol message,byte src,byte dst)
+        public TrameProtocole EncodeTrame(MessageProtocol message,byte src,byte dst,ushort num)
         {
             TrameProtocole trame = new TrameProtocole();
             switch(message.headerMess)
             {
                 case (byte)PCtoEMBmessHeads.ASK_PING:
-                    trame = MakeTrame(src,dst,((PCtoEMBMessagePing)message).getBytes());
+                    trame = MakeTrame(src,dst,num,((PCtoEMBMessagePing)message).getBytes());
                     break;
                 case (byte)PCtoEMBmessHeads.ASK_SENSOR:
-                    trame = MakeTrame(src,dst,((PCtoEMBMessageAskSensor)message).getBytes());
+                    trame = MakeTrame(src, dst, num, ((PCtoEMBMessageAskSensor)message).getBytes());
                     break;
                 case (byte)PCtoEMBmessHeads.CLOSE_CLAW:
-                    trame = MakeTrame(src,dst,((PCtoEMBMessageCloseClaw)message).getBytes());
+                    trame = MakeTrame(src, dst, num, ((PCtoEMBMessageCloseClaw)message).getBytes());
                     break;
                 case (byte)PCtoEMBmessHeads.OPEN_CLAW:
-                    trame = MakeTrame(src,dst,((PCtoEMBMessageOpenClaw)message).getBytes());
+                    trame = MakeTrame(src, dst, num, ((PCtoEMBMessageOpenClaw)message).getBytes());
                     break;
                 case (byte)PCtoEMBmessHeads.MOVE:
-                    trame = MakeTrame(src,dst,((PCtoEMBMessageMove)message).getBytes());
+                    trame = MakeTrame(src, dst, num, ((PCtoEMBMessageMove)message).getBytes());
                     break;
                 case (byte)PCtoEMBmessHeads.TURN:
-                    trame = MakeTrame(src,dst,((PCtoEMBMessageTurn)message).getBytes());
+                    trame = MakeTrame(src, dst, num, ((PCtoEMBMessageTurn)message).getBytes());
                     break;
                 case (byte)PCtoEMBmessHeads.RESP_CONN:
-                    trame = MakeTrame(src,dst,((PCtoEMBMessageRespConn)message).getBytes());
+                    trame = MakeTrame(src, dst, num, ((PCtoEMBMessageRespConn)message).getBytes());
                     break;
                 default:
                     Logger.GlobalLogger.error("Erreur à envoyer inconnu !");
