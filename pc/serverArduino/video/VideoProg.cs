@@ -17,6 +17,7 @@ using Emgu;
 using Emgu.Util;
 using AForge.Imaging.Filters;
 using Emgu.CV.UI;
+using Emgu.CV.Structure;
 namespace video
 {
     public class VideoProg : IDisposable
@@ -26,16 +27,15 @@ namespace video
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
-        private VideoCaptureDevice FinalVideo;
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
         private double[] ratioCmParPixel;
 
-        private const int nbThread = 3;
+        private const int nbThread = 1;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
-
+        private Thread ThreadColor;
         private Thread ThreadClean;
         double millLastPic = 0;
 
@@ -43,6 +43,7 @@ namespace video
         private List<PolyligneDessin> polyline = new List<PolyligneDessin>();
         private List<PositionRobot> LstRobot = new List<PositionRobot>();
         private List<HSLFiltering> LstHslFiltering = new List<HSLFiltering>();
+        private List<Rectangle> LstCube = new List<Rectangle>();
 
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
@@ -161,7 +162,6 @@ namespace video
 
         public void ListerWebCam(ComboBox lstWebCam, ComboBox LstResolution)
         {
-
             /* Retourne la liste des webcams connecté en usb */
             VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             lstWebCam.Items.Clear();
@@ -189,7 +189,7 @@ namespace video
                 Resolution.SelectedIndex = 0;
 
         }
-        protected Boolean openWebCam(int NomCamera, int Resolution)
+        protected Boolean openWebCam(int NomCamera, int indexResolution)
         {
             LimiteTerrain.Clear();
             ratioCmParPixel = new double[2] { 1, 1 };
@@ -197,36 +197,20 @@ namespace video
 
             // TODO : selection de la caméra
             _capture = new Capture(); // Utiliser la webcam de base
+            
             // Evenement lors de la reception d'une image
             _capture.ImageGrabbed += ProcessFrame;
 
             // Passage en MPG
             _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FOURCC, CvInvoke.CV_FOURCC('M', 'J', 'P', 'G'));
             // Resolution
-            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1920);
-            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 1080);
+            VideoCaptureDevice tmpVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
+ 
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, tmpVideo.VideoCapabilities[indexResolution].FrameSize.Width);
+            _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, tmpVideo.VideoCapabilities[indexResolution].FrameSize.Height);
 
             _capture.Start();
 
-
-            // Creation de la source vidéo
-            /*FinalVideo = new VideoCaptureDevice(VideoCaptureDevices[NomCamera].MonikerString);
-            FinalVideo.DesiredFrameRate = FinalVideo.VideoCapabilities[Resolution].FrameRate;
-            FinalVideo.DesiredFrameSize = FinalVideo.VideoCapabilities[Resolution].FrameSize;
-            FinalVideo.DisplayPropertyPage(IntPtr.Zero);
-            // Création du Eventhandler
-            FinalVideo.NewFrame += new NewFrameEventHandler(afficheImage);
-            FinalVideo.Start();
-
-            // TODO: Test MJPEG
-
-            if (FinalVideo.IsRunning == false)
-            {
-                MessageBox.Show("Erreur Ouverture camera");
-                return false;
-            }*/
-            // TODO : reparer
-            //UpdateTailleTerain(FinalVideo.DesiredFrameSize.Width, FinalVideo.DesiredFrameSize.Height);
             return true;
         }
         #endregion
@@ -253,7 +237,6 @@ namespace video
             }
 
         }
-        //public int numimage = 0;
         private void ProcessFrame(object sender, EventArgs arg)
         {
             try
@@ -284,7 +267,6 @@ namespace video
                 if ((nbImageCapture % 10) == 0)
                 {
                     FPS.Invoke((UpdateFPS)affichageFPS);
-                   
                 }
             }
             catch { }
@@ -313,8 +295,6 @@ namespace video
             {
                 img.detectionGlyph(false);
             }
-            
-
                 if (imageShow < img.getNumeroImg())
                 {
                     mergePosition(img.getLstRobot());
@@ -322,16 +302,26 @@ namespace video
                     {
                         img.dessinePolyline(polyline);
                     }
-
+                    if(LstCube.Count > 0 )
+                         img.dessineRectangle(LstCube, Color.Yellow);
                     imageShow = img.getNumeroImg();
-
-                    if(imgContour !=null)
-                        imgContour.Invoke((affichageImg)imgAffiche, img.getImageColor(LstHslFiltering).ToManagedImage(), imgContour);
-                    if(imgReel != null)
+                    if (imageShow % 3 == 0)
+                    {
+                        ThreadColor = new Thread(detectionColor);
+                        ThreadColor.Start(img);
+                    }
+                    if (imgReel != null)
+                    {
+                        //imageDebug.Image = img.getUnImgReel().ToManagedImage();
+                        // imageDebug.Image = new Emgu.CV.Image<Bgr, Byte>(img.getUnImgReel().ToManagedImage());
                         imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
+                    }
                 }
         }
-
+        private void detectionColor(Object s)
+        {
+            LstCube = ((ImgWebCam)s).getImageColor(LstHslFiltering);
+        }
         public delegate void affichageImg(Bitmap img, PictureBox box);
         public void imgAffiche(Bitmap img, PictureBox box)
         {
@@ -461,16 +451,17 @@ namespace video
         }
         public void openVideoFlux(int indexCam, int IndexResolution)
         {
-            int i;
-
+            LstCube.Clear();
+            if( _capture != null)
+                _capture.Stop();
             /* Demande le démarage du flux video de la WebCam */
-            if (FinalVideo != null && FinalVideo.IsRunning)
-                FinalVideo.SignalToStop();
+            if (_capture != null)
+                _capture.Stop();
 
            openWebCam(indexCam,IndexResolution);
 
             // Initialisation des threads
-            for (i = 0; i < nbThread; i++)
+            for (int i = 0; i < nbThread; i++)
             {
                 ListeThread[i] = new Thread(TraitementThread);
                 ListeThread[i].Start(i);
@@ -482,19 +473,17 @@ namespace video
         }
         public void closeVideoFlux()
         {
+            if( ThreadColor.IsAlive )
+                ThreadColor.Abort();
             _capture.Stop();
-            if (FinalVideo != null && FinalVideo.IsRunning)
+            for (int i = 0; i < nbThread; i++)
             {
-                FinalVideo.SignalToStop();
-                for (int i = 0; i < nbThread; i++)
-                {
-                    ListeThread[i].Abort();
-                    ListeImage[i] = null;
-                }
-                ThreadClean.Abort();
-                nbImageCapture = 0;
-                imageShow = 0;
+                ListeThread[i].Abort();
+                ListeImage[i] = null;
             }
+            ThreadClean.Abort();
+            nbImageCapture = 0;
+            imageShow = 0;
         }
 
         protected void clean()
@@ -529,8 +518,8 @@ namespace video
         }
         public void Dispose()
         {
-            if (FinalVideo != null && FinalVideo.IsRunning == true)
-                FinalVideo.SignalToStop();
+            if (_capture != null)
+                _capture.Stop();
 
             for (int i = 0; i < ListeThread.Length; i++)
             {

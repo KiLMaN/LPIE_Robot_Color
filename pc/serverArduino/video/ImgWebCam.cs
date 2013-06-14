@@ -53,12 +53,11 @@ namespace video
         {
             return this.imgContour;
         }
-        public UnmanagedImage getImageColor(List<HSLFiltering> lst)
+        public List<Rectangle> getImageColor(List<HSLFiltering> lst)
         {
             UnmanagedImage tmpCol = null;
-            int i;
-            Color[]col = new Color[4]{Color.Red,Color.Pink,Color.Cyan,Color.Coral};
-            for( i = 0; i < lst.Count;i++)
+            List<Rectangle> tmp = new List<Rectangle>();
+            for(int i = 0; i < lst.Count;i++)
             {
                 HSLFiltering Filter = lst[i];
                 tmpCol = ImgColor.Clone();
@@ -73,16 +72,18 @@ namespace video
 
                
                 blobCounter1.ProcessImage(tmpCol);
-                Rectangle[] rects = blobCounter1.GetObjectsRectangles();
+                Rectangle[] rects = DeleteRectInterne( blobCounter1.GetObjectsRectangles());
                 
                 // draw rectangle around the biggest blob
-                foreach (Rectangle objectRect in rects)
+                for (int j = 0; j < rects.Length; j++)
                 {
-                   Drawing.Rectangle(UnImgReel, rects[i], col[i % col.Length]);
+                    if (rects[j] == null)
+                        break;
+                    tmp.Add(rects[j]);
                 }
             }
 
-            return (tmpCol == null) ?  UnImgReel : tmpCol ;
+            return tmp;
         }
         public List<PositionRobot> getLstRobot()
         {
@@ -121,6 +122,13 @@ namespace video
         public void dessinePolyline(List<PolyligneDessin> Polyline)
         {
             
+        }
+        public void dessineRectangle(List<Rectangle> lstRec,Color col)
+        {
+            for (int i = 0; i < lstRec.Count; i++)
+            {
+                Drawing.Rectangle(UnImgReel, lstRec[i], col);
+            }
         }
         #endregion
 
@@ -354,6 +362,28 @@ namespace video
         }
         #endregion
 
+        private Rectangle[] DeleteRectInterne(Rectangle[] lstRect)
+        {
+            Rectangle[] ls = new Rectangle[lstRect.Length];
+            int count = 0;
+            for (int i = 0; i < lstRect.Length; i++)
+            {
+                Boolean trouve = false;
+                for (int j = 0; j < i; j++)
+                {
+                    if (ls[i].X > ls[j].X && ls[i].X < ls[j].Right && ls[i].Y > ls[j].Y && ls[i].Y < ls[j].Bottom)
+                    {
+                        trouve = true;
+                        break;
+                    }
+                }
+                if (!trouve)
+                {
+                    ls[count++] = lstRect[i];
+                }
+            }
+            return ls;
+        }
         private float CalculateAverageEdgesBrightnessDifference(List<IntPoint> leftEdgePoints, List<IntPoint> rightEdgePoints, UnmanagedImage image)
         {
             // Calculate average brightness difference between pixels outside and

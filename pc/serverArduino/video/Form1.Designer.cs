@@ -31,34 +31,26 @@
             this.BtnStop = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.Log = new System.Windows.Forms.RichTextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.imageBox1 = new Emgu.CV.UI.ImageBox();
+            this.Log = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-<<<<<<< HEAD
-=======
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
->>>>>>> bec44d4f91c1d7eadd04357f692f888f7d131403
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // ImageReel
             // 
             this.ImageReel.Location = new System.Drawing.Point(6, 21);
             this.ImageReel.Name = "ImageReel";
-<<<<<<< HEAD
             this.ImageReel.Size = new System.Drawing.Size(413, 327);
             this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-=======
-            this.ImageReel.Size = new System.Drawing.Size(448, 327);
-            this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
->>>>>>> bec44d4f91c1d7eadd04357f692f888f7d131403
             this.ImageReel.TabIndex = 0;
             this.ImageReel.TabStop = false;
             // 
@@ -181,32 +173,16 @@
             this.tabPage1.Text = "Image";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // imageBox1
-            // 
-            this.imageBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imageBox1.Location = new System.Drawing.Point(3, 3);
-            this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(1109, 706);
-            this.imageBox1.TabIndex = 2;
-            this.imageBox1.TabStop = false;
-            // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.Log);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(907, 541);
+            this.tabPage2.Size = new System.Drawing.Size(1115, 712);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Log";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // Log
-            // 
-            this.Log.Location = new System.Drawing.Point(933, 100);
-            this.Log.Name = "Log";
-            this.Log.Size = new System.Drawing.Size(719, 496);
-            this.Log.TabIndex = 0;
-            this.Log.Text = "";
             // 
             // tabPage3
             // 
@@ -219,16 +195,28 @@
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // imageBox1
+            // 
+            this.imageBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageBox1.Location = new System.Drawing.Point(3, 3);
+            this.imageBox1.Name = "imageBox1";
+            this.imageBox1.Size = new System.Drawing.Size(1109, 706);
+            this.imageBox1.TabIndex = 2;
+            this.imageBox1.TabStop = false;
+            // 
+            // Log
+            // 
+            this.Log.Location = new System.Drawing.Point(6, 6);
+            this.Log.Name = "Log";
+            this.Log.Size = new System.Drawing.Size(719, 496);
+            this.Log.TabIndex = 0;
+            this.Log.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-<<<<<<< HEAD
             this.ClientSize = new System.Drawing.Size(1651, 942);
-            this.Controls.Add(this.Log);
-=======
-            this.ClientSize = new System.Drawing.Size(1137, 828);
->>>>>>> bec44d4f91c1d7eadd04357f692f888f7d131403
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.BtnStop);
             this.Controls.Add(this.LblFPS);
@@ -245,12 +233,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-<<<<<<< HEAD
-=======
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
->>>>>>> bec44d4f91c1d7eadd04357f692f888f7d131403
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
