@@ -70,6 +70,10 @@ namespace IA.Algo.AStar
         {
             return _map[pLigne, pColonne];
         }
+        public ASCase getCase(ASPoint p)
+        {
+            return _map[p.X,p.Y];
+        }
 
         public bool inMap(ASPoint point)
         {

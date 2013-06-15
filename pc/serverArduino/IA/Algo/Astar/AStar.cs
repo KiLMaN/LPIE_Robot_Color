@@ -15,287 +15,13 @@ namespace IA.Algo.AStar
 
     public class AStar
     {
-        /*
-        // Positions pour le calcul
-        private PositionElement         _positionDepartRobot;
-        private PositionElement         _positionArriveeRobot;
-
-        // Distance d'evitement Minimal en cm
-        private int _ecartMinAEviter = 30;
-
-        // Autres cubes a eviter
-        private List<PositionElement>   _positionCubeAEviter;
-        
-        // Eviter de passer dans les zones
-        private List<PositionZone>            _positionZoneAEviter;
-
-        // Zone à ne pas dépasser
-        private PositionZoneTravail     _zoneTravail;
-
-        // Pas pour la trajectoire
-        private int                     _pasTrajectoire = 10;
-        // Distance maximale 
-        private int                     _distanceMax = 10;
-
-        // Trajectoire calculée
-        private Track                   _trajectoire;
-
-
-        public AStar(PositionElement Depart, PositionElement Arrivee,PositionZoneTravail ZoneTravail)
-        {
-            _positionDepartRobot = Depart;
-            _positionArriveeRobot = Arrivee;
-            _zoneTravail = ZoneTravail;
-            _positionCubeAEviter = new List<PositionElement>();
-            _positionZoneAEviter = new List<PositionZone>();
-
-            _trajectoire = new Track();
-        }
-
-        public void AddListCubeAEviter(List<PositionElement> ListeCube)
-        {
-            _positionCubeAEviter.AddRange(ListeCube);
-        }
-        public void AddListZoneAEviter(List<PositionZone> ListeZone)
-        {
-            _positionZoneAEviter.AddRange(ListeZone);
-        }
-
-
-        public Track calculerTrajectoire()
-        {
-            _trajectoire = (calculerProchainPointAmeliore(_positionDepartRobot));
-            
-            return _trajectoire;
-        }
-        private PositionElement calculerCoordoneePoint(PositionElement point, double angle)
-        {
-            PositionElement nouveaupoint;
-            nouveaupoint.X = point.X;
-            nouveaupoint.Y = point.Y;
-
-            nouveaupoint.X += (int)(Math.Cos(angle) * _pasTrajectoire);
-            nouveaupoint.Y += (int)(Math.Sin(angle) * _pasTrajectoire);
-            return nouveaupoint;
-        }
-        // Detecte la proximité d'un obstacle //
-        private Boolean isPointProxiObstacle(PositionElement point)
-        {
-            foreach (PositionElement cubesAEviter in _positionCubeAEviter)
-            {
-                // On est trop proche d'un autre cube
-                if (Math.Sqrt(Math.Pow(point.X - cubesAEviter.X, 2) + Math.Pow(point.Y - cubesAEviter.Y, 2)) < _ecartMinAEviter)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        // Calcul a base de sinus / cosinus / Tangeante
-        private List<PositionElement> calculerProchainPoint(PositionElement PositionActuelle)
-        {
-            // trajectoire calculée 
-            List<PositionElement> TrajectoireSortie = new List<PositionElement>();
-            TrajectoireSortie.Add(PositionActuelle);
-            // Copie de la position acutelle
-            PositionElement tmp = new PositionElement();
-            tmp.X = PositionActuelle.X;
-            tmp.Y = PositionActuelle.Y;
-
-            double deltaX = (double)tmp.X - (double)_positionArriveeRobot.X;
-            
-            double deltaY = (double)tmp.Y - (double)_positionArriveeRobot.Y;
-
-            //double delta =  deltaY / deltaX;
-
-            // Calcul de l'angle
-            double alpha = Math.Atan2(-deltaY, -deltaX);
-
-            //return new List<PositionElement>();
-            // On est éloigné de la fin, on doit donc avancer
-            if (Math.Sqrt(
-                Math.Pow(deltaY, 2) +
-                Math.Pow(deltaX, 2)
-                ) > _distanceMax) 
-            {
-                tmp = calculerCoordoneePoint(tmp, alpha);
-
-                // On est face a un obstacle
-                if (isPointProxiObstacle(tmp))
-                {
-                    List<PositionElement> TrajectoireDroite = null, TrajectoireGauche = null, TrajectoireOptimale;
-                    PositionElement Gauche = calculerCoordoneePoint(tmp, alpha - (Math.PI / 4));
-                    PositionElement Droite = calculerCoordoneePoint(tmp, alpha + (Math.PI / 4));
-                    if (!isPointProxiObstacle(Droite))
-                    {
-                        TrajectoireDroite = calculerProchainPoint(Droite);
-                    }
-                    if (!isPointProxiObstacle(Gauche))
-                    {
-                        TrajectoireGauche = calculerProchainPoint(Gauche);
-                    }
-                    if (TrajectoireDroite != null && TrajectoireGauche != null)
-                    {
-                        TrajectoireOptimale = (TrajectoireDroite.Count < TrajectoireGauche.Count) ? TrajectoireDroite : TrajectoireGauche;
-                    }
-                    else
-                        TrajectoireOptimale = TrajectoireDroite ?? TrajectoireGauche;
-
-                    TrajectoireSortie.AddRange(TrajectoireOptimale);
-                }
-                else
-                {
-                    // Si on est encore éloigné, alors on calcul un autre point 
-                    if (Math.Sqrt(
-                    Math.Pow(tmp.Y - _positionArriveeRobot.Y, 2) +
-                    Math.Pow(tmp.X - _positionArriveeRobot.X, 2)
-                    )
-                        > _distanceMax * 1.5)
-                        TrajectoireSortie.AddRange(calculerProchainPoint(tmp));
-                }
-            }
-            return TrajectoireSortie;
-        }
-
-
-
-        // Calcul a base de sinus / cosinus / Tangeante
-        private Track calculerProchainPointAmeliore(PositionElement PositionActuelle)
-        {
-            // trajectoire calculée 
-            Track TrajectoireSortie = new Track();
-            TrajectoireSortie.ajouterPoint(PositionActuelle);
-
-            double deltaX = (double)PositionActuelle.X - (double)_positionArriveeRobot.X;
-
-            double deltaY = (double)PositionActuelle.Y - (double)_positionArriveeRobot.Y;
-
-            //double delta =  deltaY / deltaX;
-
-            // Calcul de l'angle
-            double alpha = Math.Atan2(-deltaY, -deltaX);
-
-            // Position suivante
-            PositionElement suivante = calculerCoordoneePoint(PositionActuelle, alpha);
-            // Si on peu y aller ?
-            bool bRetour = false;
-            if (!isPointProxiObstacle(suivante))
-            {
-                if (Math.Sqrt(
-                Math.Pow((double)suivante.X - (double)_positionArriveeRobot.X, 2) +
-                Math.Pow((double)suivante.Y - (double)_positionArriveeRobot.Y, 2)
-                ) > _distanceMax)
-                {
-                    Track Trajectoire = calculerProchainPointAmeliore(suivante);
-                    if (Trajectoire.Valide) // La trajectoire est valide
-                    {
-                        TrajectoireSortie.Valide = true;
-                        TrajectoireSortie.ajouterPoints(Trajectoire.Positions);
-                    }
-                    else
-                        bRetour = true;
-                }
-                else
-                {
-                    TrajectoireSortie.Valide = true;
-                }
-            }
-            
-            // On doit determiner un autre chemin
-            if(isPointProxiObstacle(suivante) || bRetour)
-            {
-                // TODO : faire attention au cercle trigo et du tour du cercle
-                PositionElement SuivanteGauche = calculerCoordoneePoint(PositionActuelle, alpha + (Math.PI / 4));
-                PositionElement SuivanteDroite = calculerCoordoneePoint(PositionActuelle, alpha - (Math.PI / 4));
-
-                Track TrajectoireGauche = calculerProchainPointAmeliore(SuivanteGauche);
-                Track TrajectoireDroite = calculerProchainPointAmeliore(SuivanteDroite);
-
-                if (!TrajectoireDroite.Valide)
-                    if (!TrajectoireGauche.Valide)// On est dans un cul de sac, demi tour
-                        TrajectoireSortie.Valide = false;
-                    else
-                    {
-                        TrajectoireSortie.Valide = true;
-                        TrajectoireSortie.ajouterPoints(TrajectoireGauche.Positions);
-                    }
-
-                else
-                {
-                    
-                    if (TrajectoireGauche.Valide)
-                    {
-                        if(TrajectoireGauche.Positions.Count < TrajectoireDroite.Positions.Count)
-                            TrajectoireSortie.ajouterPoints(TrajectoireGauche.Positions);
-                        else
-                            TrajectoireSortie.ajouterPoints(TrajectoireDroite.Positions);
-                    }
-                    else
-                        TrajectoireSortie.ajouterPoints(TrajectoireDroite.Positions) ;
-
-                    TrajectoireSortie.Valide = true;
-                }
-
-            }
-
-
-            //return new List<PositionElement>();
-            // On est éloigné de la fin, on doit donc avancer
-            //if (Math.Sqrt(
-                Math.Pow(deltaY, 2) +
-                Math.Pow(deltaX, 2)
-                ) > _distanceMax)
-            {
-                tmp = calculerCoordoneePoint(tmp, alpha);
-
-                // On est face a un obstacle
-                if (isPointProxiObstacle(tmp))
-                {
-                    List<PositionElement> TrajectoireDroite = null, TrajectoireGauche = null, TrajectoireOptimale;
-                    PositionElement Gauche = calculerCoordoneePoint(tmp, alpha - (Math.PI / 4));
-                    PositionElement Droite = calculerCoordoneePoint(tmp, alpha + (Math.PI / 4));
-                    if (!isPointProxiObstacle(Droite))
-                    {
-                        TrajectoireDroite = calculerProchainPoint(Droite);
-                    }
-                    if (!isPointProxiObstacle(Gauche))
-                    {
-                        TrajectoireGauche = calculerProchainPoint(Gauche);
-                    }
-                    if (TrajectoireDroite != null && TrajectoireGauche != null)
-                    {
-                        TrajectoireOptimale = (TrajectoireDroite.Count < TrajectoireGauche.Count) ? TrajectoireDroite : TrajectoireGauche;
-                    }
-                    else
-                        TrajectoireOptimale = TrajectoireDroite ?? TrajectoireGauche;
-
-                    TrajectoireSortie.AddRange(TrajectoireOptimale);
-                }
-                else
-                {
-                    // Si on est encore éloigné, alors on calcul un autre point 
-                    if (Math.Sqrt(
-                    Math.Pow(tmp.Y - _positionArriveeRobot.Y, 2) +
-                    Math.Pow(tmp.X - _positionArriveeRobot.X, 2)
-                    )
-                        > _distanceMax * 1.5)
-                        TrajectoireSortie.AddRange(calculerProchainPoint(tmp));
-                }
-            }//
-
-            
-            // On est trop loin encore
-            
-            return TrajectoireSortie;
-        }*/
-
         private ASMap _map;
 
         private SortedNodeList<ASCase> _open; // Liste des Cases a visiter
         private NodeList<ASCase> _close; // Liste des cases Visitée 
 
         private int _NumCol = 50;
-        private int _NumRow = 100;
+        private int _NumRow = 50;
 
         private int _UnitByCol;
         private int _UnitbyRow;
@@ -432,8 +158,8 @@ namespace IA.Algo.AStar
         */
 
        
-
-        public void AddToOpen(ASCase courant, IEnumerable<ASCase> fils)
+        // Ajouter dans la liste des noeuds a visiter
+        private void AddToOpen(ASCase courant, IEnumerable<ASCase> fils)
         {
             foreach (ASCase Casefille in fils)
             {
@@ -452,6 +178,7 @@ namespace IA.Algo.AStar
                 }
             }
         }
+        // Calcul de la trajectoire
         public Track CalculerTrajectoire()
         {
             this._open.Add(_map.Start);
@@ -471,7 +198,7 @@ namespace IA.Algo.AStar
                     }
                 
                 this._close.Add(best);
-                this.AddToOpen(best, _map.getAdjCase(best,false));
+                this.AddToOpen(best, _map.getAdjCase(best,true));
             }
             return null; // Pas de trouvé
         }

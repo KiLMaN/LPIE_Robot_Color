@@ -5,7 +5,19 @@ using System.Text;
 
 namespace IA.Algo
 {
-    class TrackMaker
+    public class TrackMaker
     {
+        // Emplacement des cubes sur le terrain
+         private List<Objectif> _Cubes;
+
+        // Emplacement des zones
+         private List<Zone> _ZonesDepose;
+
+        
+
+         public TrackMaker()
+         {
+         }
+        
     }
 }

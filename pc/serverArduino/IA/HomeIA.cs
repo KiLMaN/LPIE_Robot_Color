@@ -250,9 +250,13 @@ namespace IA
 
             astar = new AStar(pStart, pEnd, pZone);
             astar.AddObstacles(pAutre);
-            Track tr = astar.CalculerTrajectoire();
-            //Track tr = astar.CalculerTrajectoire();
 
+            DateTime dt1 = DateTime.Now;
+            Track tr = astar.CalculerTrajectoire();
+            DateTime dt2 = DateTime.Now;
+            Logger.GlobalLogger.info("Temps calcul : " + (dt2 - dt1).Milliseconds);
+            //Track tr = astar.CalculerTrajectoire();
+                tr.nettoyerTrajectoire();
             List<QuadrillageCoord> quad = astar.CalculerQuadrillage();
 
             
