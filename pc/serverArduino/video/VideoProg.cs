@@ -90,7 +90,7 @@ namespace video
             UpdatePositionRobotEventArgs a = new UpdatePositionRobotEventArgs(lst);
             OnUpdatePositionRobots(this, a);
         }
-        private void envoieListe(List<PositionElement> lst)
+        private void envoieListe(List<PositionCube> lst)
         {
             if (OnUpdatePositionCubes == null)
                 return;

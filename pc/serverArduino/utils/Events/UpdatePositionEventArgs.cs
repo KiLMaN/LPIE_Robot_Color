@@ -18,6 +18,9 @@ namespace utils.Events
         public int X;
         public int Y;
 
+        // Identifiant de la position, n'est pas obligatoire
+        public byte ID;
+
         public static implicit operator System.Drawing.Point(PositionElement d)  // implicit digit to byte conversion operator
         {
             return new System.Drawing.Point(d.X, d.Y);
@@ -35,6 +38,8 @@ namespace utils.Events
         public PositionElement Position;
         // Angle en degré par rapport Vertical Nord de l'image (-180 Anti horaire , +180 Horaire)
         public float Angle;
+        // Identifiant du robot
+        public byte ID;
     }
 
     public class UpdatePositionRobotEventArgs : EventArgs
@@ -54,17 +59,24 @@ namespace utils.Events
     #endregion
 
     #region #### Positions Cubes ####
+    public struct PositionCube
+    {
+        // Identifiant de la zone
+        public int ID;
+        // Positions de chacun des points du contour de la zone
+        public PositionElement Position;
+    }
     public class UpdatePositionCubesEventArgs : EventArgs
     {
 
-        private List<PositionElement> _listeCube;
+        private List<PositionCube> _listeCube;
 
-        public UpdatePositionCubesEventArgs(List<PositionElement> Cubes)
+        public UpdatePositionCubesEventArgs(List<PositionCube> Cubes)
         {
             _listeCube = Cubes;
         }
 
-        public List<PositionElement> Cubes
+        public List<PositionCube> Cubes
         {
             get { return _listeCube; }
         }
@@ -74,6 +86,8 @@ namespace utils.Events
     #region #### Positions Zones ####
     public struct PositionZone
     {
+        // Identifiant de la zone
+        public int ID;
         // Positions de chacun des points du contour de la zone
         public PositionElement A;
         public PositionElement B;

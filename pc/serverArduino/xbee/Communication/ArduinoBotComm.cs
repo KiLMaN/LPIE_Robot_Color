@@ -22,12 +22,12 @@ namespace xbee.Communication
     }
 
 
-    public class ArduinoBot
+    public class ArduinoBotComm
     {
         /* Permet de retrouver le robot dans les listes */
-        public static Predicate<ArduinoBot> ById(byte id)
+        public static Predicate<ArduinoBotComm> ById(byte id)
         {
-            return delegate(ArduinoBot o)
+            return delegate(ArduinoBotComm o)
             {
                 return o._id == id;
             };
@@ -85,7 +85,7 @@ namespace xbee.Communication
         }*/
 
 
-        public ArduinoBot(byte id)
+        public ArduinoBotComm(byte id)
         {
 
             Logger.GlobalLogger.info("Create new ArduinoBots id:" + id);
@@ -223,5 +223,6 @@ namespace xbee.Communication
             _MessageEnAttenteEnvoi[index] = tmp;
         }
         #endregion
+
     }
 }

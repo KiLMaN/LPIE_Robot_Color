@@ -43,8 +43,8 @@ namespace xbee.Communication
         private const int _TimeOutKeepAlive = 30; // Envoi d'un KeepAlive (ping) toutes les 30 secondes sans messages
         private Thread _ThreadMessagesEnvois; // Envoi / KeepAlive / Rejeux
 
-        private ArduinoManager _ArduinoManager;
-        public ArduinoManager ArduinoManager
+        private ArduinoManagerComm _ArduinoManager;
+        public ArduinoManagerComm ArduinoManager
         {
             get { return _ArduinoManager; }
             //set { _ArduinoManager = value; }
@@ -58,7 +58,7 @@ namespace xbee.Communication
        
         
 
-        public AutomateCommunication(string portSerie,bool XbeeApiMode,ArduinoManager ArduinoManager)
+        public AutomateCommunication(string portSerie,bool XbeeApiMode,ArduinoManagerComm ArduinoManager)
         {
             // liste des Arduinos
             _ArduinoManager = ArduinoManager;
@@ -88,7 +88,7 @@ namespace xbee.Communication
         }
 
         #region #### Evenements ####
-        private void _OnArduinoTimeout(ArduinoBot bot)
+        private void _OnArduinoTimeout(ArduinoBotComm bot)
         {
             // Deconnection et suppression des messages en attente
             _ArduinoManager.disconnectArduinoBot(bot.id);
@@ -129,7 +129,7 @@ namespace xbee.Communication
                     {
                         // Envoi au couches supérrieures 
                         MessageProtocol message = _SerialXbee.DecodeTrame(trame);
-                        ArduinoBot robot = ArduinoManager.getArduinoBotById(trame.src);
+                        ArduinoBotComm robot = ArduinoManager.getArduinoBotById(trame.src);
                         NewTrameArduinoReceveidEventArgs arg = new NewTrameArduinoReceveidEventArgs(message, robot);
 
                         OnNewTrameArduinoReceived(this, arg);
@@ -160,13 +160,13 @@ namespace xbee.Communication
         private bool TraiteTrameRecue(TrameProtocole trame)
         {
             MessageProtocol message = _SerialXbee.DecodeTrame(trame);
-            ArduinoBot robot = ArduinoManager.getArduinoBotById(trame.src);
+            ArduinoBotComm robot = ArduinoManager.getArduinoBotById(trame.src);
 
             if(message is EMBtoPCMessageAskConn)
             {
                 if (robot == null) // Le robot n'as jamais été céer, on le créer
                 {
-                    robot = new ArduinoBot(trame.src);
+                    robot = new ArduinoBotComm(trame.src);
                     robot.DateLastMessageReceived = DateTime.Now;
                     _ArduinoManager.addArduinoBot(robot);
                 }
@@ -332,7 +332,7 @@ namespace xbee.Communication
             while (true)
             {
                 // Chacun des robots
-                List<ArduinoBot> listeArduino = _ArduinoManager.ListeArduino;
+                List<ArduinoBotComm> listeArduino = _ArduinoManager.ListeArduino;
                 for (int i = 0; i < listeArduino.Count; i++)
                 {
                     // Si il est connecté
@@ -411,7 +411,7 @@ namespace xbee.Communication
         #endregion
 
         #region #### Envoi de messages ####
-        private void SendMessageToArduino(MessageProtocol mess, ArduinoBot bot)
+        private void SendMessageToArduino(MessageProtocol mess, ArduinoBotComm bot)
         {
             if (bot == null)
             {
@@ -465,7 +465,7 @@ namespace xbee.Communication
                 Logger.GlobalLogger.error("Envoi d'un message à un robot non connecté :(");
             }
         }
-        public void PushSendMessageToArduino(MessageProtocol mess, ArduinoBot bot)
+        public void PushSendMessageToArduino(MessageProtocol mess, ArduinoBotComm bot)
         {
             if(bot != null)
                 bot.PushMessageAEnvoyer(mess);

@@ -8,14 +8,14 @@ namespace xbee.Communication.Events
 {
     public class ArduinoTimeoutEventArgs : EventArgs
     {
-        private ArduinoBot _bot;
+        private ArduinoBotComm _bot;
 
-        public ArduinoTimeoutEventArgs(ArduinoBot bot)
+        public ArduinoTimeoutEventArgs(ArduinoBotComm bot)
 		{
             _bot = bot;
 		}
 
-        public ArduinoBot Bot
+        public ArduinoBotComm Bot
 		{
 			get {
                 return _bot;
