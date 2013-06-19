@@ -43,10 +43,7 @@ namespace IA
         #region #### Constructeurs / Destructeurs ####
         public IntelArt()
         {
-            _ArduinoManager = new ArduinoManagerComm();
-            _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager);
-
-            _Follower = new Follower(_ArduinoManager,_AutomateComm);
+            
         }
         ~IntelArt()
         {
@@ -87,10 +84,22 @@ namespace IA
         #region #### IA ####
         public void StartIA()
         {
+            StopIA();
+
+            _ArduinoManager = new ArduinoManagerComm();
+            _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager);
+
+            _Follower = new Follower(_ArduinoManager, _AutomateComm);
             _Follower.Start();
         }
         public void StopIA()
         {
+            _ArduinoManager = null;
+            if( _AutomateComm != null)
+                _AutomateComm.Dispose();
+            _AutomateComm = null;
+
+            if (_Follower != null)
             _Follower.Stop();
         }
         #endregion

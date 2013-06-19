@@ -27,10 +27,8 @@ namespace video
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
-<<<<<<< HEAD
-=======
         private VideoCaptureDevice FinalVideo = null;
->>>>>>> 6987d622693357d52a22998b1df6b54a938d0e39
+
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
         private double[] ratioCmParPixel;

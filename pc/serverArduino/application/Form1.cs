@@ -13,11 +13,12 @@ namespace application
 {
     public partial class Form1 : Form
     {
+        IntelArt IA;
         public Form1()
         {
             InitializeComponent();
             // Instanciation des composants 
-            IntelArt IA = new IntelArt();
+            IA  = new IntelArt();
             //VideoProg video = new VideoProg(ImageReel, ImgContour, numericUpDown1, LblFPS);
 
             #region #### Liens Composants ####
@@ -30,7 +31,12 @@ namespace application
           //  video.OnUpdatePositionZones         += IA.OnPositionUpdateZones;
           //  video.OnUpdatePositionZoneTravail   += IA.OnPositionUpdateZoneTravail;
             #endregion
+            this.FormClosing += new FormClosingEventHandler(ClosingForm);
 
+        }
+        public void ClosingForm(object sender, FormClosingEventArgs e)
+        {
+            IA.StopIA();
         }
     }
 }
