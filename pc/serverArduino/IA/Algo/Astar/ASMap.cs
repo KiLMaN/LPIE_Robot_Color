@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using utils;
 
-namespace IA.Algo.AStar
+namespace IA.Algo.AStarAlgo
 {
     class ASMap
     {
@@ -69,6 +69,10 @@ namespace IA.Algo.AStar
         public ASCase getCase(int pLigne, int pColonne)
         {
             return _map[pLigne, pColonne];
+        }
+        public ASCase getCase(ASPoint p)
+        {
+            return _map[p.X,p.Y];
         }
 
         public bool inMap(ASPoint point)

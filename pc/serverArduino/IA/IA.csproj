@@ -46,16 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algo\ArduinoBotIA.cs" />
     <Compile Include="Algo\AStar\ASCase.cs" />
     <Compile Include="Algo\AStar\ASMap.cs" />
     <Compile Include="Algo\AStar\AStar.cs" />
     <Compile Include="Algo\Follower.cs" />
     <Compile Include="Algo\Objectif.cs" />
-    <Compile Include="Algo\ObjectifList.cs" />
     <Compile Include="Algo\Track.cs" />
     <Compile Include="Algo\TrackMaker.cs" />
     <Compile Include="Algo\Zone.cs" />
-    <Compile Include="Algo\ZoneList.cs" />
     <Compile Include="HomeIA.cs">
       <SubType>Form</SubType>
     </Compile>

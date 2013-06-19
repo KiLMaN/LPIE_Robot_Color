@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Communication\ArduinoBot.cs" />
+    <Compile Include="Communication\ArduinoBotComm.cs" />
     <Compile Include="Communication\ArduinoManager.cs" />
     <Compile Include="Communication\AutomateCommunication.cs" />
     <Compile Include="Communication\MessageBuilder.cs" />

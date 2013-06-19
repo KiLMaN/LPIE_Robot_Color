@@ -9,9 +9,9 @@ namespace xbee.Communication.Events
     public class NewTrameArduinoReceveidEventArgs : EventArgs
     {
         private MessageProtocol _message;
-        private ArduinoBot _source;
+        private ArduinoBotComm _source;
 
-        public NewTrameArduinoReceveidEventArgs(MessageProtocol message, ArduinoBot Source)
+        public NewTrameArduinoReceveidEventArgs(MessageProtocol message, ArduinoBotComm Source)
 		{
             _message = message;
             _source = Source;
@@ -23,7 +23,7 @@ namespace xbee.Communication.Events
                 return _message;
 			}
 		}
-        public ArduinoBot Source
+        public ArduinoBotComm Source
         {
             get { return _source; }
         }
