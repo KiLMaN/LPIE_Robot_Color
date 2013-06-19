@@ -29,14 +29,14 @@ namespace IA
         #endregion
 
         /* Liste des Arduinos */
-        ArduinoManager _ArduinoManager;
+        ArduinoManagerComm _ArduinoManager;
         /* Automate pour la communication avec les robots */
         AutomateCommunication _AutomateComm;
 
         #region #### Constructeurs / Destructeurs ####
         public IntelArt()
         {
-            _ArduinoManager = new ArduinoManager();
+            _ArduinoManager = new ArduinoManagerComm();
             _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager);
 
         }

@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algo\ArduinoBotIA.cs" />
     <Compile Include="Algo\AStar\ASCase.cs" />
     <Compile Include="Algo\AStar\ASMap.cs" />
     <Compile Include="Algo\AStar\AStar.cs" />

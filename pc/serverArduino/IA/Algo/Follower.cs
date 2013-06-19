@@ -3,17 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using utils.Events;
+using xbee.Communication;
 
 namespace IA.Algo
 {
     public class Follower
     {
-
+        // Fabrication des tracés 
         private TrackMaker _TrackMaker;
-        public Follower()
+
+        // Liste des robots
+        private ArduinoManagerComm _ArduinoManager;
+
+        public Follower(ArduinoManagerComm AM)
         {
+            this._ArduinoManager = AM;
+            _TrackMaker = new TrackMaker(AM);
         }
 
+        public void checkPositionArduino(ArduinoBotComm robot)
+        {
+            if (robot == null)
+                return;
+
+            
+        }
 
 
         // Calculate the distance between

@@ -5,35 +5,35 @@ using System.Text;
 
 namespace xbee.Communication
 {
-    public class ArduinoManager
+    public class ArduinoManagerComm
     {
         // Liste contenant les arduinos
-        private List<ArduinoBot> _listArduino;
+        private List<ArduinoBotComm> _listArduino;
 
-        public List<ArduinoBot> ListeArduino
+        public List<ArduinoBotComm> ListeArduino
         {
             get { return _listArduino; }
             set { _listArduino = value; }
         }
 
-        public ArduinoManager()
+        public ArduinoManagerComm()
         {
-            _listArduino = new List<ArduinoBot>();
+            _listArduino = new List<ArduinoBotComm>();
         }
 
-        public ArduinoBot getArduinoBotById(byte id)
+        public ArduinoBotComm getArduinoBotById(byte id)
         {
-            return _listArduino.Find(ArduinoBot.ById(id));
+            return _listArduino.Find(ArduinoBotComm.ById(id));
         }
 
-        public void addArduinoBot(ArduinoBot arduino)
+        public void addArduinoBot(ArduinoBotComm arduino)
         {
             _listArduino.Add(arduino);
         }
 
         public void disconnectArduinoBot(byte id)
         {
-            _listArduino.Find(ArduinoBot.ById(id)).Disconnect();
+            _listArduino.Find(ArduinoBotComm.ById(id)).Disconnect();
         }
 
     }

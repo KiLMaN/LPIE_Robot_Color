@@ -16,7 +16,7 @@ namespace xbee
         //private messageBuilder g_MessageBuilder;
         public Logger g_Logger = new Logger(); // Logger global
 
-        private ArduinoManager _ArduinoManager;
+        private ArduinoManagerComm _ArduinoManager;
         private AutomateCommunication _AutomateComm;
 
         private Thread _ThreadSendSensorAsk;
@@ -33,7 +33,7 @@ namespace xbee
 
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_close);
 
-            _ArduinoManager = new ArduinoManager();
+            _ArduinoManager = new ArduinoManagerComm();
             _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager); // Initialise l'automate sur le port 0
             _AutomateComm.OnNewTrameArduinoReceived += new AutomateCommunication.NewTrameArduinoReceivedEventHandler(_OnNewTrameArduinoReceived);
             _AutomateComm.OnArduinoTimeout +=new AutomateCommunication.ArduinoTimeoutEventHandler(_OnArduinoTimeout);
@@ -213,7 +213,7 @@ namespace xbee
                 MessageBuilder.createMoveMessage(true, 0x50, 0x50),
                 _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                 );
-            ArduinoBot test = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
+            ArduinoBotComm test = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
             //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(true,0x50,0x50));
         }
         private void btn_down_Click(object sender, EventArgs e)
@@ -281,7 +281,7 @@ namespace xbee
         {
             while (true)
             {
-                ArduinoBot robot = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
+                ArduinoBotComm robot = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
                 if (robot != null)
                 {
                     // TODO : Enlever ?

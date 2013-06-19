@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using utils.Events;
 
-namespace IA.Algo.AStar
+namespace IA.Algo
 {
     public class Track
     {
