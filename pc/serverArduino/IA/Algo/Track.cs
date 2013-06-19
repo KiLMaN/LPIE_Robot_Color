@@ -71,5 +71,10 @@ namespace IA.Algo
             }
             _Positions = Sortie;
         }
+
+        public void removeBefore(PositionElement p)
+        {
+            this.Positions.RemoveRange(0, this.Positions.IndexOf(p) );
+        }
     }
 }

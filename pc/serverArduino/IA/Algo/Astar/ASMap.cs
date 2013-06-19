@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using utils;
 
-namespace IA.Algo.AStar
+namespace IA.Algo.AStarAlgo
 {
     class ASMap
     {

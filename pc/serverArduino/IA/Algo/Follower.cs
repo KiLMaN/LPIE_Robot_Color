@@ -4,79 +4,166 @@ using System.Linq;
 using System.Text;
 using utils.Events;
 using xbee.Communication;
+using utils;
+using System.Threading;
 
 namespace IA.Algo
 {
     public class Follower
     {
+        // Disance maximum pour le recalcul de l'itinéraire
+        private const int _DistanceMaximumRecal = 20;
+
+        // Distance pour passer a la suite d'un tracé
+        private const int _RadiusNextItineraire = 10;
+
         // Fabrication des tracés 
         private TrackMaker _TrackMaker;
 
-        // Liste des robots
+        // Liste des robots Partie Comm
         private ArduinoManagerComm _ArduinoManager;
+        private AutomateCommunication _AutomateComm;
+        // Liste des robot Partie IA
+        private List<ArduinoBotIA> _ListArduino;
 
-        public Follower(ArduinoManagerComm AM)
+        private Thread _ThreadIA;
+
+
+        public Follower(ArduinoManagerComm AM,AutomateCommunication AUTO)
         {
+            // Partie communication
             this._ArduinoManager = AM;
-            _TrackMaker = new TrackMaker(AM);
-        }
+            this._AutomateComm = AUTO;
 
-        public void checkPositionArduino(ArduinoBotComm robot)
-        {
-            if (robot == null)
-                return;
+            _ListArduino = new List<ArduinoBotIA>();
+
+            // Createur de trajectoire
+            _TrackMaker = new TrackMaker();
 
             
         }
-
-
-        // Calculate the distance between
-        // point pt and the segment p1 --> p2.
-        private double FindDistanceToSegment(PositionElement pt, PositionElement p1, PositionElement p2, out PositionElement closest)
+        // Demarer l'automate
+        public void Start()
         {
-            int dx = p2.X - p1.X;
-            int dy = p2.Y - p1.Y;
-            if ((dx == 0) && (dy == 0))
+            if (_AutomateComm.IsSerialPortOpen())
             {
-                // It's a point not a line segment.
-                closest = p1;
-                dx = pt.X - p1.X;
-                dy = pt.Y - p1.Y;
-                return Math.Sqrt(dx * dx + dy * dy);
-            }
-
-            // Calculate the t that minimizes the distance.
-            float t = ((pt.X - p1.X) * dx + (pt.Y - p1.Y) * dy) / (dx * dx + dy * dy);
-
-            // See if this represents one of the segment's
-            // end points or a point in the middle.
-            if (t < 0)
-            {
-                closest = new PositionElement();
-                closest.X = p1.X;
-                closest.Y = p1.Y;
-                dx = pt.X - p1.X;
-                dy = pt.Y - p1.Y;
-            }
-            else if (t > 1)
-            {
-                closest = new PositionElement();
-                closest.X = p2.X;
-                closest.Y = p2.Y;
-                dx = pt.X - p2.X;
-                dy = pt.Y - p2.Y;
+                _ThreadIA = new Thread(new ThreadStart(_ThreadPrincipalIA));
+                _ThreadIA.Start();
             }
             else
             {
-                closest = new PositionElement();
-                closest.X = (int)(p1.X + t * dx);
-                closest.Y = (int)(p1.Y + t * dy);
-                //closest = new PointF(p1.X + t * dx, p1.Y + t * dy);
-                dx = pt.X - closest.X;
-                dy = pt.Y - closest.Y;
+                Logger.GlobalLogger.error("Automate de communication non connecté au port Serie Démarrage impossible ");
             }
-
-            return Math.Sqrt(dx * dx + dy * dy);
         }
+        //Stopper l'automate
+        public void Stop()
+        {
+            if(_ThreadIA != null)
+                _ThreadIA.Abort();
+            _ThreadIA = null;
+        }
+
+        public void _ThreadPrincipalIA()
+        {
+            while (true) 
+            { 
+            
+            }
+        }
+
+        #region #### Itinéraire ####
+
+        // Supprime les point avant le point donne
+        private void removeBeforePoint(Track tr,PositionElement p)
+        {
+            tr.removeBefore(p);
+        }
+
+        // Verifie si le robot est proche d'un point de l'itinéraire pour changer passer a la suite 
+        private bool checkSuiteItineraire(byte idRobot , out PositionElement NearestPosition)
+        {
+            NearestPosition = new PositionElement();
+             
+
+            // On a bien un robot avec ce numéro
+             if (_ListArduino.Exists(ArduinoBotIA.ById(idRobot)))
+             {
+                 ArduinoBotIA Robot = _ListArduino.Find(ArduinoBotIA.ById(idRobot));
+
+                // Le robot a bien un tracé définit
+                 if (Robot.Trace != null)
+                 {
+                     Track tr = Robot.Trace;
+                    for (int i = 0; i < tr.Positions.Count - 1; i++)
+                    {
+                        // On est assez proche du point, on passe à la suite 
+                        if (UtilsMath.DistanceEuclidienne(tr.Positions[i], Robot.Position) < _RadiusNextItineraire)
+                        {
+                            NearestPosition = tr.Positions[i];
+                            return true;
+                        }
+                    }
+                 }
+             }
+             return false;
+        }
+
+        // Verifie si un robot est bien proche du tracé qu'il doit effectuer
+        private bool checkProximiteTrace(byte idRobot)
+        {
+
+            // On a bien un robot avec ce numéro
+            if (_ListArduino.Exists(ArduinoBotIA.ById(idRobot)))
+            {
+                ArduinoBotIA Robot = _ListArduino.Find(ArduinoBotIA.ById(idRobot));
+
+                // Le robot a bien un tracé définit
+                if (Robot.Trace != null)
+                {
+                    Track tr = Robot.Trace;
+                    double minDistance = -1;
+                    for (int i = 0; i < tr.Positions.Count - 1; i++)
+                    {
+                        // Trouve la distance la plus petite entre la position actuelle et les traits du tracé
+                        double tmp = UtilsMath.FindDistanceToSegment(Robot.Position, tr.Positions[i], tr.Positions[i + 1]);
+                        if (minDistance == -1 || minDistance > tmp)
+                        {
+                            minDistance = tmp;
+                        }
+                    }
+                    if (minDistance >= _DistanceMaximumRecal)
+                    {
+                        Logger.GlobalLogger.info("Robot trop éloigné de son tracé, Recalcul de l'itinéraire ");
+                        return true;
+                    }
+
+                }
+            }
+            return false;
+        }
+        #endregion
+
+
+        #region #### Evenements Images ####
+        public void UpdatePositionRobots(List<PositionRobot> Positions)
+        {
+            
+        }
+        public void UpdatePositionCubes(List<PositionCube> Cubes)
+        {
+
+            //_TrackMaker.updateCube(Cubes);
+        }
+        public void UpdatePositionZones(List<PositionZone> Zone)
+        {
+        }
+        public void UpdatePositionZoneTravail(PositionZoneTravail Zone)
+        {
+        }
+        #endregion
+
+        #region #### Evenements Comm ####
+        // TODO : Ajouter dand _ListArduino a la connexion
+        #endregion
     }
 }

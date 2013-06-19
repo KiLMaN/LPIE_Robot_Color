@@ -55,7 +55,6 @@
     <Compile Include="Algo\Track.cs" />
     <Compile Include="Algo\TrackMaker.cs" />
     <Compile Include="Algo\Zone.cs" />
-    <Compile Include="Algo\ZoneList.cs" />
     <Compile Include="HomeIA.cs">
       <SubType>Form</SubType>
     </Compile>

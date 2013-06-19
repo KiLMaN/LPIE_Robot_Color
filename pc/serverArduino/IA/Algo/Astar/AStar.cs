@@ -5,7 +5,7 @@ using System.Text;
 using utils.Events;
 using utils;
 
-namespace IA.Algo.AStar
+namespace IA.Algo.AStarAlgo
 {
     public struct QuadrillageCoord
     {

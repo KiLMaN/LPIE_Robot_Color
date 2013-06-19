@@ -6,7 +6,7 @@ using utils.Events;
 
 namespace IA.Algo
 {
-    class Objectif
+    public class Objectif
     {
         // Identifiant de l'objectif
         private int _id;
@@ -14,6 +14,7 @@ namespace IA.Algo
         {
             get { return _id; }
         }
+
         // Position de l'objectif
         private PositionElement _position;
         public PositionElement position
@@ -21,14 +22,22 @@ namespace IA.Algo
             get { return _position; }
         }
 
-        #region #### Constructeurs ####
-        public Objectif(int id)
+        // Identifiant de la zone de dépose ascociée
+        private int _idZone;
+        public int idZone
+        {
+            get { return this._idZone; }
+        }
+
+        // Le cube a déja eté traité
+        public bool Done = false;
+        // Robot en charge du cube
+        public ArduinoBotIA Robot = null;
+
+        public Objectif(int id, PositionElement pos , int idZone)
         {
             _id = id;
-        }
-        public Objectif(int id, PositionElement pos)
-            :this(id)
-        {
+            _idZone = idZone;
             setPosition(pos);
         }
 
@@ -36,7 +45,14 @@ namespace IA.Algo
         {
             _position = pos;
         }
-        #endregion
 
+        /* Permet de retrouver le robot dans les listes */
+        public static Predicate<Objectif> ById(int id)
+        {
+            return delegate(Objectif o)
+            {
+                return o._id == id;
+            };
+        }
     }
 }

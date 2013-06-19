@@ -284,8 +284,6 @@ namespace xbee
                 ArduinoBotComm robot = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
                 if (robot != null)
                 {
-                    // TODO : Enlever ?
-                    //if (robot.stateComm == StateArduinoComm.STATE_COMM_NONE)
                     if(robot.Connected)
                     {
                         MessageProtocol mess = MessageBuilder.createAskSensorMessage((byte)IDSensorsArduino.IR);
