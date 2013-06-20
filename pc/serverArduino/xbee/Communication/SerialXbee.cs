@@ -17,7 +17,7 @@ namespace xbee.Communication
         private const int       _ThreadDelay = 10;
 
         private XbeeAPI         _XbeeAPI;
-        //private ArduinoManager  _ArduinoManager;
+
         private TrameDecoder    _TrameDecoder;
         private TrameEncoder    _TrameEncoder;
 
