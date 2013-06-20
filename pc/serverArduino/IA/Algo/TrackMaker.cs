@@ -14,14 +14,26 @@ namespace IA.Algo
     {
         // Emplacement des cubes sur le terraim
         private List<Objectif> _Cubes;
+        public List<Objectif> Cubes
+        {
+            get { return _Cubes; }
+        }
 
         // Emplacement des zones
         private List<Zone> _ZonesDepose;
+        public List<Zone> ZonesDepose
+        {
+            get { return _ZonesDepose; }
+        }
 
         // Liste des Tracés déjà créer
         //private List<Track> _Tracks;
 
         private PositionZoneTravail _ZoneTravail;
+        public PositionZoneTravail ZoneTravail
+        {
+            get { return _ZoneTravail; }
+        }
 
         public TrackMaker()
         {
@@ -71,7 +83,16 @@ namespace IA.Algo
             }
             else
             {
-                Objectif o = findObjectifNear(robot.Position);
+                Objectif o;
+                if (robot.Cube != null) // On a deja un objectif
+                {
+                    o = robot.Cube;
+                }
+                else // Trouver un objectif
+                {
+                    o = findObjectifNear(robot.Position);
+                }
+                
                 Track t = CreerAstarCube(robot, o).CalculerTrajectoire();
                 robot.SetObjectif(o);
                 o.Robot = robot;

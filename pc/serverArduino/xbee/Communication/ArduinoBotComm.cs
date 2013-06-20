@@ -6,12 +6,7 @@ using utils;
 
 namespace xbee.Communication
 {
-    public enum StateArduinoBot : byte
-    {
-        STATE_ARDUINO_NONE          = 0x00, // Le robot ne fait rien
-        STATE_ARDUINO_MOVE          = 0x01, // Le robot bouge
-        STATE_ARDUINO_CLAW          = 0x02 // Le robot utilise ça pince
-    }
+    
     // Etat du protocole de communication du coté PC
     public enum StateArduinoComm : byte
     {
@@ -53,14 +48,7 @@ namespace xbee.Communication
             get { return _connected; }
         }
         #region #### Etats du protocole ####
-        private StateArduinoBot _stateArduino;
         private StateArduinoComm _stateCommunication;
-
-        public StateArduinoBot stateBot
-        {
-            get { return _stateArduino; }
-            set { _stateArduino = value; }
-        }
         public StateArduinoComm stateComm
         {
             get { return _stateCommunication; }
@@ -93,7 +81,7 @@ namespace xbee.Communication
             _id = id;
 
             _connected = false;
-            _stateArduino = StateArduinoBot.STATE_ARDUINO_NONE;
+            
             _stateCommunication = StateArduinoComm.STATE_COMM_NONE;
             //Disconnect(); // Initialisation 
         }
@@ -101,7 +89,7 @@ namespace xbee.Communication
         {
             Logger.GlobalLogger.info("Deconnection d'un robot " + id + "Supression des messages en attente ");
             _connected = false;
-            _stateArduino = StateArduinoBot.STATE_ARDUINO_NONE;
+            
             _stateCommunication = StateArduinoComm.STATE_COMM_NONE;
             _MessageEnAttenteEnvoi.Clear();
         }
