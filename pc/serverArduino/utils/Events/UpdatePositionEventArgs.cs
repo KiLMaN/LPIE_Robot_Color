@@ -22,6 +22,10 @@ namespace utils.Events
         {
             return new System.Drawing.Point(d.X, d.Y);
         }
+        public override string ToString()
+        {
+            return "[" + X + ";" + Y + "]";
+        }
     }
 
     #region #### Positions Robots ####

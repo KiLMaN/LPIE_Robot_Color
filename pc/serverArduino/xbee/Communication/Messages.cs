@@ -33,14 +33,14 @@ namespace xbee.Communication
             return (String.Format("(Source :{0}, Destination :{1}, Numéro :{2}, Longeur :{3}, crc :{4:X4} , data :{5})", src, dst, num, length, crc, datas));
         }
 
-        public void setSrc(byte src)
+        /*public void setSrc(byte src)
         {
             this.src = src;
         }
         public void setDst(byte dst)
         {
             this.dst = dst;
-        }
+        }*/
 
         
     };
@@ -77,14 +77,17 @@ namespace xbee.Communication
         OPEN_CLAW = 0x62,
         ASK_SENSOR = 0x31,
         ASK_PING = 0x21,
-        RESP_CONN = 0x11
+        RESP_CONN = 0x11,
+        AUTO_MODE = 0x71,
     };
     public enum EMBtoPCmessHeads : byte
     {
         ASK_CONN = 0x12,
         RESP_PING = 0x22,
         RESP_SENSOR = 0x32,
-        ACK = 0x41
+        ACK = 0x41, 
+        AUTO_MODE_OFF = 0x72,
+
     };
     #endregion
 
@@ -205,6 +208,11 @@ namespace xbee.Communication
             return base.getBytes().Concat(data).ToArray();
         }
     }
+    /* Mode Autonome */
+    public class PCtoEMBMessageAutoMode : PCtoEMBmess
+    {
+    }
+
 
     #endregion
 
@@ -268,6 +276,16 @@ namespace xbee.Communication
             ret.idTrame = (ushort)(data[1] << 8);
             ret.idTrame += (ushort)data[2];
             ret.valueAck = data[3];
+            return ret;
+        }
+    }
+
+    public class EMBtoPCMessageAutoModeOff : EMBtoPCmess
+    {
+        public static explicit operator EMBtoPCMessageAutoModeOff(byte[] data) // cast Explicite
+        {
+            EMBtoPCMessageAutoModeOff ret = new EMBtoPCMessageAutoModeOff();
+            ret.headerMess = data[0];
             return ret;
         }
     }

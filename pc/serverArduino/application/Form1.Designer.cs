@@ -45,16 +45,15 @@
             this.ListeWebCam = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.BTN_STOP_IA = new System.Windows.Forms.Button();
-            this.BTN_START_IA = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.ListArduino = new System.Windows.Forms.ListView();
+            this.ListeArduino = new System.Windows.Forms.ListView();
             this._id = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._connected = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._etatComm = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._etatRobot = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._posX = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._posY = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this._angle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.CB_Xbee = new System.Windows.Forms.CheckBox();
             this.btn_ActualiserListePortSerie = new System.Windows.Forms.Button();
             this.ctlListePorts = new System.Windows.Forms.ComboBox();
@@ -63,6 +62,19 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.RTB_LOG = new System.Windows.Forms.RichTextBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.ListeCubes = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ListeZones = new System.Windows.Forms.ListView();
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
@@ -217,10 +229,12 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.BTN_STOP_IA);
-            this.tabPage2.Controls.Add(this.BTN_START_IA);
+            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Controls.Add(this.label5);
+            this.tabPage2.Controls.Add(this.ListeZones);
+            this.tabPage2.Controls.Add(this.ListeCubes);
             this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Controls.Add(this.ListArduino);
+            this.tabPage2.Controls.Add(this.ListeArduino);
             this.tabPage2.Controls.Add(this.CB_Xbee);
             this.tabPage2.Controls.Add(this.btn_ActualiserListePortSerie);
             this.tabPage2.Controls.Add(this.ctlListePorts);
@@ -234,27 +248,6 @@
             this.tabPage2.Text = "IA";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // BTN_STOP_IA
-            // 
-            this.BTN_STOP_IA.Enabled = false;
-            this.BTN_STOP_IA.Location = new System.Drawing.Point(764, 37);
-            this.BTN_STOP_IA.Name = "BTN_STOP_IA";
-            this.BTN_STOP_IA.Size = new System.Drawing.Size(75, 23);
-            this.BTN_STOP_IA.TabIndex = 25;
-            this.BTN_STOP_IA.Text = "Stop IA";
-            this.BTN_STOP_IA.UseVisualStyleBackColor = true;
-            this.BTN_STOP_IA.Click += new System.EventHandler(this.BTN_STOP_IA_Click);
-            // 
-            // BTN_START_IA
-            // 
-            this.BTN_START_IA.Location = new System.Drawing.Point(764, 8);
-            this.BTN_START_IA.Name = "BTN_START_IA";
-            this.BTN_START_IA.Size = new System.Drawing.Size(75, 23);
-            this.BTN_START_IA.TabIndex = 24;
-            this.BTN_START_IA.Text = "Start IA";
-            this.BTN_START_IA.UseVisualStyleBackColor = true;
-            this.BTN_START_IA.Click += new System.EventHandler(this.BTN_START_IA_Click);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -264,21 +257,22 @@
             this.label3.TabIndex = 23;
             this.label3.Text = "Robots :";
             // 
-            // ListArduino
+            // ListeArduino
             // 
-            this.ListArduino.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ListeArduino.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this._id,
             this._connected,
             this._etatComm,
             this._etatRobot,
             this._posX,
-            this._posY});
-            this.ListArduino.Location = new System.Drawing.Point(8, 57);
-            this.ListArduino.Name = "ListArduino";
-            this.ListArduino.Size = new System.Drawing.Size(650, 87);
-            this.ListArduino.TabIndex = 22;
-            this.ListArduino.UseCompatibleStateImageBehavior = false;
-            this.ListArduino.View = System.Windows.Forms.View.Details;
+            this._posY,
+            this._angle});
+            this.ListeArduino.Location = new System.Drawing.Point(8, 57);
+            this.ListeArduino.Name = "ListeArduino";
+            this.ListeArduino.Size = new System.Drawing.Size(1160, 87);
+            this.ListeArduino.TabIndex = 22;
+            this.ListeArduino.UseCompatibleStateImageBehavior = false;
+            this.ListeArduino.View = System.Windows.Forms.View.Details;
             // 
             // _id
             // 
@@ -313,7 +307,12 @@
             // 
             this._posY.Tag = "_posY";
             this._posY.Text = "posY";
-            this._posY.Width = 81;
+            this._posY.Width = 59;
+            // 
+            // _angle
+            // 
+            this._angle.Tag = "Angle";
+            this._angle.Text = "Angle";
             // 
             // CB_Xbee
             // 
@@ -380,11 +379,112 @@
             // 
             // RTB_LOG
             // 
-            this.RTB_LOG.Location = new System.Drawing.Point(6, 6);
+            this.RTB_LOG.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.RTB_LOG.Location = new System.Drawing.Point(3, 3);
             this.RTB_LOG.Name = "RTB_LOG";
-            this.RTB_LOG.Size = new System.Drawing.Size(643, 380);
+            this.RTB_LOG.Size = new System.Drawing.Size(1179, 685);
             this.RTB_LOG.TabIndex = 0;
             this.RTB_LOG.Text = "";
+            // 
+            // ListeCubes
+            // 
+            this.ListeCubes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader6});
+            this.ListeCubes.Location = new System.Drawing.Point(8, 190);
+            this.ListeCubes.Name = "ListeCubes";
+            this.ListeCubes.Size = new System.Drawing.Size(1160, 87);
+            this.ListeCubes.TabIndex = 24;
+            this.ListeCubes.UseCompatibleStateImageBehavior = false;
+            this.ListeCubes.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Tag = "_id";
+            this.columnHeader1.Text = "ID";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Tag = "_connected";
+            this.columnHeader2.Text = "ID_Zone";
+            this.columnHeader2.Width = 101;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Tag = "_etatComm";
+            this.columnHeader3.Text = "FAIT";
+            this.columnHeader3.Width = 154;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Tag = "_etatRobot";
+            this.columnHeader4.Text = "ID_ROBOT";
+            this.columnHeader4.Width = 168;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Tag = "_posX";
+            this.columnHeader5.Text = "posX";
+            this.columnHeader5.Width = 76;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Tag = "_posY";
+            this.columnHeader6.Text = "posY";
+            this.columnHeader6.Width = 59;
+            // 
+            // ListeZones
+            // 
+            this.ListeZones.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader8,
+            this.columnHeader9,
+            this.columnHeader10});
+            this.ListeZones.Location = new System.Drawing.Point(8, 323);
+            this.ListeZones.Name = "ListeZones";
+            this.ListeZones.Size = new System.Drawing.Size(1160, 87);
+            this.ListeZones.TabIndex = 25;
+            this.ListeZones.UseCompatibleStateImageBehavior = false;
+            this.ListeZones.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Tag = "_id";
+            this.columnHeader8.Text = "ID";
+            this.columnHeader8.Width = 70;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Tag = "_connected";
+            this.columnHeader9.Text = "Postions Coins";
+            this.columnHeader9.Width = 300;
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Tag = "_etatComm";
+            this.columnHeader10.Text = "Position Centre";
+            this.columnHeader10.Width = 154;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(8, 174);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.TabIndex = 26;
+            this.label5.Text = "Cubes";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(8, 307);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(37, 13);
+            this.label6.TabIndex = 27;
+            this.label6.Text = "Zones";
             // 
             // Form1
             // 
@@ -427,7 +527,7 @@
         private System.Windows.Forms.ComboBox ListeWebCam;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ListView ListArduino;
+        private System.Windows.Forms.ListView ListeArduino;
         private System.Windows.Forms.ColumnHeader _id;
         private System.Windows.Forms.ColumnHeader _connected;
         private System.Windows.Forms.ColumnHeader _etatComm;
@@ -439,9 +539,21 @@
         private System.Windows.Forms.ComboBox ctlListePorts;
         private System.Windows.Forms.Button btn_connection;
         private System.Windows.Forms.Label lbl_portSerie;
-        private System.Windows.Forms.Button BTN_STOP_IA;
-        private System.Windows.Forms.Button BTN_START_IA;
         private System.IO.Ports.SerialPort serialPort1;
+        private System.Windows.Forms.ColumnHeader _angle;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ListView ListeZones;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ListView ListeCubes;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
     }
 }
 

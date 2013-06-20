@@ -35,7 +35,9 @@ namespace application
 
             // Instanciation des composants 
             IA = new IntelArt();
-            IA.listAffichage = ListArduino;
+            IA.listAffichageArduino = ListeArduino;
+            IA.listAffichageCubes = ListeCubes;
+            IA.listAffichageZones = ListeZones;
             video = new VideoProg(ImageReel, ImgContour, numericUpDown1, LblFPS);
 
             #region #### Liens Composants ####
@@ -63,30 +65,10 @@ namespace application
             video = null;
             if (IA != null)
             {
-                IA.StopIA();
                 IA.CloseSerialPort();
             }
             IA = null;
         }
-
-
-        #region #### IA ####
-        private void BTN_STOP_IA_Click(object sender, EventArgs e)
-        {
-            IA.StopIA();
-            BTN_START_IA.Enabled = true;
-            BTN_STOP_IA.Enabled = false;
-        }
-
-        private void BTN_START_IA_Click(object sender, EventArgs e)
-        {
-            if (IA.StartIA())
-            {
-                BTN_START_IA.Enabled = false;
-                BTN_STOP_IA.Enabled = true;
-            }
-        }
-        #endregion
 
         #region #### Port Serie ####
         /* Remplis la liste de type ComboBox avec la liste des ports Série dispo */

@@ -76,5 +76,13 @@ namespace xbee.Communication
 
             return Message;
         }
+
+        static public MessageProtocol createModeAutoMessage()
+        {
+            PCtoEMBMessageAutoMode Message = new PCtoEMBMessageAutoMode();
+            Message.headerMess = (byte)PCtoEMBmessHeads.AUTO_MODE;
+
+            return Message;
+        }
     }
 }

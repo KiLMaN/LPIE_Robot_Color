@@ -8,6 +8,7 @@ using IA.Algo;
 using System.Windows.Forms;
 using xbee.Communication.Events;
 using System.Threading;
+using utils;
 
 namespace IA
 {
@@ -15,9 +16,9 @@ namespace IA
     {
         #region #### Evenements ####
         // Evenement pour le dessins sur l'image 
-        public event DrawPolylineEventHandler DrawPolylineEvent;// TODO : DO OR NOT
+        public event DrawPolylineEventHandler DrawPolylineEvent;
 
-        public void OnPositionUpdateRobots(object sender,UpdatePositionRobotEventArgs args)
+        public void OnPositionUpdateRobots(object sender, UpdatePositionRobotEventArgs args)
         {
             _Follower.UpdatePositionRobots(args.Robots);
         }
@@ -43,8 +44,10 @@ namespace IA
         // Autotmate pour le calul/ suivi d'itinéraire
         Follower _Follower;
 
-        // Liste pour l'affichage des arduino
-        public ListView listAffichage;
+        // Listes pour l'affichage des robots, zones et cubes
+        public ListView listAffichageArduino;
+        public ListView listAffichageCubes;
+        public ListView listAffichageZones;
 
         // Thread de mise a jour de la liste
         public Thread _tUpdate = null;
@@ -63,12 +66,9 @@ namespace IA
                 _tUpdate.Abort();
             _tUpdate = null;
 
-            if(_Follower != null)
-                _Follower.Stop();
-
             _Follower = null;
             _ArduinoManager = null;
-            if(_AutomateComm != null)
+            if (_AutomateComm != null)
                 _AutomateComm.Dispose();
             _AutomateComm = null;
         }
@@ -77,7 +77,8 @@ namespace IA
         public delegate void dUpdateListAffichage();
         public void UpdateListAffichage()
         {
-            listAffichage.Items.Clear();
+            // Update Robots
+            listAffichageArduino.Items.Clear();
             foreach (ArduinoBotIA Robot in _Follower.ListArduino)
             {
                 if (_ArduinoManager != null)
@@ -86,13 +87,42 @@ namespace IA
                     ListViewItem master = new ListViewItem(Robot.ID + "");
                     master.SubItems.Add(RobotComm.Connected + "");
                     master.SubItems.Add(RobotComm.stateComm + "");
-                    master.SubItems.Add(RobotComm.stateBot + "");
+                    master.SubItems.Add(Robot.LastAction + "");
                     master.SubItems.Add(Robot.Position.X + "");
                     master.SubItems.Add(Robot.Position.Y + "");
+                    master.SubItems.Add(Robot.Angle + "");
 
-                    listAffichage.Items.Add(master);
+                    listAffichageArduino.Items.Add(master);
                 }
+            }
+            // Update Cubes
+            listAffichageCubes.Items.Clear();
+            foreach (Objectif cube in _Follower.TrackMaker.Cubes)
+            {
 
+                ListViewItem master = new ListViewItem(cube.id + "");
+                master.SubItems.Add(cube.idZone + "");
+                master.SubItems.Add(cube.Done + "");
+                if (cube.Robot != null)
+                    master.SubItems.Add(cube.Robot.ID + "");
+                else
+                    master.SubItems.Add("N/A");
+                master.SubItems.Add(cube.position.X + "");
+                master.SubItems.Add(cube.position.Y + "");
+
+                listAffichageCubes.Items.Add(master);
+
+            }
+
+            // Update Zones
+            listAffichageZones.Items.Clear();
+            foreach (Zone zone in _Follower.TrackMaker.ZonesDepose)
+            {
+                ListViewItem master = new ListViewItem(zone.id + "");
+                master.SubItems.Add("A : " + zone.position.A.ToString() + " B : " + zone.position.B.ToString() + " C : " + zone.position.C.ToString() + " D : " + zone.position.D.ToString());
+                master.SubItems.Add(UtilsMath.CentreRectangle(zone.position).ToString());
+
+                listAffichageZones.Items.Add(master);
             }
         }
 
@@ -101,7 +131,7 @@ namespace IA
         {
             _ArduinoManager = new ArduinoManagerComm();
             _AutomateComm = new AutomateCommunication(SerialName, true, _ArduinoManager);
-            
+
             _AutomateComm.OpenSerialPort(SerialName);
 
             _Follower = new Follower(_ArduinoManager, _AutomateComm);
@@ -114,9 +144,9 @@ namespace IA
         {
             while (true)
             {
-                if (listAffichage != null)
+                if (listAffichageArduino != null)
                 {
-                    listAffichage.Invoke((dUpdateListAffichage)UpdateListAffichage);
+                    listAffichageArduino.Invoke((dUpdateListAffichage)UpdateListAffichage);
                 }
                 Thread.Sleep(500);
             }
@@ -144,27 +174,10 @@ namespace IA
         }
         public void SetXbeeApiMode(bool Mode)
         {
-            if(_AutomateComm != null)
+            if (_AutomateComm != null)
                 _AutomateComm.setXbeeApiMode(Mode);
         }
         #endregion
-        
-        #region #### IA ####
-        public bool StartIA()
-        {
-           // StopIA();
 
-            if (_Follower == null)
-                return false;
-
-            return _Follower.Start();
-        }
-        public void StopIA()
-        {
-            if (_Follower != null)
-                _Follower.Stop();
-            _Follower = null;
-        }
-        #endregion
     }
 }

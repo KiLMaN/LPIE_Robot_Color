@@ -7,6 +7,14 @@ using utils.Events;
 
 namespace IA.Algo
 {
+    public enum ActionRobot
+    {
+        ROBOT_DEPLACER,
+        ROBOT_TOURNER,
+        ROBOT_ARRET,
+        ROBOT_PINCE,
+        ROBOT_AUTONOME
+    }
     /* Objet contenant un robot Arduino */
     public class ArduinoBotIA
     {
@@ -31,6 +39,8 @@ namespace IA.Algo
         // Le robot as-til un cube de saisi ?
         private bool _Saisie = false;
 
+        public ActionRobot LastAction = ActionRobot.ROBOT_ARRET;
+        public DateTime LastActionTime = DateTime.Now;
 
         public ArduinoBotIA(byte id)
         {
