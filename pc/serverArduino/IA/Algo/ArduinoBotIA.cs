@@ -12,8 +12,15 @@ namespace IA.Algo
     {
         // Identifiant du robot
         private byte _id;
+        public byte ID
+        {
+            get { return _id; }
+        }
         // Position actuelle depuis l'image
         private PositionElement _Position;
+        public bool PositionValide = false;
+        //Angle orientation par rapport au nord de l'image (en degré)
+        public double Angle;
         // Tracé actuel
         private Track _Trace = null;
 
@@ -28,13 +35,14 @@ namespace IA.Algo
         public ArduinoBotIA(byte id)
         {
             this._id = id;
+            PositionValide = false;
             //Communication = new ArduinoBotComm(id);
         }
 
         public PositionElement Position
         {
             get { return _Position; }
-            set { _Position = value; }
+            set { _Position = value; PositionValide = true; }
         }
         public Track Trace
         {

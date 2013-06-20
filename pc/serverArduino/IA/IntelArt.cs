@@ -5,6 +5,9 @@ using System.Text;
 using utils.Events;
 using xbee.Communication;
 using IA.Algo;
+using System.Windows.Forms;
+using xbee.Communication.Events;
+using System.Threading;
 
 namespace IA
 {
@@ -40,10 +43,15 @@ namespace IA
         // Autotmate pour le calul/ suivi d'itinéraire
         Follower _Follower;
 
+        // Liste pour l'affichage des arduino
+        public ListView listAffichage;
+
+        // Thread de mise a jour de la liste
+        public Thread _tUpdate = null;
+
         #region #### Constructeurs / Destructeurs ####
         public IntelArt()
         {
-            
         }
         ~IntelArt()
         {
@@ -51,6 +59,10 @@ namespace IA
         }
         public void Dispose()
         {
+            if (_tUpdate != null)
+                _tUpdate.Abort();
+            _tUpdate = null;
+
             if(_Follower != null)
                 _Follower.Stop();
 
@@ -62,45 +74,96 @@ namespace IA
         }
         #endregion
 
+        public delegate void dUpdateListAffichage();
+        public void UpdateListAffichage()
+        {
+            listAffichage.Items.Clear();
+            foreach (ArduinoBotIA Robot in _Follower.ListArduino)
+            {
+                if (_ArduinoManager != null)
+                {
+                    ArduinoBotComm RobotComm = _ArduinoManager.getArduinoBotById(Robot.ID);
+                    ListViewItem master = new ListViewItem(Robot.ID + "");
+                    master.SubItems.Add(RobotComm.Connected + "");
+                    master.SubItems.Add(RobotComm.stateComm + "");
+                    master.SubItems.Add(RobotComm.stateBot + "");
+                    master.SubItems.Add(Robot.Position.X + "");
+                    master.SubItems.Add(Robot.Position.Y + "");
+
+                    listAffichage.Items.Add(master);
+                }
+
+            }
+        }
+
         #region #### Communication Arduino ####
         public void OpenSerialPort(string SerialName)
         {
+            _ArduinoManager = new ArduinoManagerComm();
+            _AutomateComm = new AutomateCommunication(SerialName, true, _ArduinoManager);
+            
             _AutomateComm.OpenSerialPort(SerialName);
+
+            _Follower = new Follower(_ArduinoManager, _AutomateComm);
+
+            _tUpdate = new Thread(new ThreadStart(_threadUpdate));
+            _tUpdate.Start();
+            //_AutomateComm.OnNewTrameArduinoReceived += new AutomateCommunication.NewTrameArduinoReceivedEventHandler(_AutomateComm_OnNewTrameArduinoReceived);
         }
+        private void _threadUpdate()
+        {
+            while (true)
+            {
+                if (listAffichage != null)
+                {
+                    listAffichage.Invoke((dUpdateListAffichage)UpdateListAffichage);
+                }
+                Thread.Sleep(500);
+            }
+        }
+
         public void CloseSerialPort()
         {
-            _AutomateComm.CloseSerialPort();
+            if (_tUpdate != null)
+                _tUpdate.Abort();
+            _tUpdate = null;
+
+            if (_AutomateComm != null)
+                _AutomateComm.CloseSerialPort();
+            if (_AutomateComm != null)
+                _AutomateComm.Dispose();
+            _AutomateComm = null;
+
+            _ArduinoManager = null;
         }
         public bool IsSerialPortOpen()
         {
+            if (_AutomateComm == null)
+                return false;
             return _AutomateComm.IsSerialPortOpen();
         }
         public void SetXbeeApiMode(bool Mode)
         {
-            _AutomateComm.setXbeeApiMode(Mode);
+            if(_AutomateComm != null)
+                _AutomateComm.setXbeeApiMode(Mode);
         }
         #endregion
         
         #region #### IA ####
-        public void StartIA()
+        public bool StartIA()
         {
-            StopIA();
+           // StopIA();
 
-            _ArduinoManager = new ArduinoManagerComm();
-            _AutomateComm = new AutomateCommunication("COM0", true, _ArduinoManager);
+            if (_Follower == null)
+                return false;
 
-            _Follower = new Follower(_ArduinoManager, _AutomateComm);
-            _Follower.Start();
+            return _Follower.Start();
         }
         public void StopIA()
         {
-            _ArduinoManager = null;
-            if( _AutomateComm != null)
-                _AutomateComm.Dispose();
-            _AutomateComm = null;
-
             if (_Follower != null)
-            _Follower.Stop();
+                _Follower.Stop();
+            _Follower = null;
         }
         #endregion
     }

@@ -128,11 +128,14 @@ namespace xbee.Communication
                     if (TraiteTrameRecue(trame))
                     {
                         // Envoi au couches supérrieures 
-                        MessageProtocol message = _SerialXbee.DecodeTrame(trame);
-                        ArduinoBotComm robot = ArduinoManager.getArduinoBotById(trame.src);
-                        NewTrameArduinoReceveidEventArgs arg = new NewTrameArduinoReceveidEventArgs(message, robot);
+                        if (OnNewTrameArduinoReceived != null)
+                        {
+                            MessageProtocol message = _SerialXbee.DecodeTrame(trame);
+                            ArduinoBotComm robot = ArduinoManager.getArduinoBotById(trame.src);
 
-                        OnNewTrameArduinoReceived(this, arg);
+                            NewTrameArduinoReceveidEventArgs arg = new NewTrameArduinoReceveidEventArgs(message, robot);
+                            OnNewTrameArduinoReceived(this, arg);
+                        }
                     }
                 }
                 

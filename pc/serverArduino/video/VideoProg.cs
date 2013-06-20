@@ -476,15 +476,24 @@ namespace video
         }
         public void closeVideoFlux()
         {
-            if( ThreadColor.IsAlive )
+            if (ThreadColor != null && ThreadColor.IsAlive)
                 ThreadColor.Abort();
-            _capture.Stop();
+
+            if (_capture != null)
+            {
+                if (_capture.GrabProcessState == ThreadState.Running)
+                    _capture.Stop();
+
+                _capture.Dispose();
+            }
             for (int i = 0; i < nbThread; i++)
             {
-                ListeThread[i].Abort();
+                if(ListeThread[i] != null)
+                    ListeThread[i].Abort();
                 ListeImage[i] = null;
             }
-            ThreadClean.Abort();
+            if(ThreadClean !=null)
+                ThreadClean.Abort();
             nbImageCapture = 0;
             imageShow = 0;
         }
@@ -528,7 +537,7 @@ namespace video
             {
                 try
                 {
-                    if (ListeThread[i].IsAlive)
+                    if (ListeThread[i] != null && ListeThread[i].IsAlive)
                         ListeThread[i].Abort();
                 }
                 catch { };
