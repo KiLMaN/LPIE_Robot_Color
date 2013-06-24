@@ -47,9 +47,14 @@ namespace IA.Algo
             if (_Cubes.Exists(Objectif.ById(cube.id)))
             {
                 int index = _Cubes.FindIndex(Objectif.ById(cube.id));
-                /*Objectif o = _Cubes[index];
-                o.setPosition (cube.position);*/
-                _Cubes[index] = cube;
+                if (cube.position.X == -1 || cube.position.Y == -1) // position invalide , suppression
+                {
+                    _Cubes.RemoveAt(index);
+                }
+                else
+                {
+                    _Cubes[index] = cube;
+                }
             }
             else
                 _Cubes.Add(cube);

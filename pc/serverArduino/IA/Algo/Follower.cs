@@ -90,7 +90,7 @@ namespace IA.Algo
 
                                 if (checkProximiteObjectif(Robot)) // Proximité de l'objectif ?
                                 {
-                                    if (Robot.Saisie) // On as un cube ? si oui on le dépose
+                                    if (Robot.Saisie) // On a un cube ? si oui on le dépose
                                     {
                                         MessageProtocol mess = MessageBuilder.createOpenClawMessage();
                                         _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
@@ -118,7 +118,7 @@ namespace IA.Algo
                                 // Calcul de la différence d'orientation 
                                 if (Math.Abs(diffOrientation(Robot, Robot.Trace)) > _differenceMaxOrientation) // Différence suppérieur de 15 degreé entre le robot et l'angle de la droite
                                 {
-                                    if (Robot.LastAction != ActionRobot.ROBOT_TOURNER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(5)) // On etait pas en train de tourner ou ça fait plus de 10 secondes
+                                    if (Robot.LastAction != ActionRobot.ROBOT_TOURNER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(5)) // On etait pas en train de tourner ou ça fait plus de 5 secondes
                                     {
                                         // Faire trouner le robot 
                                         double angle = diffOrientation(Robot, Robot.Trace);
