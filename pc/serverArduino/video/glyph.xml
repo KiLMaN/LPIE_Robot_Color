@@ -6,9 +6,9 @@
     <taille>64</taille>
     <distancePince>95</distancePince>
 		<lignes> 
+			<ligne>001</ligne>
 			<ligne>010</ligne>
 			<ligne>101</ligne>
-			<ligne>110</ligne>
 		</lignes>
 	</glyph>
 	<glyph>
@@ -17,8 +17,8 @@
     <taille>64</taille>
     <distancePince>95</distancePince>
 		<lignes> 
+			<ligne>101</ligne>
 			<ligne>001</ligne>
-			<ligne>100</ligne>
 			<ligne>110</ligne>
 		</lignes>
 	</glyph>
@@ -29,8 +29,8 @@
     <distancePince>95</distancePince>
 		<lignes> 
 			<ligne>010</ligne>
-			<ligne>100</ligne>
-			<ligne>011</ligne>
+			<ligne>001</ligne>
+			<ligne>110</ligne>
 		</lignes>
 	</glyph>
 </content>

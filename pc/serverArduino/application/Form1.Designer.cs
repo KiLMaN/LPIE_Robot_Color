@@ -45,6 +45,19 @@
             this.ListeWebCam = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.ListeZones = new System.Windows.Forms.ListView();
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ListeCubes = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label3 = new System.Windows.Forms.Label();
             this.ListeArduino = new System.Windows.Forms.ListView();
             this._id = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -62,19 +75,10 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.RTB_LOG = new System.Windows.Forms.RichTextBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
-            this.ListeCubes = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ListeZones = new System.Windows.Forms.ListView();
-            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.imageDebug = new Emgu.CV.UI.ImageBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.debugIA = new System.Windows.Forms.PictureBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
@@ -82,6 +86,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageDebug)).BeginInit();
+            this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.debugIA)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -89,6 +97,8 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -171,6 +181,7 @@
             this.BtnStop.TabIndex = 22;
             this.BtnStop.Text = "Stop";
             this.BtnStop.UseVisualStyleBackColor = true;
+            this.BtnStop.Click += new System.EventHandler(this.BtnStop_Click);
             // 
             // LblFPS
             // 
@@ -192,6 +203,11 @@
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(179, 20);
             this.numericUpDown1.TabIndex = 20;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             // 
             // Resolution
             // 
@@ -209,6 +225,7 @@
             this.button_Ok.TabIndex = 18;
             this.button_Ok.Text = "Ok";
             this.button_Ok.UseVisualStyleBackColor = true;
+            this.button_Ok.Click += new System.EventHandler(this.ValideCamera_Click);
             // 
             // ListeWebCam
             // 
@@ -217,6 +234,7 @@
             this.ListeWebCam.Name = "ListeWebCam";
             this.ListeWebCam.Size = new System.Drawing.Size(261, 21);
             this.ListeWebCam.TabIndex = 17;
+            this.ListeWebCam.SelectedIndexChanged += new System.EventHandler(this.ListeWebCam_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -247,6 +265,106 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "IA";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(8, 307);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(37, 13);
+            this.label6.TabIndex = 27;
+            this.label6.Text = "Zones";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(8, 174);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.TabIndex = 26;
+            this.label5.Text = "Cubes";
+            // 
+            // ListeZones
+            // 
+            this.ListeZones.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader8,
+            this.columnHeader9,
+            this.columnHeader10});
+            this.ListeZones.Location = new System.Drawing.Point(8, 323);
+            this.ListeZones.Name = "ListeZones";
+            this.ListeZones.Size = new System.Drawing.Size(1160, 87);
+            this.ListeZones.TabIndex = 25;
+            this.ListeZones.UseCompatibleStateImageBehavior = false;
+            this.ListeZones.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Tag = "_id";
+            this.columnHeader8.Text = "ID";
+            this.columnHeader8.Width = 70;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Tag = "_connected";
+            this.columnHeader9.Text = "Postions Coins";
+            this.columnHeader9.Width = 300;
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Tag = "_etatComm";
+            this.columnHeader10.Text = "Position Centre";
+            this.columnHeader10.Width = 154;
+            // 
+            // ListeCubes
+            // 
+            this.ListeCubes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader6});
+            this.ListeCubes.Location = new System.Drawing.Point(8, 190);
+            this.ListeCubes.Name = "ListeCubes";
+            this.ListeCubes.Size = new System.Drawing.Size(1160, 87);
+            this.ListeCubes.TabIndex = 24;
+            this.ListeCubes.UseCompatibleStateImageBehavior = false;
+            this.ListeCubes.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Tag = "_id";
+            this.columnHeader1.Text = "ID";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Tag = "_connected";
+            this.columnHeader2.Text = "ID_Zone";
+            this.columnHeader2.Width = 101;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Tag = "_etatComm";
+            this.columnHeader3.Text = "FAIT";
+            this.columnHeader3.Width = 154;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Tag = "_etatRobot";
+            this.columnHeader4.Text = "ID_ROBOT";
+            this.columnHeader4.Width = 168;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Tag = "_posX";
+            this.columnHeader5.Text = "posX";
+            this.columnHeader5.Width = 76;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Tag = "_posY";
+            this.columnHeader6.Text = "posY";
+            this.columnHeader6.Width = 59;
             // 
             // label3
             // 
@@ -386,105 +504,45 @@
             this.RTB_LOG.TabIndex = 0;
             this.RTB_LOG.Text = "";
             // 
-            // ListeCubes
+            // tabPage4
             // 
-            this.ListeCubes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5,
-            this.columnHeader6});
-            this.ListeCubes.Location = new System.Drawing.Point(8, 190);
-            this.ListeCubes.Name = "ListeCubes";
-            this.ListeCubes.Size = new System.Drawing.Size(1160, 87);
-            this.ListeCubes.TabIndex = 24;
-            this.ListeCubes.UseCompatibleStateImageBehavior = false;
-            this.ListeCubes.View = System.Windows.Forms.View.Details;
+            this.tabPage4.Controls.Add(this.imageDebug);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(1185, 691);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "ImageDebug";
+            this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // columnHeader1
+            // imageDebug
             // 
-            this.columnHeader1.Tag = "_id";
-            this.columnHeader1.Text = "ID";
+            this.imageDebug.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageDebug.Location = new System.Drawing.Point(3, 3);
+            this.imageDebug.Name = "imageDebug";
+            this.imageDebug.Size = new System.Drawing.Size(1179, 685);
+            this.imageDebug.TabIndex = 2;
+            this.imageDebug.TabStop = false;
             // 
-            // columnHeader2
+            // tabPage5
             // 
-            this.columnHeader2.Tag = "_connected";
-            this.columnHeader2.Text = "ID_Zone";
-            this.columnHeader2.Width = 101;
+            this.tabPage5.Controls.Add(this.debugIA);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(1185, 691);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "IADebug";
+            this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // columnHeader3
+            // debugIA
             // 
-            this.columnHeader3.Tag = "_etatComm";
-            this.columnHeader3.Text = "FAIT";
-            this.columnHeader3.Width = 154;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Tag = "_etatRobot";
-            this.columnHeader4.Text = "ID_ROBOT";
-            this.columnHeader4.Width = 168;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Tag = "_posX";
-            this.columnHeader5.Text = "posX";
-            this.columnHeader5.Width = 76;
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Tag = "_posY";
-            this.columnHeader6.Text = "posY";
-            this.columnHeader6.Width = 59;
-            // 
-            // ListeZones
-            // 
-            this.ListeZones.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader8,
-            this.columnHeader9,
-            this.columnHeader10});
-            this.ListeZones.Location = new System.Drawing.Point(8, 323);
-            this.ListeZones.Name = "ListeZones";
-            this.ListeZones.Size = new System.Drawing.Size(1160, 87);
-            this.ListeZones.TabIndex = 25;
-            this.ListeZones.UseCompatibleStateImageBehavior = false;
-            this.ListeZones.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Tag = "_id";
-            this.columnHeader8.Text = "ID";
-            this.columnHeader8.Width = 70;
-            // 
-            // columnHeader9
-            // 
-            this.columnHeader9.Tag = "_connected";
-            this.columnHeader9.Text = "Postions Coins";
-            this.columnHeader9.Width = 300;
-            // 
-            // columnHeader10
-            // 
-            this.columnHeader10.Tag = "_etatComm";
-            this.columnHeader10.Text = "Position Centre";
-            this.columnHeader10.Width = 154;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(8, 174);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(37, 13);
-            this.label5.TabIndex = 26;
-            this.label5.Text = "Cubes";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(8, 307);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 13);
-            this.label6.TabIndex = 27;
-            this.label6.Text = "Zones";
+            this.debugIA.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.debugIA.Location = new System.Drawing.Point(3, 3);
+            this.debugIA.Name = "debugIA";
+            this.debugIA.Size = new System.Drawing.Size(1179, 685);
+            this.debugIA.TabIndex = 0;
+            this.debugIA.TabStop = false;
             // 
             // Form1
             // 
@@ -503,6 +561,10 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.imageDebug)).EndInit();
+            this.tabPage5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.debugIA)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -554,6 +616,10 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.TabPage tabPage4;
+        private Emgu.CV.UI.ImageBox imageDebug;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.PictureBox debugIA;
     }
 }
 
