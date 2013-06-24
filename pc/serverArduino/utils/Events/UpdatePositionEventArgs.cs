@@ -18,9 +18,13 @@ namespace utils.Events
         public int X;
         public int Y;
 
-        public static implicit operator System.Drawing.Point(PositionElement d)  // implicit digit to byte conversion operator
+        public static implicit operator System.Drawing.Point(PositionElement d)  // Conversion Implicite vers Point pour affichage 
         {
             return new System.Drawing.Point(d.X, d.Y);
+        }
+        public override string ToString()
+        {
+            return "[" + X + ";" + Y + "]";
         }
     }
 
@@ -54,17 +58,27 @@ namespace utils.Events
     #endregion
 
     #region #### Positions Cubes ####
+    public struct PositionCube
+    {
+        // Identifiant du cube
+        public int ID;
+        // Identifiant de la zone de dépose ascociée
+        public int IDZone;
+        // Positions de chacun des points du contour de la zone
+        public PositionElement Position;
+
+    }
     public class UpdatePositionCubesEventArgs : EventArgs
     {
 
-        private List<PositionElement> _listeCube;
+        private List<PositionCube> _listeCube;
 
-        public UpdatePositionCubesEventArgs(List<PositionElement> Cubes)
+        public UpdatePositionCubesEventArgs(List<PositionCube> Cubes)
         {
             _listeCube = Cubes;
         }
 
-        public List<PositionElement> Cubes
+        public List<PositionCube> Cubes
         {
             get { return _listeCube; }
         }
@@ -74,6 +88,8 @@ namespace utils.Events
     #region #### Positions Zones ####
     public struct PositionZone
     {
+        // Identifiant de la zone
+        public int ID;
         // Positions de chacun des points du contour de la zone
         public PositionElement A;
         public PositionElement B;

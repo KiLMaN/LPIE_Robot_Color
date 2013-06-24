@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AForge;
 using AForge.Video.DirectShow;
@@ -56,6 +56,9 @@ namespace video
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
+
+        private VideoCaptureDevice FinalVideo = null;
+
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
         private double[] ratioCmParPixel;
@@ -113,7 +116,7 @@ namespace video
             UpdatePositionRobotEventArgs a = new UpdatePositionRobotEventArgs(lst);
             OnUpdatePositionRobots(this, a);
         }
-        private void envoieListe(List<PositionElement> lst)
+        private void envoieListe(List<PositionCube> lst)
         {
             if (OnUpdatePositionCubes == null)
                 return;
@@ -495,15 +498,24 @@ namespace video
         }
         public void closeVideoFlux()
         {
-            if( ThreadColor.IsAlive )
+            if (ThreadColor != null && ThreadColor.IsAlive)
                 ThreadColor.Abort();
-            _capture.Stop();
+
+            if (_capture != null)
+            {
+                if (_capture.GrabProcessState == ThreadState.Running)
+                    _capture.Stop();
+
+                _capture.Dispose();
+            }
             for (int i = 0; i < nbThread; i++)
             {
-                ListeThread[i].Abort();
+                if(ListeThread[i] != null)
+                    ListeThread[i].Abort();
                 ListeImage[i] = null;
             }
-            ThreadClean.Abort();
+            if(ThreadClean !=null)
+                ThreadClean.Abort();
             nbImageCapture = 0;
             imageShow = 0;
         }
@@ -547,7 +559,7 @@ namespace video
             {
                 try
                 {
-                    if (ListeThread[i].IsAlive)
+                    if (ListeThread[i] != null && ListeThread[i].IsAlive)
                         ListeThread[i].Abort();
                 }
                 catch { };

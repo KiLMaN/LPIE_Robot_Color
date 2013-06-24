@@ -192,22 +192,29 @@ TrameProtocole * getTrame()
 }
 
 /* Fabrique une trame a partir des informations données */
-TrameProtocole * MakeTrame(byte src, byte dst, word num, byte data[])
+TrameProtocole * MakeTrame(byte src, byte dst, word num, byte data[],byte length)
 {
-  if ((sizeof(data) / sizeof(data[0]))  > BUFFER_DATA_IN) // Taille trop grande
+  if ((sizeof(data))  > BUFFER_DATA_IN) // Taille trop grande
     return NULL;
 
 	// Creation d'une nouvelle trame, a liberer apres
-	TrameProtocole * trame = malloc(sizeof(TrameProtocole));
+	//TrameProtocole * trame = (TrameProtocole *)malloc(sizeof(TrameProtocole));
 	
   //TrameProtocole trame = new TrameProtocole();
-  trame->src = src;
+  /*trame->src = src;
   trame->dst = dst;
   trame->num = num;
-  trame->length = sizeof(data) / sizeof(data[0]);
+  trame->length = length;
   memcpy(trame->data, data , trame->length);
-  trame->crc = crc16_protocole(*trame);
-  return trame;
+  trame->crc = crc16_protocole(*trame);*/
+  
+  m_TrameReceive.src = src;
+  m_TrameReceive.dst = dst;
+  m_TrameReceive.num = num;
+  m_TrameReceive.length = length;
+  memcpy(m_TrameReceive.data, data , m_TrameReceive.length);
+  m_TrameReceive.crc = crc16_protocole(m_TrameReceive);
+  return &m_TrameReceive;
 }
 
 /* Echape au besoin les valeurs pour les insérées dans la liste de bytes a transmètre */
@@ -272,6 +279,8 @@ void SendTrame(TrameProtocole trame)
   int i = 0;
   for(i = 0; i < len; i++)
     Serial.write(trameBinary[i]);
+    
+    free(&trame);
 }
 
 

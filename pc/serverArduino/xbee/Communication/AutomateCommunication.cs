@@ -39,26 +39,26 @@ namespace xbee.Communication
         private const int _ThreadMessageRecuDelay = 10; // Delais entre les verification de nouveau messages recus en millisecondes
         private Thread _ThreadMessagesRecus;
 
-        private const int _ThreadKeepAliveDelay = 10; // verification des keepalive
-        private const int _TimeOutKeepAlive = 30; // Envoi d'un KeepAlive (ping) toutes les 30 secondes sans messages
+        private const int _ThreadKeepAliveDelay = 10; // verification des keepalive en ms
+        private const int _TimeOutKeepAlive = 10; // Envoi d'un KeepAlive (ping) toutes les 30 secondes sans messages
         private Thread _ThreadMessagesEnvois; // Envoi / KeepAlive / Rejeux
 
-        private ArduinoManager _ArduinoManager;
-        public ArduinoManager ArduinoManager
+      
+
+        private const int _DelayRejeu = 5; // Temps d'attente en les rejeux
+        private const int _MaxRejeu = 3; // Nombre max de rejeux avant timeout (sans conter l'envoi initial)
+
+
+        private ArduinoManagerComm _ArduinoManager;
+        public ArduinoManagerComm ArduinoManager
         {
             get { return _ArduinoManager; }
             //set { _ArduinoManager = value; }
         }
-
-        private const int _DelayRejeu = 10; // Temps d'attente en les rejeux
-        private const int _MaxRejeu = 3; // Nombre max de rejeux avant timeout (sans conter l'envoi initial)
-
-
-        // Messages en attente d'envois car l'on a pas recus d'ack de l'arduino
        
         
 
-        public AutomateCommunication(string portSerie,bool XbeeApiMode,ArduinoManager ArduinoManager)
+        public AutomateCommunication(string portSerie,bool XbeeApiMode,ArduinoManagerComm ArduinoManager)
         {
             // liste des Arduinos
             _ArduinoManager = ArduinoManager;
@@ -88,7 +88,7 @@ namespace xbee.Communication
         }
 
         #region #### Evenements ####
-        private void _OnArduinoTimeout(ArduinoBot bot)
+        private void _OnArduinoTimeout(ArduinoBotComm bot)
         {
             // Deconnection et suppression des messages en attente
             _ArduinoManager.disconnectArduinoBot(bot.id);
@@ -128,11 +128,14 @@ namespace xbee.Communication
                     if (TraiteTrameRecue(trame))
                     {
                         // Envoi au couches supérrieures 
-                        MessageProtocol message = _SerialXbee.DecodeTrame(trame);
-                        ArduinoBot robot = ArduinoManager.getArduinoBotById(trame.src);
-                        NewTrameArduinoReceveidEventArgs arg = new NewTrameArduinoReceveidEventArgs(message, robot);
+                        if (OnNewTrameArduinoReceived != null)
+                        {
+                            MessageProtocol message = _SerialXbee.DecodeTrame(trame);
+                            ArduinoBotComm robot = ArduinoManager.getArduinoBotById(trame.src);
 
-                        OnNewTrameArduinoReceived(this, arg);
+                            NewTrameArduinoReceveidEventArgs arg = new NewTrameArduinoReceveidEventArgs(message, robot);
+                            OnNewTrameArduinoReceived(this, arg);
+                        }
                     }
                 }
                 
@@ -160,13 +163,13 @@ namespace xbee.Communication
         private bool TraiteTrameRecue(TrameProtocole trame)
         {
             MessageProtocol message = _SerialXbee.DecodeTrame(trame);
-            ArduinoBot robot = ArduinoManager.getArduinoBotById(trame.src);
+            ArduinoBotComm robot = ArduinoManager.getArduinoBotById(trame.src);
 
             if(message is EMBtoPCMessageAskConn)
             {
                 if (robot == null) // Le robot n'as jamais été céer, on le créer
                 {
-                    robot = new ArduinoBot(trame.src);
+                    robot = new ArduinoBotComm(trame.src);
                     robot.DateLastMessageReceived = DateTime.Now;
                     _ArduinoManager.addArduinoBot(robot);
                 }
@@ -175,7 +178,6 @@ namespace xbee.Communication
                 {
                     robot.Connect();
                     robot.DateLastMessageReceived = DateTime.Now;
-                    robot.stateBot = StateArduinoBot.STATE_ARDUINO_NONE;
                     robot.stateComm = StateArduinoComm.STATE_COMM_NONE;
                     robot.CountSend = trame.num; // Utilisation du compteur du robot
 
@@ -283,6 +285,30 @@ namespace xbee.Communication
                 }
                     
             }
+            else if (message is EMBtoPCMessageAutoModeOff)
+            {
+
+                if (robot == null)
+                {
+                    Logger.GlobalLogger.error("Robot Inconnu in EMBtoPCMessageAutoModeOff");
+                    return false; // Marquer comme traité
+                }
+                Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageAutoModeOff par " + robot.id);
+
+                if (robot.Connected) // Robot connecté
+                {
+                    robot.DateLastMessageReceived = DateTime.Now;
+                    /*if (robot.stateComm == StateArduinoComm.STATE_COMM_WAIT_PING) // On attendais un ACK
+                        robot.stateComm = StateArduinoComm.STATE_COMM_NONE;*/
+
+                    return true; // Envoie au couche suppérieure
+                }
+                else
+                {
+                    Logger.GlobalLogger.error("Reception d'un message alors que le robot n'est pas connecté ! EMBtoPCMessageAutoModeOff");
+                    return false;
+                }
+            }
             else if (message is EMBtoPCMessageRespSensor)
             {
                 Logger.GlobalLogger.debug("Reception du message EMBtoPCMessageRespSensor par " + robot.id);
@@ -297,10 +323,10 @@ namespace xbee.Communication
                     robot.DateLastMessageReceived = DateTime.Now;
                     if (robot.stateComm == StateArduinoComm.STATE_COMM_WAIT_SENSOR) // On attendais un ACK
                         robot.stateComm = StateArduinoComm.STATE_COMM_NONE;
-                    
+
                     foreach (MessageProtocol mp in robot.ListMessageAttenteAck())
                     {
-                        if(mp.headerMess == (byte)PCtoEMBmessHeads.ASK_SENSOR)
+                        if (mp.headerMess == (byte)PCtoEMBmessHeads.ASK_SENSOR)
                         {
                             robot.SupprimerMessage(mp);
                         }
@@ -310,7 +336,7 @@ namespace xbee.Communication
                 }
                 else
                 {
-                    Logger.GlobalLogger.error("Reception d'un ACK alors que le robot n'est pas connecté !");
+                    Logger.GlobalLogger.error("Reception d'un message alors que le robot n'est pas connecté ! EMBtoPCMessageRespSensor");
                     return false;
                 }
             }
@@ -332,7 +358,7 @@ namespace xbee.Communication
             while (true)
             {
                 // Chacun des robots
-                List<ArduinoBot> listeArduino = _ArduinoManager.ListeArduino;
+                List<ArduinoBotComm> listeArduino = _ArduinoManager.ListeArduino;
                 for (int i = 0; i < listeArduino.Count; i++)
                 {
                     // Si il est connecté
@@ -411,7 +437,7 @@ namespace xbee.Communication
         #endregion
 
         #region #### Envoi de messages ####
-        private void SendMessageToArduino(MessageProtocol mess, ArduinoBot bot)
+        private void SendMessageToArduino(MessageProtocol mess, ArduinoBotComm bot)
         {
             if (bot == null)
             {
@@ -432,12 +458,12 @@ namespace xbee.Communication
                     else if (mess is PCtoEMBMessageCloseClaw || mess is PCtoEMBMessageOpenClaw)
                     {
                         bot.stateComm = StateArduinoComm.STATE_COMM_WAIT_ACK;
-                        bot.stateBot = StateArduinoBot.STATE_ARDUINO_CLAW;
+                       
                     }
                     else if (mess is PCtoEMBMessageTurn || mess is PCtoEMBMessageMove)
                     {
                         bot.stateComm = StateArduinoComm.STATE_COMM_WAIT_ACK;
-                        bot.stateBot = StateArduinoBot.STATE_ARDUINO_MOVE;
+                        
                     }
                     else if (mess is PCtoEMBMessagePing)
                     {
@@ -446,7 +472,11 @@ namespace xbee.Communication
                     else if (mess is PCtoEMBMessageRespConn)
                     {
                         bot.stateComm = StateArduinoComm.STATE_COMM_WAIT_ACK;
-                        bot.stateBot = StateArduinoBot.STATE_ARDUINO_NONE;
+                        
+                    }
+                    else if (mess is PCtoEMBMessageAutoMode)
+                    {
+                        bot.stateComm = StateArduinoComm.STATE_COMM_WAIT_ACK;
                     }
                     else
                     {
@@ -465,7 +495,7 @@ namespace xbee.Communication
                 Logger.GlobalLogger.error("Envoi d'un message à un robot non connecté :(");
             }
         }
-        public void PushSendMessageToArduino(MessageProtocol mess, ArduinoBot bot)
+        public void PushSendMessageToArduino(MessageProtocol mess, ArduinoBotComm bot)
         {
             if(bot != null)
                 bot.PushMessageAEnvoyer(mess);

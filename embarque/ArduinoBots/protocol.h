@@ -41,7 +41,7 @@ TrameProtocole * getTrame();
 /* Calcul du CRC - 16 */
 unsigned int crc16_protocole(TrameProtocole trame);
 
-TrameProtocole * MakeTrame(byte src, byte dst, word num, byte data[]);
+TrameProtocole * MakeTrame(byte src, byte dst, word num, byte data[],byte length);
 void SendTrame(TrameProtocole trame);
 
 boolean checkCrc(TrameProtocole trame);
