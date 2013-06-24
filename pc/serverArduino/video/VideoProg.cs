@@ -17,6 +17,16 @@ namespace video
 {
     public class VideoProg : IDisposable
     {
+        public class Cub
+        {
+            public Rectangle rec;
+            public int Color;
+            public Cub(Rectangle rectangl,int col)
+            {
+                rec = rectangl;
+                Color = col;
+            } 
+        }
         private class ObjColor
         {
             public Rectangle contour;
@@ -24,9 +34,11 @@ namespace video
             public DateTime DerniereVisualisation;
             public int Identifiant;
             public int Color;
+            public int id = -1;
 
-            public ObjColor(Rectangle res, int Col)
+            public ObjColor(Rectangle res, int Col,int idC)
             {
+                id = idC;
                 contour = res;
                 count = 0;
                 Color = Col;
@@ -57,10 +69,11 @@ namespace video
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
 
-        private VideoCaptureDevice FinalVideo = null;
+        //private VideoCaptureDevice FinalVideo = null;
 
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
+        private int lastIdCube = 0;
         private double[] ratioCmParPixel;
 
         private const int nbThread = 1;
@@ -74,8 +87,9 @@ namespace video
         private BibliotequeGlyph Bibliotheque = new BibliotequeGlyph(tailleGlyph);
         private List<PolyligneDessin> polyline = new List<PolyligneDessin>();
         private List<PositionRobot> LstRobot = new List<PositionRobot>();
+        private List<PositionCube> LstCubeColor = new List<PositionCube>();
         private List<HSLFiltering> LstHslFiltering = new List<HSLFiltering>();
-        private List<Rectangle> LstCube = new List<Rectangle>();
+        private List<ObjColor> LstCube = new List<ObjColor>();
 
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
@@ -178,6 +192,59 @@ namespace video
                 envoieListe(ListEnvoi);
             }
         }
+        /* fonction cubes */
+        private void mergePosition(List<Cub> lst)
+        {
+            bool[] tab = new bool[LstCube.Count];
+            for (int i = 0; i < LstCube.Count; i++)
+                tab[i] = false;
+
+            for (int i = 0; i < lst.Count; i++)
+            {
+                bool trov = false;
+                if (LstCube.Count > 0)
+                {
+                    for (int j = 0; j < LstCube.Count; j++)
+                    {
+                        if (LstCube[j].Color == lst[i].Color)
+                        {
+                            if (LstCube[j].isInclude(new IntPoint(lst[i].rec.X + lst[i].rec.Width / 2, lst[i].rec.Y + lst[i].rec.Height / 2)) == false || LstCube[j].contour.IntersectsWith(lst[i].rec) == true)
+                            {
+                                if(j < tab.Length && tab[j] == false)
+                                {
+                                    LstCube[j].Update(lst[i].rec);
+                                    tab[j] = true;
+                                }
+                                trov = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (trov == false)
+                {
+                    LstCube.Add(new ObjColor(lst[i].rec,lst[i].Color,lastIdCube++));
+                }
+            }
+            if (LstCube.Count > 0)
+            {
+                List<PositionCube> tmp = new List<PositionCube>();
+                PositionCube pos;
+                PositionElement TmpElement = new PositionElement();
+                foreach (ObjColor c in LstCube)
+                {
+                    TmpElement.X = (int)(ratioCmParPixel[0] * (c.contour.X + c.contour.Width / 2));
+                    TmpElement.Y = (int)(ratioCmParPixel[1] * (c.contour.Y + c.contour.Height / 2));
+                    pos = new PositionCube();
+                    pos.ID = c.id;
+                    pos.IDZone = c.Color;
+                    pos.Position = TmpElement;
+                    tmp.Add(pos);
+                }
+                envoieListe(tmp);
+            }
+        }
+        /* Fonction zone de travail */
         private void UpdateTailleTerain(int x, int y)
         {
             PositionZoneTravail Pzt = new PositionZoneTravail();
@@ -326,8 +393,10 @@ namespace video
                     {
                         img.dessinePolyline(polyline);
                     }
+                    //TODO: SUPPRIMER LA FONCTION
+                    mergePosition(img.getImageColor(LstHslFiltering));
                     if(LstCube.Count > 0 )
-                         img.dessineRectangle(LstCube, Color.Yellow);
+                         img.dessineRectangle(getRectCube(), Color.Yellow);
                     imageShow = img.getNumeroImg();
                     if (imageShow % 3 == 0)
                     {
@@ -336,15 +405,14 @@ namespace video
                     }
                     if (imgReel != null)
                     {
-                        //imageDebug.Image = img.getUnImgReel().ToManagedImage();
-                        // imageDebug.Image = new Emgu.CV.Image<Bgr, Byte>(img.getUnImgReel().ToManagedImage());
                         imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
                     }
                 }
         }
         private void detectionColor(Object s)
         {
-            LstCube = ((ImgWebCam)s).getImageColor(LstHslFiltering);
+            //TODO: REACTIVER FONCTION
+            //mergePosition(((ImgWebCam)s).getImageColor(LstHslFiltering));
             
         }
         public delegate void affichageImg(Bitmap img, PictureBox box);
@@ -421,6 +489,28 @@ namespace video
         #endregion
 
         #region #### A definir #####
+        public int getPosition(int index)
+        {
+            for (int i = 0; i < LstCubeColor.Count; i++)
+            {
+                if (LstCubeColor[i].ID == index)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        public List<Rectangle> getRectCube()
+        {
+            if ( LstCube.Count == 0 )
+                return null;
+            List<Rectangle> tmp = new List<Rectangle>();
+            foreach (ObjColor obj in LstCube)
+            {
+                tmp.Add(obj.contour);
+            }
+            return tmp;
+        }
         public void ClicImage(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -523,9 +613,11 @@ namespace video
         protected void clean()
         {
             List<PositionRobot> pos = new List<PositionRobot>();
+            List<ObjColor> obj = new List<ObjColor>();
             while (true)
             {
                 pos.Clear();
+                obj.Clear();
                 int i = 0;
                 TimeSpan t;
                 /* Nettoye les glyphs disparut de la bibliotheque de Glyphs */
@@ -546,8 +638,20 @@ namespace video
                     LstRobot = pos;
                     Logger.GlobalLogger.debug("Suppression de " + i + " Glyphs");
                 }
-                
-                Thread.Sleep(10000);
+                foreach (ObjColor ob in LstCube)
+                {
+                    t = DateTime.Now - ob.DerniereVisualisation;
+                    if (t.Seconds > 1)
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        obj.Add(ob);
+                    }
+                }
+                LstCube = obj;
+                Thread.Sleep(2000);
             }
         }
         public void Dispose()

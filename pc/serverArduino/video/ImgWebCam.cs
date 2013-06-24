@@ -53,10 +53,10 @@ namespace video
         {
             return this.imgContour;
         }
-        public List<Rectangle> getImageColor(List<HSLFiltering> lst)
+        public List<video.VideoProg.Cub> getImageColor(List<HSLFiltering> lst)
         {
             UnmanagedImage tmpCol = null;
-            List<Rectangle> tmp = new List<Rectangle>();
+            List<video.VideoProg.Cub> tmp = new List<video.VideoProg.Cub>();
             for(int i = 0; i < lst.Count;i++)
             {
                 HSLFiltering Filter = lst[i];
@@ -79,10 +79,9 @@ namespace video
                 {
                     if (rects[j] == null)
                         break;
-                    tmp.Add(rects[j]);
+                    tmp.Add(new video.VideoProg.Cub(rects[j],i));
                 }
             }
-
             return tmp;
         }
         public List<PositionRobot> getLstRobot()
