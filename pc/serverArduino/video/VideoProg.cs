@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using AForge;
 using AForge.Video.DirectShow;
 using System.Threading;
@@ -13,24 +11,51 @@ using System.Drawing;
 using AForge.Imaging;
 
 using Emgu.CV;
-using Emgu;
-using Emgu.Util;
 using AForge.Imaging.Filters;
 using Emgu.CV.UI;
-using Emgu.CV.Structure;
 namespace video
 {
     public class VideoProg : IDisposable
     {
+        private class ObjColor
+        {
+            public Rectangle contour;
+            public int count;
+            public DateTime DerniereVisualisation;
+            public int Identifiant;
+            public int Color;
 
-
+            public ObjColor(Rectangle res, int Col)
+            {
+                contour = res;
+                count = 0;
+                Color = Col;
+                DerniereVisualisation = DateTime.Now;
+            }
+            public void Update(Rectangle res)
+            {
+                contour = res;
+                count++;
+                DerniereVisualisation = DateTime.Now;
+            }
+            public int GetSize()
+            {
+                return contour.Width * contour.Height;
+            }
+            public void setIdentifiant(int id)
+            {
+                Identifiant = id;
+            }
+            public Boolean isInclude(IntPoint milieu)
+            {
+                if (contour.X > milieu.X && contour.Right < milieu.X && contour.Y > milieu.Y && contour.Bottom < milieu.Y)
+                    return true;
+                return false;
+            }
+        }
         private List<IntPoint> LimiteTerrain = new List<IntPoint>();
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
-<<<<<<< HEAD
-=======
-        private VideoCaptureDevice FinalVideo = null;
->>>>>>> 6987d622693357d52a22998b1df6b54a938d0e39
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
         private double[] ratioCmParPixel;
@@ -53,8 +78,6 @@ namespace video
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
         private Label FPS = null;
-
-
         public ImageBox imageDebug;
 
         private Capture _capture;
@@ -111,6 +134,7 @@ namespace video
             UpdatePositionZoneTravailEventArgs a = new UpdatePositionZoneTravailEventArgs(PositionTravail);
             OnUpdatePositionZoneTravail(this, a);
         }
+        /* Fonction Robot */
         private void mergePosition(List<PositionRobot> LstTmp)
         {
             if (LstTmp.Count == 0)
@@ -128,7 +152,7 @@ namespace video
                     {
                         IntPoint itmp = new IntPoint((int)(tmp.Position.X), (int)(tmp.Position.Y));
                         IntPoint p = new IntPoint(LstRobot[j].Position.X, LstRobot[j].Position.Y);
-                        if (p.DistanceTo(itmp) > 2) //  Sueil a 2 cm
+                        if (p.DistanceTo(itmp) > 5) //  Sueil a 2 cm
                         {
                             LstRobot[j] = tmp;
                             ListEnvoi.Add(tmp);
@@ -239,21 +263,13 @@ namespace video
                 }
                 Thread.Sleep(10);
             }
-
         }
         private void ProcessFrame(object sender, EventArgs arg)
         {
-            //try
-            {
                 Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
                 imageDebug.Image = tmp ;
                 
                 afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
-            }
-            /*catch (Exception e)
-            {
-                Logger.GlobalLogger.error(e.Message);
-            }*/
         }
 
 
@@ -326,6 +342,7 @@ namespace video
         private void detectionColor(Object s)
         {
             LstCube = ((ImgWebCam)s).getImageColor(LstHslFiltering);
+            
         }
         public delegate void affichageImg(Bitmap img, PictureBox box);
         public void imgAffiche(Bitmap img, PictureBox box)

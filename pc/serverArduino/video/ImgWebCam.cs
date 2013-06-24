@@ -362,27 +362,29 @@ namespace video
         }
         #endregion
 
-        private Rectangle[] DeleteRectInterne(Rectangle[] lstRect)
+        private Rectangle[] DeleteRectInterne(Rectangle[] ls)
         {
-            Rectangle[] ls = new Rectangle[lstRect.Length];
+            Rectangle[] lstRect = new Rectangle[ls.Length];
             int count = 0;
             for (int i = 0; i < lstRect.Length; i++)
             {
                 Boolean trouve = false;
                 for (int j = 0; j < i; j++)
                 {
-                    if (ls[i].X > ls[j].X && ls[i].X < ls[j].Right && ls[i].Y > ls[j].Y && ls[i].Y < ls[j].Bottom)
+
+                    if (ls[i].IntersectsWith(ls[j]) && (ls[i].X + ls[i].Width / 2) > ls[j].X && (ls[i].X + ls[i].Width / 2) < ls[j].Right && (ls[i].Y + ls[i].Height / 2) > ls[j].Y && (ls[i].Y + ls[i].Height / 2) < ls[j].Bottom)
                     {
+                       
                         trouve = true;
                         break;
                     }
                 }
                 if (!trouve)
                 {
-                    ls[count++] = lstRect[i];
+                    lstRect[count++] = ls[i];
                 }
             }
-            return ls;
+            return lstRect;
         }
         private float CalculateAverageEdgesBrightnessDifference(List<IntPoint> leftEdgePoints, List<IntPoint> rightEdgePoints, UnmanagedImage image)
         {
