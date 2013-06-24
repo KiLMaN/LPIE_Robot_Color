@@ -38,7 +38,11 @@ namespace application
             IA.listAffichageArduino = ListeArduino;
             IA.listAffichageCubes = ListeCubes;
             IA.listAffichageZones = ListeZones;
+            IA.imageDebug = debugIA;
+
             video = new VideoProg(ImageReel, ImgContour, numericUpDown1, LblFPS);
+            video.imageDebug = imageDebug;
+            video.ListerWebCam(ListeWebCam, Resolution);
 
             #region #### Liens Composants ####
             // Liens entre les composants
@@ -50,9 +54,6 @@ namespace application
             video.OnUpdatePositionZones += IA.OnPositionUpdateZones;
             video.OnUpdatePositionZoneTravail += IA.OnPositionUpdateZoneTravail;
             #endregion
-
-
-
         }
 
         public void ClosingForm(object sender, FormClosingEventArgs e)
@@ -69,6 +70,22 @@ namespace application
             }
             IA = null;
         }
+
+        #region ##### Gestions des actions de la fenêtre #####
+        private void ValideCamera_Click(object sender, EventArgs e)
+        {
+            video.openVideoFlux(ListeWebCam.SelectedIndex, Resolution.SelectedIndex);
+        }
+        private void BtnStop_Click(object sender, EventArgs e)
+        {
+            video.closeVideoFlux();
+        }
+        private void ListeWebCam_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            /* Chargement des nouvelles résolutions de la caméra sélectionnée */
+            video.chargementListeResolution(ListeWebCam.SelectedIndex, Resolution);
+        }
+        #endregion 
 
         #region #### Port Serie ####
         /* Remplis la liste de type ComboBox avec la liste des ports Série dispo */

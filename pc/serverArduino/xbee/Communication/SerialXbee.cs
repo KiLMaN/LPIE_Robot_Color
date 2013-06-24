@@ -152,7 +152,8 @@ namespace xbee.Communication
         #region #### Thread Envoi ####
         public void StopThreadEnvoi()
         {
-            _ThreadEnvoi.Abort();
+            if(_ThreadEnvoi != null)
+                _ThreadEnvoi.Abort();
         }
         private void _ThreadEnvoiTrames()
         {

@@ -168,6 +168,10 @@ namespace IA.Algo
 
             return AS;
         }
+        public AStar CreerAstarQuadriallage()
+        {
+            return new AStar(new PositionElement(), new PositionElement(), _ZoneTravail);
+        }
         #endregion
     }
 }
