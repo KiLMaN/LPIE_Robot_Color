@@ -163,8 +163,11 @@ namespace IA
         {
             // Update Robots
             listAffichageArduino.Items.Clear();
-            foreach (ArduinoBotIA Robot in _Follower.ListArduino)
+            //foreach (ArduinoBotIA Robot in _Follower.ListArduino)
+            for(int i =0;i< _Follower.ListArduino.Count;i++)
             {
+                ArduinoBotIA Robot = _Follower.ListArduino[i];
+
                 if (_ArduinoManager != null)
                 {
                     ArduinoBotComm RobotComm = _ArduinoManager.getArduinoBotById(Robot.ID);
@@ -191,8 +194,10 @@ namespace IA
             }
             // Update Cubes
             listAffichageCubes.Items.Clear();
-            foreach (Objectif cube in _Follower.TrackMaker.Cubes)
+
+             for(int i =0;i< _Follower.TrackMaker.Cubes.Count;i++)
             {
+                Objectif cube = _Follower.TrackMaker.Cubes[i];
 
                 ListViewItem master = new ListViewItem(cube.id + "");
                 master.SubItems.Add(cube.idZone + "");
@@ -210,8 +215,9 @@ namespace IA
 
             // Update Zones
             listAffichageZones.Items.Clear();
-            foreach (Zone zone in _Follower.TrackMaker.ZonesDepose)
+            for(int i =0;i< _Follower.TrackMaker.ZonesDepose.Count;i++)
             {
+                Zone zone = _Follower.TrackMaker.ZonesDepose[i];
                 ListViewItem master = new ListViewItem(zone.id + "");
                 master.SubItems.Add("A : " + zone.position.A.ToString() + " B : " + zone.position.B.ToString() + " C : " + zone.position.C.ToString() + " D : " + zone.position.D.ToString());
                 master.SubItems.Add(UtilsMath.CentreRectangle(zone.position).ToString());
