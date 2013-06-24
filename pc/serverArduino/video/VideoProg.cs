@@ -197,6 +197,7 @@ namespace video
         {
             if (lst.Count == 0)
                 return;
+          
             List<bool> tab = new List<bool>();
             for (int i = 0; i < LstCube.Count; i++)
                 tab.Add(false);
@@ -233,10 +234,11 @@ namespace video
                     LstCube.Add(new ObjColor(lst[i].rec, lst[i].Color, lastIdCube++));
                 }
             }
-
+            
             // Preparation de la liste pour envoie
             if (LstCube.Count > 0)
             {
+                List<int> delete = new List<int>();
                 List<PositionCube> lstpos = new List<PositionCube>();
                 for (int i = 0; i < LstCube.Count; i++)
                 {
@@ -246,60 +248,32 @@ namespace video
                     po.Position = new PositionElement();
                     // Position en pixel
                     IntPoint milieu = new IntPoint(LstCube[i].contour.X + LstCube[i].contour.Width / 2, LstCube[i].contour.Y + LstCube[i].contour.Height / 2);
-                    po.Position.X = milieu.X;
-                    po.Position.Y = milieu.Y;
+                    TimeSpan t = DateTime.Now - LstCube[i].DerniereVisualisation;
+                    if (t.Seconds > 3)
+                    {
+                        po.Position.X = -1;
+                        po.Position.Y = -1;
+                        delete.Add(i);
+                    }
+                    else
+                    {
+                        po.Position.X = milieu.X;
+                        po.Position.Y = milieu.Y;
+                    }
+                    
+                    
                     lstpos.Add(po);
                 }
                 envoieListe(lstpos);
-            }
-           
-            /*
-            for (int i = 0; i < lst.Count; i++)
-            {
-                bool trov = false;
-                if (LstCube.Count > 0)
+                if (delete.Count > 0)
                 {
-                    for (int j = 0; j < LstCube.Count; j++)
+                    for(int i = delete.Count -1; i>=0;i--)
                     {
-                        if (LstCube[j].Color == lst[i].Color)
-                        {
-                            IntPoint milieu = new IntPoint(lst[i].rec.X + lst[i].rec.Width / 2, lst[i].rec.Y + lst[i].rec.Height / 2);
-                            float distance = milieu.DistanceTo(new IntPoint(LstCube[j].contour.X + LstCube[j].contour.Width / 2, LstCube[j].contour.Y + LstCube[j].contour.Height / 2));
-                            if (LstCube[j].isInclude(milieu) == false || LstCube[j].contour.IntersectsWith(lst[i].rec) == true || distance <= (LstCube[j].contour.Height + LstCube[j].contour.Width))
-                            {
-                                //if( tab[j] == false)
-                                {
-                                    LstCube[j].Update(lst[i].rec);
-                                   // tab[j] = true;
-                                }
-                                trov = true;
-                                break;
-                            }
-                        }
+                        LstCube.RemoveAt(delete[i]);
                     }
-                }
-                if (trov == false)
-                {
-                    LstCube.Add(new ObjColor(lst[i].rec,lst[i].Color,lastIdCube++));
+                    Logger.GlobalLogger.debug("Suppression de " + delete.Count + " Cubes");
                 }
             }
-            if (LstCube.Count > 0)
-            {
-                List<PositionCube> tmp = new List<PositionCube>();
-                PositionCube pos;
-                foreach (ObjColor c in LstCube)
-                {
-                    pos = new PositionCube();
-                    pos.Position = new PositionElement();
-                    pos.Position.X = (int)(ratioCmParPixel[0] * (c.contour.X + c.contour.Width / 2));
-                    pos.Position.Y = (int)(ratioCmParPixel[1] * (c.contour.Y + c.contour.Height / 2));
-                    pos.ID = c.id;
-                    pos.IDZone = c.Color;
-                    tmp.Add(pos);
-                }
-                envoieListe(tmp);
-            }
-             * */
         }
         /* Fonction zone de travail */
         private void UpdateTailleTerain(int x, int y)
@@ -451,7 +425,7 @@ namespace video
                         img.dessinePolyline(polyline);
                     }
                     //TODO: SUPPRIMER LA FONCTION
-                    mergePosition(img.getImageColor(LstHslFiltering));
+                   // mergePosition(img.getImageColor(LstHslFiltering));
                     if(LstCube.Count > 0 )
                          img.dessineRectangle(getRectCube(), Color.White);
                     imageShow = img.getNumeroImg();
@@ -469,7 +443,7 @@ namespace video
         private void detectionColor(Object s)
         {
             //TODO: REACTIVER FONCTION
-            //mergePosition(((ImgWebCam)s).getImageColor(LstHslFiltering));
+            mergePosition(((ImgWebCam)s).getImageColor(LstHslFiltering));
             
         }
         public delegate void affichageImg(Bitmap img, PictureBox box);
@@ -660,7 +634,7 @@ namespace video
                 foreach (PositionRobot tmp in LstRobot)
                 {
                     t =  DateTime.Now - tmp.DerniereModification;
-                    if (t.Seconds > 10)
+                    if (t.Seconds > 3)
                     {
                         i++;
                     }
@@ -674,20 +648,7 @@ namespace video
                     LstRobot = pos;
                     Logger.GlobalLogger.debug("Suppression de " + i + " Glyphs");
                 }
-                foreach (ObjColor ob in LstCube)
-                {
-                    t = DateTime.Now - ob.DerniereVisualisation;
-                    if (t.Seconds > 1)
-                    {
-                        i++;
-                    }
-                    else
-                    {
-                        obj.Add(ob);
-                    }
-                }
-               // LstCube = obj;
-                Thread.Sleep(6666);
+                Thread.Sleep(3000);
             }
         }
         public void Dispose()
