@@ -137,21 +137,24 @@ namespace IA
         public delegate void dUpdateImageDebug();
         public void UpdateImageDebug()
         {
-            Bitmap bitmap = new Bitmap(_Follower.TrackMaker.ZoneTravail.B.X, _Follower.TrackMaker.ZoneTravail.B.Y);
-            //dessinerTrack(bitmap, tr);
-
-            // Dessiner Cubes
-            foreach (Objectif obstacle in _Follower.TrackMaker.Cubes)
+            if (_Follower.TrackMaker != null && _Follower.TrackMaker.ZoneTravail.B.X != 0)
             {
-                dessinerPoint(bitmap, obstacle.position, Brushes.Gray);
-            }
+                Bitmap bitmap = new Bitmap(_Follower.TrackMaker.ZoneTravail.B.X, _Follower.TrackMaker.ZoneTravail.B.Y);
+                //dessinerTrack(bitmap, tr);
 
-            foreach (QuadrillageCoord q in _Follower.TrackMaker.CreerAstarQuadriallage().CalculerQuadrillage())
-            {
-                dessinerLigne(bitmap, q.A, q.B, Color.Gray, 1);
-            }
+                // Dessiner Cubes
+                foreach (Objectif obstacle in _Follower.TrackMaker.Cubes)
+                {
+                    dessinerPoint(bitmap, obstacle.position, Brushes.Gray);
+                }
 
-            imageDebug.Image = bitmap;
+                foreach (QuadrillageCoord q in _Follower.TrackMaker.CreerAstarQuadriallage().CalculerQuadrillage())
+                {
+                    dessinerLigne(bitmap, q.A, q.B, Color.Gray, 1);
+                }
+
+                imageDebug.Image = bitmap;
+            }
         }
         #endregion
 
@@ -166,8 +169,18 @@ namespace IA
                 {
                     ArduinoBotComm RobotComm = _ArduinoManager.getArduinoBotById(Robot.ID);
                     ListViewItem master = new ListViewItem(Robot.ID + "");
-                    master.SubItems.Add(RobotComm.Connected + "");
-                    master.SubItems.Add(RobotComm.stateComm + "");
+                    if (RobotComm != null)
+                    {
+                        master.SubItems.Add(RobotComm.Connected + "");
+                        master.SubItems.Add(RobotComm.stateComm + "");
+                    }
+                    else
+                    {
+                        master.SubItems.Add("N/A");
+                        master.SubItems.Add("N/A");
+                    }
+                    
+                    
                     master.SubItems.Add(Robot.LastAction + "");
                     master.SubItems.Add(Robot.Position.X + "");
                     master.SubItems.Add(Robot.Position.Y + "");

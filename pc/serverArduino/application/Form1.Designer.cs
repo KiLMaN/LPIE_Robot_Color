@@ -45,6 +45,7 @@
             this.ListeWebCam = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.imageDebug = new Emgu.CV.UI.ImageBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.ListeZones = new System.Windows.Forms.ListView();
@@ -74,20 +75,18 @@
             this.lbl_portSerie = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.RTB_LOG = new System.Windows.Forms.RichTextBox();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.imageDebug = new Emgu.CV.UI.ImageBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.debugIA = new System.Windows.Forms.PictureBox();
+            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageDebug)).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.tabPage5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.debugIA)).BeginInit();
             this.SuspendLayout();
@@ -132,7 +131,7 @@
             // 
             this.ImageReel.Location = new System.Drawing.Point(8, 82);
             this.ImageReel.Name = "ImageReel";
-            this.ImageReel.Size = new System.Drawing.Size(413, 327);
+            this.ImageReel.Size = new System.Drawing.Size(731, 544);
             this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageReel.TabIndex = 0;
             this.ImageReel.TabStop = false;
@@ -148,7 +147,7 @@
             // 
             // ImgContour
             // 
-            this.ImgContour.Location = new System.Drawing.Point(462, 82);
+            this.ImgContour.Location = new System.Drawing.Point(745, 82);
             this.ImgContour.Name = "ImgContour";
             this.ImgContour.Size = new System.Drawing.Size(413, 327);
             this.ImgContour.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -167,7 +166,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(459, 417);
+            this.label4.Location = new System.Drawing.Point(1041, 422);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 9;
@@ -247,6 +246,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.imageDebug);
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.ListeZones);
@@ -266,6 +266,14 @@
             this.tabPage2.Text = "IA";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // imageDebug
+            // 
+            this.imageDebug.Location = new System.Drawing.Point(20, 416);
+            this.imageDebug.Name = "imageDebug";
+            this.imageDebug.Size = new System.Drawing.Size(538, 244);
+            this.imageDebug.TabIndex = 28;
+            this.imageDebug.TabStop = false;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -278,7 +286,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(8, 174);
+            this.label5.Location = new System.Drawing.Point(8, 147);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(37, 13);
             this.label5.TabIndex = 26;
@@ -324,9 +332,9 @@
             this.columnHeader4,
             this.columnHeader5,
             this.columnHeader6});
-            this.ListeCubes.Location = new System.Drawing.Point(8, 190);
+            this.ListeCubes.Location = new System.Drawing.Point(8, 163);
             this.ListeCubes.Name = "ListeCubes";
-            this.ListeCubes.Size = new System.Drawing.Size(1160, 87);
+            this.ListeCubes.Size = new System.Drawing.Size(1160, 141);
             this.ListeCubes.TabIndex = 24;
             this.ListeCubes.UseCompatibleStateImageBehavior = false;
             this.ListeCubes.View = System.Windows.Forms.View.Details;
@@ -506,7 +514,6 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.imageDebug);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -514,15 +521,6 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "ImageDebug";
             this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // imageDebug
-            // 
-            this.imageDebug.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imageDebug.Location = new System.Drawing.Point(3, 3);
-            this.imageDebug.Name = "imageDebug";
-            this.imageDebug.Size = new System.Drawing.Size(1179, 685);
-            this.imageDebug.TabIndex = 2;
-            this.imageDebug.TabStop = false;
             // 
             // tabPage5
             // 
@@ -560,9 +558,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imageDebug)).EndInit();
+            this.tabPage3.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.debugIA)).EndInit();
             this.ResumeLayout(false);
@@ -617,9 +614,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.TabPage tabPage4;
-        private Emgu.CV.UI.ImageBox imageDebug;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.PictureBox debugIA;
+        private Emgu.CV.UI.ImageBox imageDebug;
     }
 }
 

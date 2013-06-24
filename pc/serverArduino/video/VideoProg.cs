@@ -15,6 +15,7 @@ using AForge.Imaging.Filters;
 using Emgu.CV.UI;
 namespace video
 {
+    //TODO: Suppression cube
     public class VideoProg : IDisposable
     {
         public class Cub
@@ -34,11 +35,10 @@ namespace video
             public DateTime DerniereVisualisation;
             public int Identifiant;
             public int Color;
-            public int id = -1;
 
             public ObjColor(Rectangle res, int Col,int idC)
             {
-                id = idC;
+                Identifiant = idC;
                 contour = res;
                 count = 0;
                 Color = Col;
@@ -195,10 +195,65 @@ namespace video
         /* fonction cubes */
         private void mergePosition(List<Cub> lst)
         {
-            bool[] tab = new bool[LstCube.Count];
+            if (lst.Count == 0)
+                return;
+            List<bool> tab = new List<bool>();
             for (int i = 0; i < LstCube.Count; i++)
-                tab[i] = false;
+                tab.Add(false);
+            // Parcours de la liste des cubes recu par l'image
+            for (int i = 0; i < lst.Count; i++)
+            {
+                bool trouv = false;
+                // Si il y a déjà des cubes dans la liste
+                if (LstCube.Count > 0)
+                {
+                    for (int j = 0; j < LstCube.Count; j++)
+                    {
+                        // Verification de la couleur
+                        if (LstCube[j].Color == lst[i].Color)
+                        {
+                            IntPoint milieu = new IntPoint(lst[i].rec.X + lst[i].rec.Width / 2, lst[i].rec.Y + lst[i].rec.Height / 2);
+                            float distance = milieu.DistanceTo(new IntPoint(LstCube[j].contour.X + LstCube[j].contour.Width / 2, LstCube[j].contour.Y + LstCube[j].contour.Height / 2));
+                            if (distance < ( LstCube[j].contour.Width + LstCube[j].contour.Height) * 1.1) // Verification de la proximite
+                            {
+                                if (tab[j] == false)
+                                {
+                                    LstCube[j].Update(lst[i].rec);
+                                    tab[j] = true;
+                                }
+                                trouv = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                }
+                if (trouv == false) // Aucun cube correspondant => AJOUT DU CUBE
+                {
+                    LstCube.Add(new ObjColor(lst[i].rec, lst[i].Color, lastIdCube++));
+                }
+            }
 
+            // Preparation de la liste pour envoie
+            if (LstCube.Count > 0)
+            {
+                List<PositionCube> lstpos = new List<PositionCube>();
+                for (int i = 0; i < LstCube.Count; i++)
+                {
+                    PositionCube po = new PositionCube();
+                    po.ID = LstCube[i].Identifiant;
+                    po.IDZone = LstCube[i].Color;
+                    po.Position = new PositionElement();
+                    // Position en pixel
+                    IntPoint milieu = new IntPoint(LstCube[i].contour.X + LstCube[i].contour.Width / 2, LstCube[i].contour.Y + LstCube[i].contour.Height / 2);
+                    po.Position.X = milieu.X;
+                    po.Position.Y = milieu.Y;
+                    lstpos.Add(po);
+                }
+                envoieListe(lstpos);
+            }
+           
+            /*
             for (int i = 0; i < lst.Count; i++)
             {
                 bool trov = false;
@@ -208,12 +263,14 @@ namespace video
                     {
                         if (LstCube[j].Color == lst[i].Color)
                         {
-                            if (LstCube[j].isInclude(new IntPoint(lst[i].rec.X + lst[i].rec.Width / 2, lst[i].rec.Y + lst[i].rec.Height / 2)) == false || LstCube[j].contour.IntersectsWith(lst[i].rec) == true)
+                            IntPoint milieu = new IntPoint(lst[i].rec.X + lst[i].rec.Width / 2, lst[i].rec.Y + lst[i].rec.Height / 2);
+                            float distance = milieu.DistanceTo(new IntPoint(LstCube[j].contour.X + LstCube[j].contour.Width / 2, LstCube[j].contour.Y + LstCube[j].contour.Height / 2));
+                            if (LstCube[j].isInclude(milieu) == false || LstCube[j].contour.IntersectsWith(lst[i].rec) == true || distance <= (LstCube[j].contour.Height + LstCube[j].contour.Width))
                             {
-                                if(j < tab.Length && tab[j] == false)
+                                //if( tab[j] == false)
                                 {
                                     LstCube[j].Update(lst[i].rec);
-                                    tab[j] = true;
+                                   // tab[j] = true;
                                 }
                                 trov = true;
                                 break;
@@ -230,19 +287,19 @@ namespace video
             {
                 List<PositionCube> tmp = new List<PositionCube>();
                 PositionCube pos;
-                PositionElement TmpElement = new PositionElement();
                 foreach (ObjColor c in LstCube)
                 {
-                    TmpElement.X = (int)(ratioCmParPixel[0] * (c.contour.X + c.contour.Width / 2));
-                    TmpElement.Y = (int)(ratioCmParPixel[1] * (c.contour.Y + c.contour.Height / 2));
                     pos = new PositionCube();
+                    pos.Position = new PositionElement();
+                    pos.Position.X = (int)(ratioCmParPixel[0] * (c.contour.X + c.contour.Width / 2));
+                    pos.Position.Y = (int)(ratioCmParPixel[1] * (c.contour.Y + c.contour.Height / 2));
                     pos.ID = c.id;
                     pos.IDZone = c.Color;
-                    pos.Position = TmpElement;
                     tmp.Add(pos);
                 }
                 envoieListe(tmp);
             }
+             * */
         }
         /* Fonction zone de travail */
         private void UpdateTailleTerain(int x, int y)
@@ -396,7 +453,7 @@ namespace video
                     //TODO: SUPPRIMER LA FONCTION
                     mergePosition(img.getImageColor(LstHslFiltering));
                     if(LstCube.Count > 0 )
-                         img.dessineRectangle(getRectCube(), Color.Yellow);
+                         img.dessineRectangle(getRectCube(), Color.White);
                     imageShow = img.getNumeroImg();
                     if (imageShow % 3 == 0)
                     {
@@ -528,33 +585,12 @@ namespace video
             int h_i = ((PictureBox)sender).Image.Height;
             int w_c = ((PictureBox)sender).Width;
             int h_c = ((PictureBox)sender).Height;
-            float imageRatio = w_i / (float)h_i; // image W:H ratio
-            float containerRatio = w_c / (float)h_c; // container W:H ratio
-            int ord, abs;
+            float ord = ((float)w_i * (float)((float)e.X / (float) w_c));
+            float abs = ((float)h_i * (float)((float)e.Y / (float)h_c));
 
-            if (imageRatio >= containerRatio)
-            {
-                // horizontal image
-                float scaleFactor = w_c / (float)w_i;
-                float scaledHeight = h_i * scaleFactor;
-                // calculate gap between top of container and top of image
-                float filler = Math.Abs(h_c - scaledHeight) / 2;
-                abs = (int)(e.X / scaleFactor);
-                ord = (int)((e.Y - filler) / scaleFactor);
-            }
-            else
-            {
-                // vertical image
-                float scaleFactor = h_c / (float)h_i;
-                float scaledWidth = w_i * scaleFactor;
-                float filler = Math.Abs(w_c - scaledWidth) / 2;
-                abs = (int)((e.X - filler) / scaleFactor);
-                ord = (int)(e.Y / scaleFactor);
-            }
 
             Bitmap bm = new Bitmap(((PictureBox)sender).Image);
-            Color tmp = bm.GetPixel(abs, ord);
-            
+            Color tmp = bm.GetPixel((int)ord, (int)abs);
             HSL col = HSL.FromRGB(new RGB(tmp));
             Logger.GlobalLogger.debug("Couleur ajoutée : " + tmp.ToString() + " HLS : " + col.Hue + " " + col.Luminance + " " + col.Saturation);
 
@@ -650,8 +686,8 @@ namespace video
                         obj.Add(ob);
                     }
                 }
-                LstCube = obj;
-                Thread.Sleep(2000);
+               // LstCube = obj;
+                Thread.Sleep(6666);
             }
         }
         public void Dispose()
