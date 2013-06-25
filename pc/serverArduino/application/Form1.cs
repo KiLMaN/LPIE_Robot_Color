@@ -40,7 +40,7 @@ namespace application
             IA.listAffichageZones = ListeZones;
             IA.imageDebug = debugIA;
 
-            video = new VideoProg(ImageReel, ImgContour, numericUpDown1, LblFPS);
+            video = new VideoProg(ImageReel, null, numericUpDown1, LblFPS);
             video.imageDebug = imageDebug;
             video.ListerWebCam(ListeWebCam, Resolution);
 

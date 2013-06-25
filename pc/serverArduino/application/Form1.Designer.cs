@@ -34,9 +34,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.ImageReel = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.ImgContour = new System.Windows.Forms.PictureBox();
             this.Blobs = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.BtnStop = new System.Windows.Forms.Button();
             this.LblFPS = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -79,10 +77,10 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.debugIA = new System.Windows.Forms.PictureBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.listView1 = new System.Windows.Forms.ListView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageDebug)).BeginInit();
@@ -107,11 +105,10 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.listView1);
             this.tabPage1.Controls.Add(this.ImageReel);
             this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.ImgContour);
             this.tabPage1.Controls.Add(this.Blobs);
-            this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.BtnStop);
             this.tabPage1.Controls.Add(this.LblFPS);
             this.tabPage1.Controls.Add(this.numericUpDown1);
@@ -131,7 +128,7 @@
             // 
             this.ImageReel.Location = new System.Drawing.Point(8, 82);
             this.ImageReel.Name = "ImageReel";
-            this.ImageReel.Size = new System.Drawing.Size(731, 544);
+            this.ImageReel.Size = new System.Drawing.Size(1152, 516);
             this.ImageReel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ImageReel.TabIndex = 0;
             this.ImageReel.TabStop = false;
@@ -145,15 +142,6 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Image reçu";
             // 
-            // ImgContour
-            // 
-            this.ImgContour.Location = new System.Drawing.Point(745, 82);
-            this.ImgContour.Name = "ImgContour";
-            this.ImgContour.Size = new System.Drawing.Size(413, 327);
-            this.ImgContour.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ImgContour.TabIndex = 8;
-            this.ImgContour.TabStop = false;
-            // 
             // Blobs
             // 
             this.Blobs.AutoSize = true;
@@ -162,15 +150,6 @@
             this.Blobs.Size = new System.Drawing.Size(33, 13);
             this.Blobs.TabIndex = 23;
             this.Blobs.Text = "Blobs";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1041, 422);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 13);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Contours";
             // 
             // BtnStop
             // 
@@ -542,6 +521,14 @@
             this.debugIA.TabIndex = 0;
             this.debugIA.TabStop = false;
             // 
+            // listView1
+            // 
+            this.listView1.Location = new System.Drawing.Point(61, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(8, 8);
+            this.listView1.TabIndex = 24;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -554,7 +541,6 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ImgContour)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
@@ -575,9 +561,7 @@
         private System.Windows.Forms.RichTextBox RTB_LOG;
         private System.Windows.Forms.PictureBox ImageReel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox ImgContour;
         private System.Windows.Forms.Label Blobs;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button BtnStop;
         private System.Windows.Forms.Label LblFPS;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
@@ -617,6 +601,7 @@
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.PictureBox debugIA;
         private Emgu.CV.UI.ImageBox imageDebug;
+        private System.Windows.Forms.ListView listView1;
     }
 }
 

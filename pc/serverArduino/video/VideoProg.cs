@@ -76,6 +76,7 @@ namespace video
         private int lastIdCube = 0;
         private double[] ratioCmParPixel;
 
+        private int paire = 0;
         private const int nbThread = 1;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
@@ -90,13 +91,13 @@ namespace video
         private List<PositionCube> LstCubeColor = new List<PositionCube>();
         private List<HSLFiltering> LstHslFiltering = new List<HSLFiltering>();
         private List<ObjColor> LstCube = new List<ObjColor>();
+        private List<PositionZone> LstZone = new List<PositionZone>();
 
         private PictureBox imgReel = null;
         private PictureBox imgContour = null;
         private NumericUpDown numericUpDown1 = null;
         private Label FPS = null;
         public ImageBox imageDebug;
-
         private Capture _capture;
 
         #region ##### Initialisation #####
@@ -107,6 +108,7 @@ namespace video
             this.imgContour = img2;
             this.FPS = fps;
             this.numericUpDown1 = Filtre;
+           
             if(Logger.GlobalLogger == null)
                 Logger.GlobalLogger = new Logger();
             Bibliotheque.chargementListeGlyph();
@@ -141,7 +143,24 @@ namespace video
         {
             if (OnUpdatePositionZones == null)
                 return;
-            UpdatePositionZonesEventArgs a = new UpdatePositionZonesEventArgs(lst);
+            List<PositionZone> tmp = new List<PositionZone>();
+            foreach (PositionZone p in lst)
+            {
+                PositionZone pp = p;
+                pp.A.X = (int)(pp.A.X*ratioCmParPixel[0]);
+                pp.A.X = (int)(pp.A.Y* ratioCmParPixel[1]);
+
+                pp.B.X = (int)(pp.B.X * ratioCmParPixel[0]);
+                pp.B.X = (int)(pp.B.Y * ratioCmParPixel[1]);
+
+                pp.C.X = (int)(pp.C.X * ratioCmParPixel[0]);
+                pp.C.X = (int)(pp.C.Y * ratioCmParPixel[1]);
+
+                pp.D.X = (int)(pp.D.X * ratioCmParPixel[0]);
+                pp.D.X = (int)(pp.D.Y * ratioCmParPixel[1]);
+                tmp.Add(pp);
+            }
+            UpdatePositionZonesEventArgs a = new UpdatePositionZonesEventArgs(tmp);
             OnUpdatePositionZones(this, a);
         }
         private void envoieListe(PositionZoneTravail PositionTravail)
@@ -197,7 +216,7 @@ namespace video
         {
             if (lst.Count == 0)
                 return;
-          
+            
             List<bool> tab = new List<bool>();
             for (int i = 0; i < LstCube.Count; i++)
                 tab.Add(false);
@@ -214,6 +233,8 @@ namespace video
                         if (LstCube[j].Color == lst[i].Color)
                         {
                             IntPoint milieu = new IntPoint(lst[i].rec.X + lst[i].rec.Width / 2, lst[i].rec.Y + lst[i].rec.Height / 2);
+                            //milieu.X = (int)(milieu.X * ratioCmParPixel[0]);
+                            //milieu.Y = (int)(milieu.Y * ratioCmParPixel[1]);
                             float distance = milieu.DistanceTo(new IntPoint(LstCube[j].contour.X + LstCube[j].contour.Width / 2, LstCube[j].contour.Y + LstCube[j].contour.Height / 2));
                             if (distance < ( LstCube[j].contour.Width + LstCube[j].contour.Height) * 1.1) // Verification de la proximite
                             {
@@ -232,6 +253,7 @@ namespace video
                 if (trouv == false) // Aucun cube correspondant => AJOUT DU CUBE
                 {
                     LstCube.Add(new ObjColor(lst[i].rec, lst[i].Color, lastIdCube++));
+                    tab.Add(true);
                 }
             }
             
@@ -257,8 +279,8 @@ namespace video
                     }
                     else
                     {
-                        po.Position.X = milieu.X;
-                        po.Position.Y = milieu.Y;
+                        po.Position.X = (int)(milieu.X * ratioCmParPixel[0]);
+                        po.Position.Y = (int)(milieu.Y * ratioCmParPixel[1]);
                     }
                     
                     
@@ -337,7 +359,7 @@ namespace video
  
             _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, tmpVideo.VideoCapabilities[indexResolution].FrameSize.Width);
             _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, tmpVideo.VideoCapabilities[indexResolution].FrameSize.Height);
-
+           
             _capture.Start();
 
             return true;
@@ -369,8 +391,10 @@ namespace video
         {
                 Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
                 imageDebug.Image = tmp ;
-                
-                afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+                if(paire == 0)
+                    afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+                paire= (paire + 1) % 3;
+
         }
 
 
@@ -379,10 +403,10 @@ namespace video
             /* Affiche l'image recu par la WebCam */
 
             // Instancie un Thread
-            ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
-            lastThread++;
-            lastThread %= nbThread;
-
+           // ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
+           // lastThread++;
+           // lastThread %= nbThread;
+            imgTraitment(new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph));
             // Traitement et Affichage des images   
             try
             {
@@ -425,14 +449,51 @@ namespace video
                         img.dessinePolyline(polyline);
                     }
                     //TODO: SUPPRIMER LA FONCTION
-                   // mergePosition(img.getImageColor(LstHslFiltering));
+                   // if(imageShow % 2 == 0)
+                        mergePosition(img.getImageColor(LstHslFiltering));
                     if(LstCube.Count > 0 )
                          img.dessineRectangle(getRectCube(), Color.White);
                     imageShow = img.getNumeroImg();
-                    if (imageShow % 3 == 0)
+                    PointDessin p;
+                    for (int i = 0; i < LstZone.Count; i++)
                     {
-                        ThreadColor = new Thread(detectionColor);
-                        ThreadColor.Start(img);
+                        List<PolyligneDessin> lst = new List<PolyligneDessin>();
+                        PolyligneDessin poly = new PolyligneDessin(Color.Green);
+                        if (LstZone[i].A.X != 0 || LstZone[i].A.Y != 0)
+                        {
+                            p = new PointDessin();
+                            p.X = LstZone[i].A.X;
+                            p.Y = LstZone[i].A.Y;
+                            poly.addPoint(p);
+                        }
+                        if (LstZone[i].B.X != 0 || LstZone[i].B.Y != 0)
+                        {
+                            p = new PointDessin();
+                            p.X = LstZone[i].B.X;
+                            p.Y = LstZone[i].B.Y;
+                            poly.addPoint(p);
+                        }
+                        if (LstZone[i].C.X != 0 || LstZone[i].C.Y != 0)
+                        {
+                            p = new PointDessin();
+                            p.X = LstZone[i].C.X;
+                            p.Y = LstZone[i].C.Y;
+                            poly.addPoint(p);
+                        }
+                        if (LstZone[i].D.X != 0 || LstZone[i].D.Y != 0)
+                        {
+                            p = new PointDessin();
+                            p.X = LstZone[i].D.X;
+                            p.Y = LstZone[i].D.Y;
+                            poly.addPoint(p);
+                        }
+                        lst.Add(poly);
+                        img.dessinePolyline(lst);
+                    }
+                    //if (imageShow % 2 == 0)
+                    {
+                       // ThreadColor = new Thread(detectionColor);
+                      //  ThreadColor.Start(img);
                     }
                     if (imgReel != null)
                     {
@@ -552,27 +613,73 @@ namespace video
             {
                 addcouleur(sender, e);
             }
+            else if (e.Button == MouseButtons.Middle)
+            {
+                if(LstZone.Count > 0 && LstZone[LstZone.Count - 1].ID == -1)
+                {
+                    int w_i = ((PictureBox)sender).Image.Width;
+                    int h_i = ((PictureBox)sender).Image.Height;
+                    int w_c = ((PictureBox)sender).Width;
+                    int h_c = ((PictureBox)sender).Height;
+                    float ord = ((float)w_i * (float)((float)e.X / (float)w_c));
+                    float abs = ((float)h_i * (float)((float)e.Y / (float)h_c));
+
+                    PositionZone zn = LstZone[LstZone.Count - 1];
+                    if (zn.A.X == 0 && zn.A.Y == 0)
+                    {
+                        zn.A.X = (int)ord;
+                        zn.A.Y = (int)abs;
+                    }
+                    else if(zn.B.X == 0 && zn.B.Y == 0)
+                    {
+                        zn.B.X = (int)ord;
+                        zn.B.Y = (int)abs;
+                    }
+                    else if(zn.C.X == 0 && zn.C.Y == 0)
+                    {
+                        zn.C.X = (int)ord;
+                        zn.C.Y = (int)abs;
+                    }
+                    else
+                    {
+                        zn.D.X = (int)ord;
+                        zn.D.Y = (int)abs;
+                        zn.ID = LstZone.Count - 1;
+                    }
+                    LstZone[LstZone.Count - 1] = zn;
+                    if (LstZone[LstZone.Count - 1].ID > -1)
+                        envoieListe(LstZone);
+                }
+                
+            }
         }
         public void addcouleur(object sender, MouseEventArgs e)
         {
-            int w_i = ((PictureBox)sender).Image.Width;
-            int h_i = ((PictureBox)sender).Image.Height;
-            int w_c = ((PictureBox)sender).Width;
-            int h_c = ((PictureBox)sender).Height;
-            float ord = ((float)w_i * (float)((float)e.X / (float) w_c));
-            float abs = ((float)h_i * (float)((float)e.Y / (float)h_c));
+            if (LstZone.Count == 0 || LstZone[LstZone.Count - 1].ID != -1)
+            {
+                int w_i = ((PictureBox)sender).Image.Width;
+                int h_i = ((PictureBox)sender).Image.Height;
+                int w_c = ((PictureBox)sender).Width;
+                int h_c = ((PictureBox)sender).Height;
+                float ord = ((float)w_i * (float)((float)e.X / (float)w_c));
+                float abs = ((float)h_i * (float)((float)e.Y / (float)h_c));
 
 
-            Bitmap bm = new Bitmap(((PictureBox)sender).Image);
-            Color tmp = bm.GetPixel((int)ord, (int)abs);
-            HSL col = HSL.FromRGB(new RGB(tmp));
-            Logger.GlobalLogger.debug("Couleur ajoutée : " + tmp.ToString() + " HLS : " + col.Hue + " " + col.Luminance + " " + col.Saturation);
+                Bitmap bm = new Bitmap(((PictureBox)sender).Image);
+                Color tmp = bm.GetPixel((int)ord, (int)abs);
+                HSL col = HSL.FromRGB(new RGB(tmp));
+                Logger.GlobalLogger.debug("Couleur ajoutée : " + tmp.ToString() + " HLS : " + col.Hue + " " + col.Luminance + " " + col.Saturation);
 
-            HSLFiltering Filter = new HSLFiltering();
-            Filter.Hue = new IntRange( (col.Hue + 340) % 360, (col.Hue + 20)%360 );
-            Filter.Saturation = new Range(0.6f, 1f);
-            Filter.Luminance = new Range(0.1f, 1f);
-            LstHslFiltering.Add(Filter);
+                HSLFiltering Filter = new HSLFiltering();
+                Filter.Hue = new IntRange((col.Hue + 340) % 360, (col.Hue + 20) % 360);
+                Filter.Saturation = new Range(0.6f, 1f);
+                Filter.Luminance = new Range(0.1f, 1f);
+                LstHslFiltering.Add(Filter);
+                PositionZone ZoneTmp = new PositionZone();
+                ZoneTmp.ID = -1;
+                LstZone.Add(ZoneTmp);
+                MessageBox.Show("Ajouter une zone de dépose avec le click milieu");
+            }
         }
         public void openVideoFlux(int indexCam, int IndexResolution)
         {
@@ -588,8 +695,8 @@ namespace video
             // Initialisation des threads
             for (int i = 0; i < nbThread; i++)
             {
-                ListeThread[i] = new Thread(TraitementThread);
-                ListeThread[i].Start(i);
+                //ListeThread[i] = new Thread(TraitementThread);
+                //ListeThread[i].Start(i);
             }
 
             // Initialisation du Thread de nettoyage

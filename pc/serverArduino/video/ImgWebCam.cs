@@ -120,7 +120,13 @@ namespace video
         }
         public void dessinePolyline(List<PolyligneDessin> Polyline)
         {
-            
+            foreach (PolyligneDessin p in Polyline)
+            {
+                for (int i = 0; i < p.ListePoint.Count;i++ )
+                {
+                    Drawing.Line(UnImgReel,new IntPoint(p.ListePoint[i].X,p.ListePoint[i].Y),new IntPoint(p.ListePoint[(i+1)%p.ListePoint.Count].X,p.ListePoint[(i+1)%p.ListePoint.Count].Y),Color.Green);
+                }
+            }
         }
         public void dessineRectangle(List<Rectangle> lstRec,Color col)
         {
