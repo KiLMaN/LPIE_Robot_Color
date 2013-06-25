@@ -148,16 +148,16 @@ namespace video
             {
                 PositionZone pp = p;
                 pp.A.X = (int)(pp.A.X*ratioCmParPixel[0]);
-                pp.A.X = (int)(pp.A.Y* ratioCmParPixel[1]);
+                pp.A.Y = (int)(pp.A.Y* ratioCmParPixel[1]);
 
                 pp.B.X = (int)(pp.B.X * ratioCmParPixel[0]);
-                pp.B.X = (int)(pp.B.Y * ratioCmParPixel[1]);
+                pp.B.Y = (int)(pp.B.Y * ratioCmParPixel[1]);
 
                 pp.C.X = (int)(pp.C.X * ratioCmParPixel[0]);
-                pp.C.X = (int)(pp.C.Y * ratioCmParPixel[1]);
+                pp.C.Y = (int)(pp.C.Y * ratioCmParPixel[1]);
 
                 pp.D.X = (int)(pp.D.X * ratioCmParPixel[0]);
-                pp.D.X = (int)(pp.D.Y * ratioCmParPixel[1]);
+                pp.D.Y = (int)(pp.D.Y * ratioCmParPixel[1]);
                 tmp.Add(pp);
             }
             UpdatePositionZonesEventArgs a = new UpdatePositionZonesEventArgs(tmp);
@@ -207,7 +207,7 @@ namespace video
             }
             if (ListEnvoi.Count > 0)
             {
-                Logger.GlobalLogger.debug("" + ListEnvoi.Count);
+                //Logger.GlobalLogger.debug("" + ListEnvoi.Count);
                 envoieListe(ListEnvoi);
             }
         }
@@ -434,6 +434,7 @@ namespace video
                 {
                     ratioCmParPixel = tmp;
                     int[] TailleTerain = img.getTailleTerrain(tmp[0], tmp[1]);
+                    UpdateTailleTerain(TailleTerain[0], TailleTerain[1]);
                     Logger.GlobalLogger.info("Taille terrain : " + TailleTerain[0] + " x " + TailleTerain[1] + " cm");
                 }
             }
