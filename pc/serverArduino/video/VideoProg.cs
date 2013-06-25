@@ -123,7 +123,22 @@ namespace video
 
         public void onDrawPolyline(object sender, DrawPolylineEventArgs s)
         {
-            polyline = s.ListPolyligne;
+            polyline = new List<PolyligneDessin>();
+            //foreach (PolyligneDessin p in s.ListPolyligne)
+            for (int a = 0 ; a < s.ListPolyligne.Count ; a++)
+            {
+                PolyligneDessin p = s.ListPolyligne[a];
+                for (int i = 0; i < p.ListePoint.Count; i++)
+                {
+                    PointDessin pdtmp = p.ListePoint[i];
+                    pdtmp.X = (int)(pdtmp.X  / ratioCmParPixel[0]);
+                    pdtmp.Y = (int)(pdtmp.Y / ratioCmParPixel[1]);
+
+                    p.ListePoint[i] = pdtmp;
+                }
+                polyline.Add(p);
+            }
+            //polyline = s.ListPolyligne;
         }
         private void envoieListe(List<PositionRobot> lst)
         {
@@ -303,8 +318,8 @@ namespace video
             PositionZoneTravail Pzt = new PositionZoneTravail();
             Pzt.A.X = 0;
             Pzt.A.Y = 0;
-            Pzt.B.X = (int)(x * ratioCmParPixel[0]);
-            Pzt.B.Y = (int)(y * ratioCmParPixel[1]);
+            Pzt.B.X = x ;
+            Pzt.B.Y = y;
             envoieListe(Pzt);
         }
         #endregion
@@ -450,7 +465,7 @@ namespace video
                         img.dessinePolyline(polyline);
                     }
                     //TODO: SUPPRIMER LA FONCTION
-                   // if(imageShow % 2 == 0)
+                    if(imageShow % 3 == 0)
                         mergePosition(img.getImageColor(LstHslFiltering));
                     if(LstCube.Count > 0 )
                          img.dessineRectangle(getRectCube(), Color.White);
@@ -526,31 +541,10 @@ namespace video
                 int h_i = ((PictureBox)sender).Image.Height;
                 int w_c = ((PictureBox)sender).Width;
                 int h_c = ((PictureBox)sender).Height;
-                float imageRatio = w_i / (float)h_i; // image W:H ratio
-                float containerRatio = w_c / (float)h_c; // container W:H ratio
-                int ord, abs;
+                int ord = (int)(((float)w_i * (float)((float)e.X / (float)w_c)));
+                int abs = (int)(((float)h_i * (float)((float)e.Y / (float)h_c)));
 
-                if (imageRatio >= containerRatio)
-                {
-                    // horizontal image
-                    float scaleFactor = w_c / (float)w_i;
-                    float scaledHeight = h_i * scaleFactor;
-                    // calculate gap between top of container and top of image
-                    float filler = Math.Abs(h_c - scaledHeight) / 2;
-                    abs = (int)(e.X / scaleFactor);
-                    ord = (int)((e.Y - filler) / scaleFactor);
-                }
-                else
-                {
-                    // vertical image
-                    float scaleFactor = h_c / (float)h_i;
-                    float scaledWidth = w_i * scaleFactor;
-                    float filler = Math.Abs(w_c - scaledWidth) / 2;
-                    abs = (int)((e.X - filler) / scaleFactor);
-                    ord = (int)(e.Y / scaleFactor);
-                }
-
-                LimiteTerrain.Add(new IntPoint(abs, ord));
+                LimiteTerrain.Add(new IntPoint(ord,abs));
                 if (LimiteTerrain.Count == 4)
                 {
                     ratioCmParPixel[0] = 1;

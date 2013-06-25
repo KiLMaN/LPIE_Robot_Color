@@ -124,19 +124,27 @@ void loop()
            if(trame->data[1]==0x00)
            {
              //ack commande
+              trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
+              SendTrame(*trameAckCmd);
            }
            else if(trame->data[1]==0x01)
            {
+             trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
+              SendTrame(*trameAckCmd);
              //ack commande
            }
           break;
         case 0x52:
            if(trame->data[1]==0x00)
            {
+              trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
+              SendTrame(*trameAckCmd);
              //ack commande
            }
            else if(trame->data[1]==0x01)
            {
+              trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
+              SendTrame(*trameAckCmd);
              //ack commande
            } 
           break;

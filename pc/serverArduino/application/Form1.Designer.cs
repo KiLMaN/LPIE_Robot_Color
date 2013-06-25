@@ -77,7 +77,6 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.debugIA = new System.Windows.Forms.PictureBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
-            this.listView1 = new System.Windows.Forms.ListView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
@@ -105,7 +104,6 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.listView1);
             this.tabPage1.Controls.Add(this.ImageReel);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.Blobs);
@@ -126,6 +124,7 @@
             // 
             // ImageReel
             // 
+            this.ImageReel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ImageReel.Location = new System.Drawing.Point(8, 82);
             this.ImageReel.Name = "ImageReel";
             this.ImageReel.Size = new System.Drawing.Size(1152, 516);
@@ -518,16 +517,9 @@
             this.debugIA.Location = new System.Drawing.Point(3, 3);
             this.debugIA.Name = "debugIA";
             this.debugIA.Size = new System.Drawing.Size(1179, 685);
+            this.debugIA.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.debugIA.TabIndex = 0;
             this.debugIA.TabStop = false;
-            // 
-            // listView1
-            // 
-            this.listView1.Location = new System.Drawing.Point(61, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(8, 8);
-            this.listView1.TabIndex = 24;
-            this.listView1.UseCompatibleStateImageBehavior = false;
             // 
             // Form1
             // 
@@ -601,7 +593,6 @@
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.PictureBox debugIA;
         private Emgu.CV.UI.ImageBox imageDebug;
-        private System.Windows.Forms.ListView listView1;
     }
 }
 

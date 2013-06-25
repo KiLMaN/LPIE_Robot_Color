@@ -124,7 +124,13 @@ namespace video
             {
                 for (int i = 0; i < p.ListePoint.Count;i++ )
                 {
-                    Drawing.Line(UnImgReel,new IntPoint(p.ListePoint[i].X,p.ListePoint[i].Y),new IntPoint(p.ListePoint[(i+1)%p.ListePoint.Count].X,p.ListePoint[(i+1)%p.ListePoint.Count].Y),Color.Green);
+                    IntPoint a = new IntPoint(p.ListePoint[i].X, p.ListePoint[i].Y);
+                    IntPoint b = new IntPoint(p.ListePoint[(i + 1) % p.ListePoint.Count].X, p.ListePoint[(i + 1) % p.ListePoint.Count].Y);
+                    if (a.X > UnImgReel.Width || b.X > UnImgReel.Width || b.Y > UnImgReel.Height || a.Y > UnImgReel.Height)
+                    {
+                        Logger.GlobalLogger.error("trop grand");
+                    }
+                    Drawing.Line(UnImgReel, a, b , p.Couleur);
                 }
             }
         }

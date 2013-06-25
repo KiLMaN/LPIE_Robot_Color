@@ -163,8 +163,8 @@ namespace IA
                 return;
             for (int i = 1; i < Trace.Positions.Count; i++)
             {
-                Point a = new Point(Trace.Positions[i - 1].X + astar.UnitCol / 2, Trace.Positions[i - 1].Y + astar.UnitRow / 2);
-                Point b = new Point(Trace.Positions[i].X + astar.UnitCol / 2, Trace.Positions[i].Y + astar.UnitRow / 2);
+                Point a = new Point(Trace.Positions[i - 1].X + (int)(astar.UnitCol / 2), Trace.Positions[i - 1].Y + (int)(astar.UnitRow / 2));
+                Point b = new Point(Trace.Positions[i].X + (int)(astar.UnitCol / 2), Trace.Positions[i].Y + (int)(astar.UnitRow / 2));
                 dessinerPoint(bmp, a,Brushes.BlueViolet);
                dessinerLigne(bmp, a, b,Color.Red);
                
@@ -172,7 +172,7 @@ namespace IA
             }
             try
             {
-                Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X + astar.UnitCol / 2, Trace.Positions[Trace.Positions.Count - 1].Y + astar.UnitRow / 2);
+                Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X + (int)(astar.UnitCol / 2), Trace.Positions[Trace.Positions.Count - 1].Y + (int)(astar.UnitRow / 2));
                 dessinerPoint(bmp, c, Brushes.BlueViolet);
             }
             catch (Exception)

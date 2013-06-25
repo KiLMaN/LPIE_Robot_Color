@@ -116,8 +116,8 @@ namespace IA
                 return;
             for (int i = 1; i < Trace.Positions.Count; i++)
             {
-                Point a = new Point(Trace.Positions[i - 1].X + AS.UnitCol / 2, Trace.Positions[i - 1].Y + AS.UnitRow / 2);
-                Point b = new Point(Trace.Positions[i].X + AS.UnitCol / 2, Trace.Positions[i].Y + AS.UnitRow / 2);
+                Point a = new Point(Trace.Positions[i - 1].X + (int)(AS.UnitCol / 2), Trace.Positions[i - 1].Y + (int)(AS.UnitRow / 2));
+                Point b = new Point(Trace.Positions[i].X + (int)(AS.UnitCol / 2), Trace.Positions[i].Y +(int)( AS.UnitRow / 2));
                 dessinerPoint(bmp, a, Brushes.BlueViolet);
                 dessinerLigne(bmp, a, b, Color.Red);
 
@@ -125,7 +125,7 @@ namespace IA
             }
             try
             {
-                Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X + AS.UnitCol / 2, Trace.Positions[Trace.Positions.Count - 1].Y + AS.UnitRow / 2);
+                Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X + (int)(AS.UnitCol / 2), Trace.Positions[Trace.Positions.Count - 1].Y +(int)( AS.UnitRow / 2));
                 dessinerPoint(bmp, c, Brushes.BlueViolet);
             }
             catch (Exception)
@@ -139,21 +139,46 @@ namespace IA
         {
             if (_Follower.TrackMaker != null && _Follower.TrackMaker.ZoneTravail.B.X != 0)
             {
+                List<PolyligneDessin> ListePoly = new List<PolyligneDessin>(); // Liste envoyé a l'image
+
                 Bitmap bitmap = new Bitmap(_Follower.TrackMaker.ZoneTravail.B.X, _Follower.TrackMaker.ZoneTravail.B.Y);
                 //dessinerTrack(bitmap, tr);
 
                 // Dessiner Cubes
                 foreach (Objectif obstacle in _Follower.TrackMaker.Cubes)
                 {
+                    PolyligneDessin p = new PolyligneDessin(Color.LimeGreen);
+                    for (int x = obstacle.position.X - 5; x <= obstacle.position.X + 5; x++)
+                    {
+                        for (int y = obstacle.position.Y - 5; y <= obstacle.position.Y + 5; y++)
+                        {
+                            p.addPoint(new PointDessin(x,y));
+                        }
+                    }
+                    ListePoly.Add(p);
                     dessinerPoint(bitmap, obstacle.position, Brushes.Gray);
                 }
 
                 foreach (QuadrillageCoord q in _Follower.TrackMaker.CreerAstarQuadriallage().CalculerQuadrillage())
                 {
+
+                    PolyligneDessin p = new PolyligneDessin(Color.Gray);
+                    p.addPoint(new PointDessin(q.A.X, q.A.Y));
+                    p.addPoint(new PointDessin(q.B.X, q.B.Y));
+                    ListePoly.Add(p);
+
                     dessinerLigne(bitmap, q.A, q.B, Color.Gray, 1);
                 }
 
                 imageDebug.Image = bitmap;
+
+                if (DrawPolylineEvent != null)
+                {
+                    DrawPolylineEventArgs args = new DrawPolylineEventArgs(ListePoly);
+                    DrawPolylineEvent(this, args);
+                }
+
+
             }
         }
         #endregion

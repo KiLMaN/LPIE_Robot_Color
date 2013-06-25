@@ -20,30 +20,30 @@ namespace IA.Algo.AStarAlgo
         private SortedNodeList<ASCase> _open; // Liste des Cases a visiter
         private NodeList<ASCase> _close; // Liste des cases Visitée 
 
-        private int _NumCol = 50;
-        private int _NumRow = 50;
+        private int _NumCol = 20;
+        private int _NumRow = 70;
 
-        private int _UnitByCol;
-        private int _UnitbyRow;
+        private float _UnitByCol;
+        private float _UnitByRow;
 
-        public int UnitCol
+        public float UnitCol
         {
             get { return _UnitByCol; }
         }
-        public int UnitRow
+        public float UnitRow
         {
-            get { return _UnitbyRow; }
+            get { return _UnitByRow; }
         }
 
         public AStar(PositionElement Depart, PositionElement Arrivee,PositionZoneTravail ZoneTravail)
         {
             _open = new SortedNodeList<ASCase>();
             _close = new NodeList<ASCase>();
+            
+            _UnitByCol = (float)Math.Abs(ZoneTravail.A.X - ZoneTravail.B.X) / _NumCol;
+            _UnitByRow = (float)Math.Abs(ZoneTravail.A.Y - ZoneTravail.B.Y) / _NumRow;
 
-            _UnitByCol = Math.Abs(ZoneTravail.A.X - ZoneTravail.B.X) / _NumCol;
-            _UnitbyRow = Math.Abs(ZoneTravail.A.Y - ZoneTravail.B.Y) / _NumRow;
-
-            _map = new ASMap(_NumRow,_NumCol);
+            _map = new ASMap(_NumCol,_NumRow);
 
             ASCase Start = ConvertToCase(Depart);
             ASCase End = ConvertToCase(Arrivee);
@@ -54,7 +54,7 @@ namespace IA.Algo.AStarAlgo
 
         public ASCase ConvertToCase(PositionElement point)
         {
-            ASCase Case = new ASCase((point.X / _UnitByCol),(point.Y / _UnitbyRow));
+            ASCase Case = new ASCase((point.X / (int)_UnitByCol), (point.Y / (int)_UnitByRow));
            /* Case.Visited = false;
             Case.Contenu = ASCaseState.NONE;
             Case.X = point.X / _UnitByCol;
@@ -64,8 +64,8 @@ namespace IA.Algo.AStarAlgo
         public PositionElement ConvertFromCase(ASCase Case)
         {
             PositionElement Position = new PositionElement();
-            Position.X = Case.Point.X * _UnitByCol;
-            Position.Y = Case.Point.Y * _UnitbyRow;
+            Position.X = (int)(Case.Point.X * _UnitByCol);
+            Position.Y = (int)(Case.Point.Y * _UnitByRow);
             return Position;
         }
 
@@ -219,25 +219,26 @@ namespace IA.Algo.AStarAlgo
         public List<QuadrillageCoord> CalculerQuadrillage()
         {
             List<QuadrillageCoord> Quad = new List<QuadrillageCoord>();
-
+            // Pour chacune des collones
             for (int x = 0; x < _NumCol; x++)
             {
+                // faire un Trait entre 
                 QuadrillageCoord q = new QuadrillageCoord();
-                q.A.X = 0;
-                q.B.X = _NumCol * _UnitByCol;
+                q.A.Y = 0;
+                q.B.Y = (int)(_NumRow * _UnitByRow);
 
-                q.A.Y = x * _UnitbyRow;
-                q.B.Y = x * _UnitbyRow;
+                q.A.X = (int)(x * _UnitByCol);
+                q.B.X = q.A.X;
                 Quad.Add(q);
             }
             for (int y = 0; y < _NumRow; y++)
             {
                 QuadrillageCoord q = new QuadrillageCoord();
-                q.A.Y = 0;
-                q.B.Y = _NumRow * _UnitbyRow;
+                q.A.X = 0;
+                q.B.X = (int)(_NumCol * _UnitByCol);
 
-                q.A.X = y * _UnitByCol;
-                q.B.X = y * _UnitByCol;
+                q.A.Y = (int)(y * _UnitByRow);
+                q.B.Y = q.A.Y;
                 Quad.Add(q);
             }
             return Quad;

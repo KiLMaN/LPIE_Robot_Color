@@ -121,16 +121,16 @@
   <data name="btn_ActualiserListePortSerie.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAIMSURBVDhPhZNrq2lRFIblD/gF+0esb8pu57bt1fqwW/kgRFKSey5rR9kxiCQRKUkol9xzl/Ln
-        nDFWx2nNs53OrFeac47xvsYzqe73+3+VyWRek8mk+tnZj41nisfjQVyfz87+fGm1Wpp6va6tVCquQqHw
-        lc1mQZIkiEajUCqVIJfLgcPh4JXFJPmj2Wy+1Go1+3A4hOVyCcfjEU6nE+x2O1iv17BYLGA8HkMikQBB
-        EIxMg0ajoalWq/b5fA7X6xW22y3s93vYbDZys+l0CqPRCAaDAYRCITCZTO9MA4ys7fV6cLlc4HA4wGw2
-        g2KxCB6PhyKD1WqFSCQCgUAADAaDoCyWG+TzeRc5kONkMgGfz5dwu90fyktmszmo1+tF5d5DqnQ6LeGU
-        v3HKWa/Xm3Y6ncxvJL3h0ul0ajTjECmHSLlwOMyhGafCKXN+v5/DyBxG5jAy1+l01O12++3vRmhmRLP0
-        b7NvNJOYCw8hUhGRBpV7iPQDzRI0I6KCd2g+LqaQhEgFmkm/3weMDBgZMDLgsOUZUTGRSaVShFTLFCPS
-        d3oLt9tNRno+nxmkdEbNafE8b0ekGqYBuhi73a78iAgpvYnVaiWjpUT4XiAWi4HFYrEj0heqYRqQMDKP
-        rxLK5TIhBUQKNpsNRFH8wsguRKpFpJrH/R8NSPTHwSkzQ/yXnm4iUjUifX12xuqu+gXTdGEmQRq3IwAA
-        AABJRU5ErkJggg==
+        YQUAAAIDSURBVDhPhZNri6lRHMXlC/gE8yGed2qmyW2MvDjJCyGSktxzmygTi0gSkZKEcsk9dylfzvn/
+        dU55hnPsel49e6+19vr9t+RyuUiefclk8i0ajUof7Xt6mA+Fw2EvrV//FajX67JKpSIvFou2bDb7lUql
+        EI/HEQwGkc/nkU6nYbFYdD9FrglqtdpLuVw293o9zGYz7HY77Pd7rNdrLBYLTKdTDAYDRCIR6PV61a2I
+        pFqtykqlknkymeB0OmG1WmGz2WC5XF7FRqMR+v0+ut0ufD4f1Gr1h0iAIsvb7TaOxyO22y3G4zFyuRwc
+        DgdHhtFoRCAQgMfjgVKp1N9dIZPJ2NiBHYfDIVwuV8Rut3/ebtRoNF6FQmF4WGIikYhTy9/UcsrpdCas
+        Vqvojnzondbr66uUzARCKhBSwe/3C2QmSKhlwe12CxRZoMgCRRaazaa00Wi8/3QkMxWZJf6YfZNZ/OEc
+        EFIDIfXeChDSTzKLcEdMhfZwP7Y7AUKq5046nQ4oMigyKDKo7GtHfJjJxGIxRioXCRDSD56F8/l8RXo4
+        HERI+R+L89LpdGZCKhMJkIuq1Wpdh4iR8kzM5/MrWk5E84JQKAStVmsmpC98xbsrUGQdTSUKhQIjBSGF
+        yWSCwWD4osg2QionpLK//TwskR8OIRWV+K8X+1CAkEoJ6duzZ87/fwPTdGEmVfcFPQAAAABJRU5ErkJg
+        gg==
 </value>
   </data>
   <metadata name="serialPort1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
