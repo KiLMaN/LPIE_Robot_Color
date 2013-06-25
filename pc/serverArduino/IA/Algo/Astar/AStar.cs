@@ -20,7 +20,7 @@ namespace IA.Algo.AStarAlgo
         private SortedNodeList<ASCase> _open; // Liste des Cases a visiter
         private NodeList<ASCase> _close; // Liste des cases Visitée 
 
-        private int _NumCol = 20;
+        private int _NumCol = 70;
         private int _NumRow = 70;
 
         private float _UnitByCol;

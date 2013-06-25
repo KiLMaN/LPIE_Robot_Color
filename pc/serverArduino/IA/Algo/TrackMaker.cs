@@ -169,7 +169,8 @@ namespace IA.Algo
 
             // Ajout des Zones en Obstacles
             foreach (Zone o in _ZonesDepose)
-                AS.AddObstacle(UtilsMath.CentreRectangle(o.position));
+                if(o.id != Depose.id)
+                    AS.AddObstacle(UtilsMath.CentreRectangle(o.position));
 
             return AS;
         }

@@ -220,6 +220,10 @@ namespace xbee.Communication
                     ((EMBtoPCMessageRespSensor)message).idSensor = trame.data[1];
                     ((EMBtoPCMessageRespSensor)message).valueSensor = trame.data[2];
                     break;
+                case (byte)EMBtoPCmessHeads.AUTO_MODE_OFF:
+                    message = new EMBtoPCMessageAutoModeOff();
+                    message.headerMess = trame.data[0];
+                    break;
                 default:
                     Logger.GlobalLogger.error("Erreur Message recu inconnu !");
                     break;

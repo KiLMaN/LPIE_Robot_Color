@@ -122,13 +122,13 @@ namespace video
         {
             foreach (PolyligneDessin p in Polyline)
             {
-                for (int i = 0; i < p.ListePoint.Count;i++ )
+                for (int i = 1; i < p.ListePoint.Count;i++ )
                 {
-                    IntPoint a = new IntPoint(p.ListePoint[i].X, p.ListePoint[i].Y);
-                    IntPoint b = new IntPoint(p.ListePoint[(i + 1) % p.ListePoint.Count].X, p.ListePoint[(i + 1) % p.ListePoint.Count].Y);
+                    IntPoint a = new IntPoint(p.ListePoint[i-1].X, p.ListePoint[i-1].Y);
+                    IntPoint b = new IntPoint(p.ListePoint[i].X, p.ListePoint[i].Y);
                     if (a.X > UnImgReel.Width || b.X > UnImgReel.Width || b.Y > UnImgReel.Height || a.Y > UnImgReel.Height)
                     {
-                        Logger.GlobalLogger.error("trop grand");
+                        //Logger.GlobalLogger.error("trop grand");
                     }
                     Drawing.Line(UnImgReel, a, b , p.Couleur);
                 }
