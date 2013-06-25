@@ -210,7 +210,7 @@ namespace xbee
         {
 
             _AutomateComm.PushSendMessageToArduino(
-                MessageBuilder.createMoveMessage(true, 0x50, 0x50),
+                MessageBuilder.createMoveMessage(true, 0xf0, 0xf0),
                 _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                 );
             ArduinoBotComm test = _ArduinoManager.getArduinoBotById(_CurrentArduinoId);
@@ -219,7 +219,7 @@ namespace xbee
         private void btn_down_Click(object sender, EventArgs e)
         {
             _AutomateComm.PushSendMessageToArduino(
-                MessageBuilder.createMoveMessage(false, 0x50, 0x50),
+                MessageBuilder.createMoveMessage(false, 0xf0, 0xf0),
                 _ArduinoManager.getArduinoBotById(_CurrentArduinoId)
                 );
             //g_Serial.addMessageToSend(g_MessageBuilder.createMoveMessage(false, 0x50, 0x50));

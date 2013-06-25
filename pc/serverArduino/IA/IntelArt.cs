@@ -170,6 +170,23 @@ namespace IA
                     dessinerLigne(bitmap, q.A, q.B, Color.Gray, 1);
                 }
 
+                foreach (Zone z in _Follower.TrackMaker.ZonesDepose)
+                {
+                    PositionElement pos = UtilsMath.CentreRectangle(z.position);
+                    PolyligneDessin p = new PolyligneDessin(Color.Pink);
+                    for (int x = pos.X - 5; x <= pos.X + 5; x++)
+                    {
+                        for (int y = pos.Y - 5; y <= pos.Y + 5; y++)
+                        {
+                            p.addPoint(new PointDessin(x, y));
+                        }
+                    }
+                    ListePoly.Add(p);
+
+                    dessinerPoint(bitmap, pos, Brushes.Pink);
+                }
+
+
                 imageDebug.Image = bitmap;
 
                 if (DrawPolylineEvent != null)

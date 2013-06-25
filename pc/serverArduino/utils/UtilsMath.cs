@@ -69,9 +69,7 @@ namespace utils
         {
             int X = (Zone.A.X + Zone.C.X) / 2;
             int Y = (Zone.A.Y + Zone.C.Y) / 2;
-           PositionElement p =  new PositionElement();
-            p.X = X;
-            p.Y = Y;
+           PositionElement p =  new PositionElement(X,Y);
             return p;
         }
     }

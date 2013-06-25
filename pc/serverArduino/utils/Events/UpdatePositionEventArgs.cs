@@ -18,6 +18,12 @@ namespace utils.Events
         public int X;
         public int Y;
 
+        public PositionElement(int X, int Y)
+        {
+            this.X = X;
+            this.Y = Y;
+        }
+
         public static implicit operator System.Drawing.Point(PositionElement d)  // Conversion Implicite vers Point pour affichage 
         {
             return new System.Drawing.Point(d.X, d.Y);
