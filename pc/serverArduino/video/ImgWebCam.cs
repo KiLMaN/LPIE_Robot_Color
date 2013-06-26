@@ -120,8 +120,11 @@ namespace video
         }
         public void dessinePolyline(List<PolyligneDessin> Polyline)
         {
-            foreach (PolyligneDessin p in Polyline)
+
+            //foreach (PolyligneDessin p in Polyline)
+            for (int z = 0 ; z < Polyline.Count;z++)
             {
+                PolyligneDessin p = Polyline[z];
                 for (int i = 1; i < p.ListePoint.Count;i++ )
                 {
                     IntPoint a = new IntPoint(p.ListePoint[i-1].X, p.ListePoint[i-1].Y);

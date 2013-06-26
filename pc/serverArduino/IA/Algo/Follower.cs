@@ -12,21 +12,24 @@ namespace IA.Algo
 {
     public class Follower
     {
+        private const int _ConversionUnit = 10; // Facteur de conversion entre unité de l'image et unité du robot
+
         // Disance maximum pour le recalcul de l'itinéraire
-        private const int _DistanceMaximumRecal = 20 * 1000;
+        private const int _DistanceMaximumRecal = 5 * _ConversionUnit; // 5 Cm
 
         // Distance pour passer a la suite d'un tracé
-        private const int _RadiusNextItineraire = 10 * 1000;
+        private const int _RadiusNextItineraire = 1 * _ConversionUnit; // 1 cm
 
         // Seuil pour le passage en autonome et la depose
-        private const int _seuilProximiteObjectif = 10 * 1000;
+        private const int _seuilProximiteObjectif = 30 * _ConversionUnit; // 30 cm
 
         // seuil pour la detection de proximité d'un autre robot
-        private const int _seuilProximiteRobot = 10 * 1000;
+        private const int _seuilProximiteRobot = 20 * _ConversionUnit;
 
         // Angle maximum de différence pour l'orientation du robot
-        private const int _differenceMaxOrientation = 15 * 1000;
+        private const int _differenceMaxOrientation = 20;
 
+       
 
         // Fabrication des tracés 
         private TrackMaker _TrackMaker;
@@ -172,7 +175,7 @@ namespace IA.Algo
                                         {
                                             double distance = UtilsMath.DistanceEuclidienne(Robot.Position, Robot.Trace.Positions[0]);
 
-                                            MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)128, (byte)distance); // Avancer a 50% de vitesse
+                                            MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)128, (byte)(distance / _ConversionUnit)); // Avancer a 50% de vitesse
                                             _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
 
                                             Robot.LastAction = ActionRobot.ROBOT_DEPLACER;
@@ -187,14 +190,14 @@ namespace IA.Algo
                                     else
                                     {
                                         // Si non on recalcule 
-                                        Robot.SetTrace(_TrackMaker.CalculerObjectif(Robot));
+                                        _TrackMaker.CalculerObjectif(Robot);
                                     }
                                 }
                             }
                             else
                             {
                                 // Calcul d'un itineraire
-                                Robot.SetTrace(_TrackMaker.CalculerObjectif(Robot));
+                                _TrackMaker.CalculerObjectif(Robot);
                             }
                         }
                         else
