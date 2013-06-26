@@ -226,6 +226,11 @@ namespace video
                 //Logger.GlobalLogger.debug("" + ListEnvoi.Count);
                 envoieListe(ListEnvoi);
             }
+            for(int i = LstRobot.Count -1; i>=0;i++)
+            {
+                if (LstRobot[i].Position.X == -1)
+                    LstRobot.RemoveAt(i);
+            }
         }
         /* fonction cubes */
         private void mergePosition(List<Cub> lst)
@@ -773,6 +778,10 @@ namespace video
                     t =  DateTime.Now - tmp.DerniereModification;
                     if (t.Seconds > 3)
                     {
+                        PositionRobot ta = tmp;
+                        ta.Position.X = -1;
+                        ta.Position.Y = -1;
+                        pos.Add(ta);
                         i++;
                     }
                     else
@@ -783,7 +792,7 @@ namespace video
                 if (i > 0)
                 {
                     LstRobot = pos;
-                    Logger.GlobalLogger.debug("Suppression de " + i + " Glyphs");
+                   // Logger.GlobalLogger.debug("Suppression de " + i + " Glyphs");
                 }
                 Thread.Sleep(3000);
             }
