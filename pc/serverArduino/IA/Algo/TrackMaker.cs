@@ -78,13 +78,19 @@ namespace IA.Algo
         // Calcul de l'objectif en fonction de l'etat du robot 
         public Track CalculerObjectif(ArduinoBotIA robot)
         {
-            if (robot.Saisie)
+            Logger.GlobalLogger.debug("Creation d'une trajectoire pour le robot " + robot.ID + " etat Saisie : " + robot.Saisie ,2); ;
+            if (robot.Saisie) // Si le robot a saisi un cube  , retour a la base
             {
-                Zone o = _ZonesDepose.Find(Zone.ById(robot.Cube.idZone));
-                Track t = CreerAstarDepose(robot, o).CalculerTrajectoire();
-                robot.SetZoneDepose(o);
-                robot.SetTrace(t);
-                return t;
+                if (robot.Cube != null)
+                {
+                    Zone o = _ZonesDepose.Find(Zone.ById(robot.Cube.idZone));
+                    Track t = CreerAstarDepose(robot, o).CalculerTrajectoire();
+                    robot.SetZoneDepose(o);
+                    robot.SetTrace(t);
+                    return t;
+                }
+                else
+                    return null;
             }
             else
             {

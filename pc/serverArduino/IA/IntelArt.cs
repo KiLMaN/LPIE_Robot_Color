@@ -121,15 +121,11 @@ namespace IA
                 dessinerPoint(bmp, a, Brushes.BlueViolet);
                 dessinerLigne(bmp, a, b, Color.Red);
 
-
             }
-            try
+            if(Trace.Positions.Count >= 1)
             {
                 Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X + (int)(AS.UnitCol / 2), Trace.Positions[Trace.Positions.Count - 1].Y +(int)( AS.UnitRow / 2));
                 dessinerPoint(bmp, c, Brushes.BlueViolet);
-            }
-            catch (Exception)
-            {
             }
 
         }
@@ -204,6 +200,7 @@ namespace IA
                     dessinerPoint(bitmap, pos, Brushes.Turquoise);
                     if (robot.Trace != null)
                     {
+                        dessinerTrack(bitmap, robot.Trace, _Follower.TrackMaker.CreerAstarQuadriallage());
                         PolyligneDessin p2 = new PolyligneDessin(Color.Red);
                         for (int i = 0; i < robot.Trace.Positions.Count; i++)
                         {
