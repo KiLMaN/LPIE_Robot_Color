@@ -189,8 +189,8 @@ namespace video
             SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
             BlobCounter blobCounter = new BlobCounter();
 
-            blobCounter.MinHeight = 32;
-            blobCounter.MinWidth = 32;
+            blobCounter.MinHeight = 25;
+            blobCounter.MinWidth = 25;
             blobCounter.FilterBlobs = true;
             blobCounter.ObjectsOrder = ObjectsOrder.Size;
 
