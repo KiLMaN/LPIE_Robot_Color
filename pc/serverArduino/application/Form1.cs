@@ -28,7 +28,7 @@ namespace application
             Logger Log = new Logger();
             Logger.GlobalLogger = Log;
             Log.attachToRTB(RTB_LOG);
-            Log.levelDebug = 2;
+            Log.levelDebug = 0;
 
             // Port Serie
             getListePortSerie(ctlListePorts);

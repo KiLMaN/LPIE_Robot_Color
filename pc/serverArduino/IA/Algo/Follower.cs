@@ -96,6 +96,7 @@ namespace IA.Algo
 
                                 if (checkProximiteObjectif(Robot)) // Proximité de l'objectif ?
                                 {
+                                    Logger.GlobalLogger.debug("Proximité detectée ! ");
                                     if (Robot.Saisie) // On a un cube ? si oui on le dépose
                                     {
                                         MessageProtocol mess = MessageBuilder.createOpenClawMessage();
@@ -120,22 +121,26 @@ namespace IA.Algo
 
                                 else
                                 {
-
+                                    Logger.GlobalLogger.debug("Proximité non detectée ! ");
                                     PositionElement NearestPositionTroncon;
                                     if (checkSuiteItineraire(Robot.ID, out NearestPositionTroncon)) // On est proche du point de passage ?
                                     {
+                                        Logger.GlobalLogger.debug("Point Suivant ");
                                         removeBeforePoint(Robot.Trace, NearestPositionTroncon); // On supprime les anciens points
                                     }
 
                                     // Calcul de la différence d'orientation 
                                     if (Math.Abs(diffOrientation(Robot, Robot.Trace)) > _differenceMaxOrientation) // Différence suppérieur de 15 degreé entre le robot et l'angle de la droite
                                     {
+                                        Logger.GlobalLogger.debug("Orientation différente ");
                                         if (Robot.LastAction != ActionRobot.ROBOT_TOURNER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(5)) // On etait pas en train de tourner ou ça fait plus de 5 secondes
                                         {
                                             // Faire trouner le robot 
                                             double angle = diffOrientation(Robot, Robot.Trace);
+                                            Logger.GlobalLogger.info("Changement d'angle : " + angle);
                                             if (angle > 0)
                                             {
+                                                
                                                 MessageProtocol mess = MessageBuilder.createTurnMessage(true, (byte)angle);
                                                 _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                             }
@@ -151,7 +156,7 @@ namespace IA.Algo
                                     }
 
                                     if (!checkProximiteTrace(Robot.ID)) // On est proche du tracé ? 
-                                    {
+                                    {/*
                                         // Si oui on continue a se deplacer
                                         foreach(ArduinoBotIA RobotProche in _ListArduino) // tester la presence d'autre robot a proximité
                                         {
@@ -184,7 +189,7 @@ namespace IA.Algo
                                         else
                                         {
                                             // ne pas renvoyer d'ordre, le robot est en train de se déplacer
-                                        }
+                                        }*/
                                     }
                                 
                                     else
@@ -307,21 +312,52 @@ namespace IA.Algo
             if (tr.Positions.Count < 2)
                 return 0;
 
-            double VXA, VYA, VXB, VYB;
-            // Vecteur Normal vertical 
-            VXA = 0 - 1;
-            VYA = 0 - 0;
-            // Vecteur de déplacement
-            VXB = tr.Positions[0].X - tr.Positions[1].X;
-            VYB = tr.Positions[0].Y - tr.Positions[1].Y;
-            // Calcul des normes
-            double NormeA = Math.Sqrt(VXA * VXA + VYA * VYA);
-            double NormeB = Math.Sqrt(VXB * VXB + VYB * VYB);
-            double C = ((VXA * VXB) + (VYA * VYB)) / (NormeA * NormeB);
-            double S = ((VXA * VXB) - (VYA * VYB));
-            double angleDeplacement = Math.Sign(S) * Math.Acos(C);
+            double DeltaXAB, DeltaYAB , angleTrace;
 
-            return angleDeplacement - robot.Angle;
+            DeltaXAB = tr.Positions[0].X - tr.Positions[1].X;
+            DeltaYAB = tr.Positions[0].Y - tr.Positions[1].Y;
+
+            if (DeltaXAB == 0 && DeltaYAB == 0) // Les points sont confondus
+            {
+                angleTrace =  0;
+            }
+            else if (DeltaXAB == 0) // Différence sur Y
+            {
+                if(DeltaYAB > 0)
+                    angleTrace = 90;
+                else
+                    angleTrace = 0;
+            }
+            else if (DeltaYAB == 0) // Différence sur X
+            {
+                if (DeltaXAB > 0)
+                    angleTrace = 180;
+                else
+                    angleTrace = 270;
+            }
+            else // Différence Sur X et Y
+            {
+                angleTrace = Math.Atan2(DeltaXAB, DeltaYAB);
+            }
+
+
+                /*
+            double DeltaXO, DeltaYO, DeltaXAB, DeltaYAB;
+            // Vecteur Normal vertical 
+            DeltaXO =  0;
+            DeltaYO = -1;
+            // Vecteur de déplacement
+           
+            // Calcul des normes
+            double NormeO = Math.Sqrt(DeltaXO * DeltaXO + DeltaYO * DeltaYO);
+            double NormeAB = Math.Sqrt(DeltaXAB * DeltaXAB + DeltaYAB * DeltaYAB);
+            //double SCA = NormeO * NormeAB * Math.Cos(Angle);
+            double C = ((DeltaXO * DeltaXAB) + (DeltaYO * DeltaYAB)) / (NormeO * NormeAB);
+            double S = ((DeltaXO * DeltaXAB) - (DeltaYO * DeltaYAB));
+            double angleDeplacement = Math.Sign(S) * Math.Cos(C);
+            */
+            Logger.GlobalLogger.debug("Angle déplacement :" + angleTrace + "robot.Angle :" + robot.Angle);
+            return angleTrace - robot.Angle;
         }
         #endregion
 

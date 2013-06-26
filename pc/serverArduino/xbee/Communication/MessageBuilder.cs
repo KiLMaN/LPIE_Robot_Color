@@ -19,7 +19,7 @@ namespace xbee.Communication
         {
             PCtoEMBMessageMove Message = new PCtoEMBMessageMove();
             Message.headerMess = (byte)PCtoEMBmessHeads.MOVE;
-            Message.sens = (byte)((Sens) ? 0x01 : 0x00);
+            Message.sens = (byte)((Sens) ? 0x00 : 0x01);
             Message.speed = vitesse;
             Message.distance = distance;
 
