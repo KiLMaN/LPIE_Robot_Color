@@ -77,7 +77,7 @@ namespace video
         private double[] ratioCmParPixel;
 
         private int paire = 0;
-        private const int nbThread = 1;
+        private const int nbThread = 2;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
@@ -418,9 +418,13 @@ namespace video
             /* Affiche l'image recu par la WebCam */
 
             // Instancie un Thread
-           // ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
-           // lastThread++;
-           // lastThread %= nbThread;
+            if (ListeImage[lastThread] == null)
+            {
+                //ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
+                //lastThread++;
+                //lastThread %= nbThread;
+            }
+            
             imgTraitment(new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph));
             // Traitement et Affichage des images   
             try
@@ -506,10 +510,10 @@ namespace video
                         lst.Add(poly);
                         img.dessinePolyline(lst);
                     }
-                    //if (imageShow % 2 == 0)
+                    if (imageShow % 2 == 0)
                     {
                        // ThreadColor = new Thread(detectionColor);
-                      //  ThreadColor.Start(img);
+                       // ThreadColor.Start(img);
                     }
                     if (imgReel != null)
                     {
@@ -690,8 +694,8 @@ namespace video
             // Initialisation des threads
             for (int i = 0; i < nbThread; i++)
             {
-                //ListeThread[i] = new Thread(TraitementThread);
-                //ListeThread[i].Start(i);
+               // ListeThread[i] = new Thread(TraitementThread);
+              //  ListeThread[i].Start(i);
             }
 
             // Initialisation du Thread de nettoyage
