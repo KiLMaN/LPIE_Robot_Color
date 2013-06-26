@@ -20,7 +20,7 @@ namespace IA.Algo.AStarAlgo
         private SortedNodeList<ASCase> _open; // Liste des Cases a visiter
         private NodeList<ASCase> _close; // Liste des cases Visitée 
 
-        private int _NumCol = 20;
+        private int _NumCol = 70;
         private int _NumRow = 70;
 
         private float _UnitByCol;
@@ -198,7 +198,7 @@ namespace IA.Algo.AStarAlgo
                     }
                 
                 this._close.Add(best);
-                this.AddToOpen(best, _map.getAdjCase(best,true));
+                this.AddToOpen(best, _map.getAdjCase(best,false));
             }
             return null; // Pas de trouvé
         }

@@ -12,21 +12,24 @@ namespace IA.Algo
 {
     public class Follower
     {
+        private const int _ConversionUnit = 10; // Facteur de conversion entre unité de l'image et unité du robot
+
         // Disance maximum pour le recalcul de l'itinéraire
-        private const int _DistanceMaximumRecal = 20;
+        private const int _DistanceMaximumRecal = 5 * _ConversionUnit; // 5 Cm
 
         // Distance pour passer a la suite d'un tracé
-        private const int _RadiusNextItineraire = 10;
+        private const int _RadiusNextItineraire = 1 * _ConversionUnit; // 1 cm
 
         // Seuil pour le passage en autonome et la depose
-        private const int _seuilProximiteObjectif = 10;
+        private const int _seuilProximiteObjectif = 30 * _ConversionUnit; // 30 cm
 
         // seuil pour la detection de proximité d'un autre robot
-        private const int _seuilProximiteRobot = 10;
+        private const int _seuilProximiteRobot = 20 * _ConversionUnit;
 
         // Angle maximum de différence pour l'orientation du robot
-        private const int _differenceMaxOrientation = 15;
+        private const int _differenceMaxOrientation = 20;
 
+       
 
         // Fabrication des tracés 
         private TrackMaker _TrackMaker;
@@ -75,9 +78,12 @@ namespace IA.Algo
         {
             if (_bInfosPosition && _bInfosCubes && _bInfosZone && _bInfosZoneTravail) // On a recus tout le necessaire depuis l'image
             {
-                foreach (ArduinoBotIA Robot in _ListArduino)
+               // foreach (ArduinoBotIA Robot in _ListArduino)
+                for(int indexRobot = 0 ; indexRobot < _ListArduino.Count ; indexRobot ++)
                 {
+                    ArduinoBotIA Robot = _ListArduino[indexRobot];
                     ArduinoBotComm RobotComm = _ArduinoManager.getArduinoBotById(Robot.ID);
+
                     if (RobotComm != null && RobotComm.Connected) // Le robot est déja connecté 
                     {
                         // Faire des verification et envoi des messages
@@ -90,11 +96,16 @@ namespace IA.Algo
 
                                 if (checkProximiteObjectif(Robot)) // Proximité de l'objectif ?
                                 {
+                                    Logger.GlobalLogger.debug("Proximité detectée ! ");
                                     if (Robot.Saisie) // On a un cube ? si oui on le dépose
                                     {
                                         MessageProtocol mess = MessageBuilder.createOpenClawMessage();
                                         _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                         Robot.LastAction = ActionRobot.ROBOT_PINCE;
+                                       
+                                        Robot.SetZoneDepose(null);
+                                        Robot.SetObjectif(null);
+                                        Robot.SetTrace(null);
                                         Robot.Saisie = false;
                                     }
                                     else
@@ -103,87 +114,95 @@ namespace IA.Algo
                                         MessageProtocol mess = MessageBuilder.createModeAutoMessage();
                                         _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                         Robot.LastAction = ActionRobot.ROBOT_AUTONOME;
-                                        
+
                                     }
                                     Robot.LastActionTime = DateTime.Now;
-                                   
                                 }
 
-                                PositionElement NearestPositionTroncon;
-                                if (checkSuiteItineraire(Robot.ID, out NearestPositionTroncon)) // On est proche du point de passage ?
+                                else
                                 {
-                                    removeBeforePoint(Robot.Trace, NearestPositionTroncon); // On supprime les anciens points
-                                }
-
-                                // Calcul de la différence d'orientation 
-                                if (Math.Abs(diffOrientation(Robot, Robot.Trace)) > _differenceMaxOrientation) // Différence suppérieur de 15 degreé entre le robot et l'angle de la droite
-                                {
-                                    if (Robot.LastAction != ActionRobot.ROBOT_TOURNER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(5)) // On etait pas en train de tourner ou ça fait plus de 5 secondes
+                                    Logger.GlobalLogger.debug("Proximité non detectée ! ");
+                                    PositionElement NearestPositionTroncon;
+                                    if (checkSuiteItineraire(Robot.ID, out NearestPositionTroncon)) // On est proche du point de passage ?
                                     {
-                                        // Faire trouner le robot 
-                                        double angle = diffOrientation(Robot, Robot.Trace);
-                                        if (angle > 0)
+                                        Logger.GlobalLogger.debug("Point Suivant ");
+                                        removeBeforePoint(Robot.Trace, NearestPositionTroncon); // On supprime les anciens points
+                                    }
+
+                                    // Calcul de la différence d'orientation 
+                                    if (Math.Abs(diffOrientation(Robot, Robot.Trace)) > _differenceMaxOrientation) // Différence suppérieur de 15 degreé entre le robot et l'angle de la droite
+                                    {
+                                        Logger.GlobalLogger.debug("Orientation différente ");
+                                        if (Robot.LastAction != ActionRobot.ROBOT_TOURNER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(5)) // On etait pas en train de tourner ou ça fait plus de 5 secondes
                                         {
-                                            MessageProtocol mess = MessageBuilder.createTurnMessage(true, (byte)angle);
+                                            // Faire trouner le robot 
+                                            double angle = diffOrientation(Robot, Robot.Trace);
+                                            Logger.GlobalLogger.info("Changement d'angle : " + angle);
+                                            if (angle > 0)
+                                            {
+                                                
+                                                MessageProtocol mess = MessageBuilder.createTurnMessage(true, (byte)angle);
+                                                _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
+                                            }
+                                            else
+                                            {
+                                                MessageProtocol mess = MessageBuilder.createTurnMessage(false, (byte)angle);
+                                                _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
+                                            }
+                                            Robot.LastAction = ActionRobot.ROBOT_TOURNER;
+                                            Robot.LastActionTime = DateTime.Now;
+                                        }
+                                        // Tourner pour se placer dans le bon sens
+                                    }
+
+                                    if (!checkProximiteTrace(Robot.ID)) // On est proche du tracé ? 
+                                    {/*
+                                        // Si oui on continue a se deplacer
+                                        foreach(ArduinoBotIA RobotProche in _ListArduino) // tester la presence d'autre robot a proximité
+                                        {
+                                            if(RobotProche.ID == Robot.ID) // Soi meme
+                                                continue; // suivant
+
+                                            if (UtilsMath.DistanceEuclidienne(Robot.Position, RobotProche.Position) < _seuilProximiteRobot) // On est trop proche d'un autre robot
+                                            {
+                                                if (RobotProche.LastAction != ActionRobot.ROBOT_ARRET) // L'autre robot n'est pas en arret
+                                                {
+                                                    // nous arreter
+                                                    MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)0, (byte)0); // STOP
+                                                    _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
+                                                    Robot.LastAction = ActionRobot.ROBOT_ARRET;
+                                                    Robot.LastActionTime = DateTime.Now;
+                                                    break; // sortie de boucle 
+                                                }
+                                            }
+                                        }
+                                        if (Robot.LastAction != ActionRobot.ROBOT_DEPLACER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(10)) // On etait pas en train de se deplacer ou ça fait plus de 10 secondes
+                                        {
+                                            double distance = UtilsMath.DistanceEuclidienne(Robot.Position, Robot.Trace.Positions[0]);
+
+                                            MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)128, (byte)(distance / _ConversionUnit)); // Avancer a 50% de vitesse
                                             _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
+
+                                            Robot.LastAction = ActionRobot.ROBOT_DEPLACER;
+                                            Robot.LastActionTime = DateTime.Now;
                                         }
                                         else
                                         {
-                                            MessageProtocol mess = MessageBuilder.createTurnMessage(false, (byte)angle);
-                                            _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
-                                        }
-                                        Robot.LastAction = ActionRobot.ROBOT_TOURNER;
-                                        Robot.LastActionTime = DateTime.Now;
+                                            // ne pas renvoyer d'ordre, le robot est en train de se déplacer
+                                        }*/
                                     }
-                                    // Tourner pour se placer dans le bon sens
-                                }
-
-                                if (!checkProximiteTrace(Robot.ID)) // On est proche du tracé ? 
-                                {
-                                    // Si oui on continue a se deplacer
-                                    foreach(ArduinoBotIA RobotProche in _ListArduino) // tester la presence d'autre robot a proximité
-                                    {
-                                        if(RobotProche.ID == Robot.ID) // Soi meme
-                                            continue; // suivant
-
-                                        if (UtilsMath.DistanceEuclidienne(Robot.Position, RobotProche.Position) < _seuilProximiteRobot) // On est trop proche d'un autre robot
-                                        {
-                                            if (RobotProche.LastAction != ActionRobot.ROBOT_ARRET) // L'autre robot n'est pas en arret
-                                            {
-                                                // nous arreter
-                                                MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)0, (byte)0); // STOP
-                                                _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
-                                                Robot.LastAction = ActionRobot.ROBOT_ARRET;
-                                                Robot.LastActionTime = DateTime.Now;
-                                                break; // sortie de boucle 
-                                            }
-                                        }
-                                    }
-                                    if (Robot.LastAction != ActionRobot.ROBOT_DEPLACER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(10)) // On etait pas en train de se deplacer ou ça fait plus de 10 secondes
-                                    {
-                                        double distance = UtilsMath.DistanceEuclidienne(Robot.Position, Robot.Trace.Positions[0]);
-
-                                        MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)128, (byte)distance); // Avancer a 50% de vitesse
-                                        _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
-
-                                        Robot.LastAction = ActionRobot.ROBOT_DEPLACER;
-                                        Robot.LastActionTime = DateTime.Now;
-                                    }
+                                
                                     else
                                     {
-                                        // ne pas renvoyer d'ordre, le robot est en train de se déplacer
+                                        // Si non on recalcule 
+                                        _TrackMaker.CalculerObjectif(Robot);
                                     }
-                                }
-                                else
-                                {
-                                    // Si non on recalcule 
-                                    Robot.SetTrace(_TrackMaker.CalculerObjectif(Robot));
                                 }
                             }
                             else
                             {
                                 // Calcul d'un itineraire
-                                Robot.SetTrace(_TrackMaker.CalculerObjectif(Robot));
+                                _TrackMaker.CalculerObjectif(Robot);
                             }
                         }
                         else
@@ -293,21 +312,52 @@ namespace IA.Algo
             if (tr.Positions.Count < 2)
                 return 0;
 
-            double VXA, VYA, VXB, VYB;
-            // Vecteur Normal vertical 
-            VXA = 0 - 1;
-            VYA = 0 - 0;
-            // Vecteur de déplacement
-            VXB = tr.Positions[0].X - tr.Positions[1].X;
-            VYB = tr.Positions[0].Y - tr.Positions[1].Y;
-            // Calcul des normes
-            double NormeA = Math.Sqrt(VXA * VXA + VYA * VYA);
-            double NormeB = Math.Sqrt(VXB * VXB + VYB * VYB);
-            double C = ((VXA * VXB) + (VYA * VYB)) / (NormeA * NormeB);
-            double S = ((VXA * VXB) - (VYA * VYB));
-            double angleDeplacement = Math.Sign(S) * Math.Acos(C);
+            double DeltaXAB, DeltaYAB , angleTrace;
 
-            return angleDeplacement - robot.Angle;
+            DeltaXAB = tr.Positions[0].X - tr.Positions[1].X;
+            DeltaYAB = tr.Positions[0].Y - tr.Positions[1].Y;
+
+            if (DeltaXAB == 0 && DeltaYAB == 0) // Les points sont confondus
+            {
+                angleTrace =  0;
+            }
+            else if (DeltaXAB == 0) // Différence sur Y
+            {
+                if(DeltaYAB > 0)
+                    angleTrace = 90;
+                else
+                    angleTrace = 0;
+            }
+            else if (DeltaYAB == 0) // Différence sur X
+            {
+                if (DeltaXAB > 0)
+                    angleTrace = 180;
+                else
+                    angleTrace = 270;
+            }
+            else // Différence Sur X et Y
+            {
+                angleTrace = Math.Atan2(DeltaXAB, DeltaYAB);
+            }
+
+
+                /*
+            double DeltaXO, DeltaYO, DeltaXAB, DeltaYAB;
+            // Vecteur Normal vertical 
+            DeltaXO =  0;
+            DeltaYO = -1;
+            // Vecteur de déplacement
+           
+            // Calcul des normes
+            double NormeO = Math.Sqrt(DeltaXO * DeltaXO + DeltaYO * DeltaYO);
+            double NormeAB = Math.Sqrt(DeltaXAB * DeltaXAB + DeltaYAB * DeltaYAB);
+            //double SCA = NormeO * NormeAB * Math.Cos(Angle);
+            double C = ((DeltaXO * DeltaXAB) + (DeltaYO * DeltaYAB)) / (NormeO * NormeAB);
+            double S = ((DeltaXO * DeltaXAB) - (DeltaYO * DeltaYAB));
+            double angleDeplacement = Math.Sign(S) * Math.Cos(C);
+            */
+            Logger.GlobalLogger.debug("Angle déplacement :" + angleTrace + "robot.Angle :" + robot.Angle);
+            return angleTrace - robot.Angle;
         }
         #endregion
 
@@ -390,6 +440,7 @@ namespace IA.Algo
                     {
                         Rob.LastAction = ActionRobot.ROBOT_ARRET;
                         Rob.Saisie = true;
+                        Rob.SetTrace(null);
                         // Une fois le cube saisie
                     }
                     else

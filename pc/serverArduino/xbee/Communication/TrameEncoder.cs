@@ -88,6 +88,9 @@ namespace xbee.Communication
                 case (byte)PCtoEMBmessHeads.RESP_CONN:
                     trame = MakeTrame(src, dst, num, ((PCtoEMBMessageRespConn)message).getBytes());
                     break;
+                case (byte)PCtoEMBmessHeads.AUTO_MODE:
+                    trame = MakeTrame(src, dst, num, ((PCtoEMBMessageAutoMode)message).getBytes());
+                    break;
                 default:
                     Logger.GlobalLogger.error("Erreur à envoyer inconnu !");
                     break;

@@ -121,15 +121,11 @@ namespace IA
                 dessinerPoint(bmp, a, Brushes.BlueViolet);
                 dessinerLigne(bmp, a, b, Color.Red);
 
-
             }
-            try
+            if(Trace.Positions.Count >= 1)
             {
                 Point c = new Point(Trace.Positions[Trace.Positions.Count - 1].X + (int)(AS.UnitCol / 2), Trace.Positions[Trace.Positions.Count - 1].Y +(int)( AS.UnitRow / 2));
                 dessinerPoint(bmp, c, Brushes.BlueViolet);
-            }
-            catch (Exception)
-            {
             }
 
         }
@@ -184,6 +180,37 @@ namespace IA
                     ListePoly.Add(p);
 
                     dessinerPoint(bitmap, pos, Brushes.Pink);
+                }
+                for(int ab = 0 ; ab < _Follower.ListArduino.Count ; ab++)
+
+                //foreach (ArduinoBotIA robot in _Follower.ListArduino)
+                {
+                    ArduinoBotIA robot = _Follower.ListArduino[ab];
+
+                    PolyligneDessin p = new PolyligneDessin(Color.Purple);
+
+                    PositionElement pos = robot.Position;
+                   
+                    for (int x = pos.X - 5; x <= pos.X + 5; x++)
+                    {
+                        for (int y = pos.Y - 5; y <= pos.Y + 5; y++)
+                        {
+                            p.addPoint(new PointDessin(x, y));
+                        }
+                    }
+                    ListePoly.Add(p);
+
+                    dessinerPoint(bitmap, pos, Brushes.Turquoise);
+                    if (robot.Trace != null)
+                    {
+                        dessinerTrack(bitmap, robot.Trace, _Follower.TrackMaker.CreerAstarQuadriallage());
+                        PolyligneDessin p2 = new PolyligneDessin(Color.Red);
+                        for (int i = 0; i < robot.Trace.Positions.Count; i++)
+                        {
+                            p.addPoint(new PointDessin(robot.Trace.Positions[i].X,robot.Trace.Positions[i].Y));
+                        }
+                        ListePoly.Add(p2);
+                    }
                 }
 
 

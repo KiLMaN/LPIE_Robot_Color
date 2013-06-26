@@ -77,6 +77,7 @@
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.debugIA = new System.Windows.Forms.PictureBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ImageReel)).BeginInit();
@@ -104,6 +105,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.ImageReel);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.Blobs);
@@ -457,7 +459,7 @@
             this.btn_connection.Name = "btn_connection";
             this.btn_connection.Size = new System.Drawing.Size(75, 23);
             this.btn_connection.TabIndex = 17;
-            this.btn_connection.Text = "Connection";
+            this.btn_connection.Text = "Connexion";
             this.btn_connection.UseVisualStyleBackColor = true;
             this.btn_connection.Click += new System.EventHandler(this.btn_connection_Click);
             // 
@@ -520,6 +522,16 @@
             this.debugIA.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.debugIA.TabIndex = 0;
             this.debugIA.TabStop = false;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(777, 13);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(182, 30);
+            this.button1.TabIndex = 24;
+            this.button1.Text = "Lancement";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -593,6 +605,7 @@
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.PictureBox debugIA;
         private Emgu.CV.UI.ImageBox imageDebug;
+        private System.Windows.Forms.Button button1;
     }
 }
 

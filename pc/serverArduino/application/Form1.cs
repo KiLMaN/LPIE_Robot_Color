@@ -28,7 +28,7 @@ namespace application
             Logger Log = new Logger();
             Logger.GlobalLogger = Log;
             Log.attachToRTB(RTB_LOG);
-            Log.levelDebug = 0; // Afichage de tout les niveaux de debug
+            Log.levelDebug = 0;
 
             // Port Serie
             getListePortSerie(ctlListePorts);
@@ -167,5 +167,11 @@ namespace application
             IA.SetXbeeApiMode(CB_Xbee.Checked);
         }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            btn_connection_Click(sender, e);
+            ValideCamera_Click(sender, e);
+        }
     }
 }

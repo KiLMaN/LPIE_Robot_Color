@@ -78,13 +78,19 @@ namespace IA.Algo
         // Calcul de l'objectif en fonction de l'etat du robot 
         public Track CalculerObjectif(ArduinoBotIA robot)
         {
-            if (robot.Saisie)
+            Logger.GlobalLogger.debug("Creation d'une trajectoire pour le robot " + robot.ID + " etat Saisie : " + robot.Saisie ,2); ;
+            if (robot.Saisie) // Si le robot a saisi un cube  , retour a la base
             {
-                Zone o = _ZonesDepose.Find(Zone.ById(robot.Cube.idZone));
-                Track t = CreerAstarDepose(robot, o).CalculerTrajectoire();
-                robot.SetZoneDepose(o);
-                robot.SetTrace(t);
-                return t;
+                if (robot.Cube != null)
+                {
+                    Zone o = _ZonesDepose.Find(Zone.ById(robot.Cube.idZone));
+                    Track t = CreerAstarDepose(robot, o).CalculerTrajectoire();
+                    robot.SetZoneDepose(o);
+                    robot.SetTrace(t);
+                    return t;
+                }
+                else
+                    return null;
             }
             else
             {
@@ -145,7 +151,7 @@ namespace IA.Algo
         // Creer un astar avec les zones et les positions correctes
         private AStar CreerAstarCube(ArduinoBotIA robot, Objectif Cube)
         {
-            AStar AS = new AStar(robot.Position, Cube.position, _ZoneTravail);
+            AStar AS = new AStar(Cube.position,robot.Position, _ZoneTravail);
             // Ajout des autres cubes en obstacles
             foreach (Objectif o in _Cubes)
                 if (o.id != Cube.id)
@@ -161,7 +167,7 @@ namespace IA.Algo
         private AStar CreerAstarDepose(ArduinoBotIA robot, Zone Depose)
         {
             PositionElement PositionCentreZone = UtilsMath.CentreRectangle(Depose.position);
-            AStar AS = new AStar(robot.Position, PositionCentreZone, _ZoneTravail);
+            AStar AS = new AStar(PositionCentreZone,robot.Position, _ZoneTravail);
             // Ajout des autres cubes en obstacles
             foreach (Objectif o in _Cubes)
                 if (o.Robot != null)
@@ -169,7 +175,8 @@ namespace IA.Algo
 
             // Ajout des Zones en Obstacles
             foreach (Zone o in _ZonesDepose)
-                AS.AddObstacle(UtilsMath.CentreRectangle(o.position));
+                if(o.id != Depose.id)
+                    AS.AddObstacle(UtilsMath.CentreRectangle(o.position));
 
             return AS;
         }

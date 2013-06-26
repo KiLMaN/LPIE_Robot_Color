@@ -4,7 +4,7 @@
 		<id>1</id>
 		<type>1</type>
     <taille>64</taille>
-    <distancePince>95</distancePince>
+    <distancePince>260</distancePince>
 		<lignes> 
 			<ligne>001</ligne>
 			<ligne>010</ligne>
@@ -12,10 +12,10 @@
 		</lignes>
 	</glyph>
 	<glyph>
-		<id>2</id>
+		<id>3</id>
 		<type>1</type>
     <taille>64</taille>
-    <distancePince>95</distancePince>
+    <distancePince>260</distancePince>
 		<lignes> 
 			<ligne>101</ligne>
 			<ligne>001</ligne>
@@ -23,10 +23,10 @@
 		</lignes>
 	</glyph>
 	<glyph>
-		<id>3</id>
+		<id>2</id>
 		<type>1</type>
     <taille>64</taille>
-    <distancePince>95</distancePince>
+    <distancePince>260</distancePince>
 		<lignes> 
 			<ligne>010</ligne>
 			<ligne>001</ligne>

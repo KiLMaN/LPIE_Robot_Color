@@ -120,15 +120,18 @@ namespace video
         }
         public void dessinePolyline(List<PolyligneDessin> Polyline)
         {
-            foreach (PolyligneDessin p in Polyline)
+
+            //foreach (PolyligneDessin p in Polyline)
+            for (int z = 0 ; z < Polyline.Count;z++)
             {
-                for (int i = 0; i < p.ListePoint.Count;i++ )
+                PolyligneDessin p = Polyline[z];
+                for (int i = 1; i < p.ListePoint.Count;i++ )
                 {
-                    IntPoint a = new IntPoint(p.ListePoint[i].X, p.ListePoint[i].Y);
-                    IntPoint b = new IntPoint(p.ListePoint[(i + 1) % p.ListePoint.Count].X, p.ListePoint[(i + 1) % p.ListePoint.Count].Y);
+                    IntPoint a = new IntPoint(p.ListePoint[i-1].X, p.ListePoint[i-1].Y);
+                    IntPoint b = new IntPoint(p.ListePoint[i].X, p.ListePoint[i].Y);
                     if (a.X > UnImgReel.Width || b.X > UnImgReel.Width || b.Y > UnImgReel.Height || a.Y > UnImgReel.Height)
                     {
-                        Logger.GlobalLogger.error("trop grand");
+                        //Logger.GlobalLogger.error("trop grand");
                     }
                     Drawing.Line(UnImgReel, a, b , p.Couleur);
                 }
@@ -189,8 +192,8 @@ namespace video
             SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
             BlobCounter blobCounter = new BlobCounter();
 
-            blobCounter.MinHeight = 32;
-            blobCounter.MinWidth = 32;
+            blobCounter.MinHeight = 25;
+            blobCounter.MinWidth = 25;
             blobCounter.FilterBlobs = true;
             blobCounter.ObjectsOrder = ObjectsOrder.Size;
 
@@ -259,7 +262,7 @@ namespace video
                             Line ComparasionAngle = Line.FromPoints(corners[0], corners[1]);
                             Double rotation = (int) ComparasionAngle.GetAngleBetweenLines(Horizontale);
                             rotation += 90 * Gl.getNbRotation();
-                            Gl.rotation = rotation - 180;
+                            Gl.rotation = 360 - rotation;
                             rotation *= (Math.PI / 180.0);
 
 

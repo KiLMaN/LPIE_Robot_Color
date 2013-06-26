@@ -40,7 +40,7 @@ namespace xbee.Communication
         private Thread _ThreadMessagesRecus;
 
         private const int _ThreadKeepAliveDelay = 10; // verification des keepalive en ms
-        private const int _TimeOutKeepAlive = 10; // Envoi d'un KeepAlive (ping) toutes les 30 secondes sans messages
+        private const int _TimeOutKeepAlive = 15; // Envoi d'un KeepAlive (ping) toutes les 30 secondes sans messages
         private Thread _ThreadMessagesEnvois; // Envoi / KeepAlive / Rejeux
 
       
