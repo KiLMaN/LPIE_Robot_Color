@@ -5,7 +5,7 @@
 
 #include <Servo.h> 
 
-byte src = 0x03;
+byte src = 0x01;
 byte dst = 0xFE;
 
 int headPosition=0;
@@ -83,7 +83,7 @@ void loop()
             highWordByte =(lastRecvTramNum >> 8)& 0xFF;
             lowWordByte = lastRecvTramNum & 0xFF;
             byte dataAckCmd[] = { 0x41,highWordByte,lowWordByte,0x01}; //demande connexion
-      
+      byte data[] = {0x72};
       switch(trame->data[0])
       {
             
@@ -162,6 +162,21 @@ void loop()
          
              
               trameAckPing = MakeTrame(src,dst, lastRecvTramNum, dataAckPing,sizeof(dataAckPing));
+              SendTrame(*trameAckPing);
+          break;
+          
+          case 0x71:
+            //envoyer 0x22
+              lastRecvTramNum = trame->num;  
+             
+         
+             
+              trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
+              SendTrame(*trameAckPing);
+              
+              delay(1000);
+              
+               trameAckPing = MakeTrame(src,dst, lastRecvTramNum++, data,sizeof(data));
               SendTrame(*trameAckPing);
           break;
           

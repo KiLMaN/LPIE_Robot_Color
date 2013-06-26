@@ -186,6 +186,33 @@ namespace IA
                     dessinerPoint(bitmap, pos, Brushes.Pink);
                 }
 
+                foreach (ArduinoBotIA robot in _Follower.ListArduino)
+                {
+                    PolyligneDessin p = new PolyligneDessin(Color.Purple);
+
+                    PositionElement pos = robot.Position;
+                   
+                    for (int x = pos.X - 5; x <= pos.X + 5; x++)
+                    {
+                        for (int y = pos.Y - 5; y <= pos.Y + 5; y++)
+                        {
+                            p.addPoint(new PointDessin(x, y));
+                        }
+                    }
+                    ListePoly.Add(p);
+
+                    dessinerPoint(bitmap, pos, Brushes.Turquoise);
+                    if (robot.Trace != null)
+                    {
+                        PolyligneDessin p2 = new PolyligneDessin(Color.Red);
+                        for (int i = 0; i < robot.Trace.Positions.Count; i++)
+                        {
+                            p.addPoint(new PointDessin(robot.Trace.Positions[i].X,robot.Trace.Positions[i].Y));
+                        }
+                        ListePoly.Add(p2);
+                    }
+                }
+
 
                 imageDebug.Image = bitmap;
 
