@@ -181,9 +181,12 @@ namespace IA
 
                     dessinerPoint(bitmap, pos, Brushes.Pink);
                 }
+                for(int ab = 0 ; ab < _Follower.ListArduino.Count ; ab++)
 
-                foreach (ArduinoBotIA robot in _Follower.ListArduino)
+                //foreach (ArduinoBotIA robot in _Follower.ListArduino)
                 {
+                    ArduinoBotIA robot = _Follower.ListArduino[ab];
+
                     PolyligneDessin p = new PolyligneDessin(Color.Purple);
 
                     PositionElement pos = robot.Position;

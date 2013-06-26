@@ -151,7 +151,7 @@ namespace IA.Algo
         // Creer un astar avec les zones et les positions correctes
         private AStar CreerAstarCube(ArduinoBotIA robot, Objectif Cube)
         {
-            AStar AS = new AStar(robot.Position, Cube.position, _ZoneTravail);
+            AStar AS = new AStar(Cube.position,robot.Position, _ZoneTravail);
             // Ajout des autres cubes en obstacles
             foreach (Objectif o in _Cubes)
                 if (o.id != Cube.id)
@@ -167,7 +167,7 @@ namespace IA.Algo
         private AStar CreerAstarDepose(ArduinoBotIA robot, Zone Depose)
         {
             PositionElement PositionCentreZone = UtilsMath.CentreRectangle(Depose.position);
-            AStar AS = new AStar(robot.Position, PositionCentreZone, _ZoneTravail);
+            AStar AS = new AStar(PositionCentreZone,robot.Position, _ZoneTravail);
             // Ajout des autres cubes en obstacles
             foreach (Objectif o in _Cubes)
                 if (o.Robot != null)

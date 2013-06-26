@@ -198,7 +198,7 @@ namespace IA.Algo.AStarAlgo
                     }
                 
                 this._close.Add(best);
-                this.AddToOpen(best, _map.getAdjCase(best,true));
+                this.AddToOpen(best, _map.getAdjCase(best,false));
             }
             return null; // Pas de trouvé
         }
