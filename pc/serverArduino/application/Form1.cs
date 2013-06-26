@@ -167,5 +167,11 @@ namespace application
             IA.SetXbeeApiMode(CB_Xbee.Checked);
         }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            btn_connection_Click(sender, e);
+            ValideCamera_Click(sender, e);
+        }
     }
 }

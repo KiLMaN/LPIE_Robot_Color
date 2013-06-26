@@ -259,7 +259,7 @@ namespace video
                             Line ComparasionAngle = Line.FromPoints(corners[0], corners[1]);
                             Double rotation = (int) ComparasionAngle.GetAngleBetweenLines(Horizontale);
                             rotation += 90 * Gl.getNbRotation();
-                            Gl.rotation = rotation - 180;
+                            Gl.rotation = 360 - rotation;
                             rotation *= (Math.PI / 180.0);
 
 
