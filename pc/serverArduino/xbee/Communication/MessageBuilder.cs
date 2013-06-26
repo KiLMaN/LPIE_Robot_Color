@@ -30,7 +30,7 @@ namespace xbee.Communication
         {
             PCtoEMBMessageTurn Message = new PCtoEMBMessageTurn();
             Message.headerMess = (byte)PCtoEMBmessHeads.TURN;
-            Message.direction = (byte)((Sens) ? 0x01 : 0x00);
+            Message.direction = (byte)((Sens) ? 0x00 : 0x01);
             Message.angle = angle;
 
             return Message;
