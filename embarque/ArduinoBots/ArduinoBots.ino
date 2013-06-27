@@ -44,7 +44,7 @@ boolean TURNTORIGHT = false;
 byte angleRate;
 byte speedRate;
 byte lenghtRate;
-byte timeRate;
+unsigned long timeRate;
 //***********************************************
 
 //*********** GLOBALS SERVO CONTROL *************
@@ -328,7 +328,8 @@ uniquePass=true;
   if(GOTOWARD)
   {
     
-    timeRate=(lenghtRate*1000)/14;
+    /*timeRate=(lenghtRate*1000)/14;*/
+    timeRate=(70*1000)/14;
     timeCmdWeelsCompare = millis();
     if((timeCmdWeelsCompare-timeCmdWeelsCheck)<timeRate)//remplacer 10000 par timerate
     {
@@ -351,7 +352,8 @@ uniquePass=true;
 
   if(GOFORWARD)
   {
-     timeRate=(lenghtRate*1000)/14;
+     /*timeRate=(lenghtRate*1000)/14;*/
+    timeRate=(70*1000)/14;
     timeCmdWeelsCompare = millis();
     if((timeCmdWeelsCompare-timeCmdWeelsCheck)<timeRate) //remplacer 10000 par timerate
     {
