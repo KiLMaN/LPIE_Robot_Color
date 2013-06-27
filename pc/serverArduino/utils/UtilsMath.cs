@@ -1,5 +1,6 @@
 ﻿using System;
 using utils.Events;
+using System.Drawing;
 
 namespace utils
 {
@@ -71,6 +72,39 @@ namespace utils
             int Y = (Zone.A.Y + Zone.C.Y) / 2;
            PositionElement p =  new PositionElement(X,Y);
             return p;
+        }
+        // Calcul de l'angle entre deux vecteurs (StartA,StopA) et (StartB,StopB) (retourne [-180,180])
+        static public double AngleBetweenVectors(PointF StartA, PointF StopA, PointF StartB, PointF StopB)
+        {
+            PointF DeltaA = new PointF();
+            PointF DeltaB = new PointF();
+
+            double angle;
+
+            // Calcul des deltas
+            DeltaA.X = StartA.X - StopA.X;
+            DeltaA.Y = StartA.Y - StopA.Y;
+
+            DeltaB.X = StartB.X - StopB.X;
+            DeltaB.Y = StartB.Y - StopB.Y;
+            // Calcul du Cos avec le produit scalaire
+            double cosa = (double)((DeltaA.X * DeltaB.X + DeltaA.Y * DeltaB.Y)) / (Math.Sqrt(DeltaA.X * DeltaA.X + DeltaA.Y * DeltaA.Y) * Math.Sqrt(DeltaB.X * DeltaB.X + DeltaB.Y * DeltaB.Y));
+
+            // angle en degré
+            angle = ((180.0 / Math.PI) * Math.Acos(cosa));
+
+            // Signe de l'angle
+
+            int sign = (DeltaA.X * DeltaB.Y - DeltaA.Y * DeltaB.X) > 0 ? 1 : -1;
+
+            return angle * sign;
+        }
+        // Calcul de l'angle entre deux vecteurs (StartA,StopA) et (StartB,StopB) (retourne [0,360])
+        static public double TrueAngleBetweenVectors(PointF StartA, PointF StopA, PointF StartB, PointF StopB)
+        {
+            double a = AngleBetweenVectors(StartA, StopA, StartB, StopB);
+            a = (a + 360.0) % 360.0;
+            return a;
         }
     }
 }

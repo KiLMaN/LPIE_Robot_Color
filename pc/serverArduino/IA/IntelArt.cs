@@ -141,8 +141,10 @@ namespace IA
                 //dessinerTrack(bitmap, tr);
 
                 // Dessiner Cubes
-                foreach (Objectif obstacle in _Follower.TrackMaker.Cubes)
+               // foreach (Objectif obstacle in _Follower.TrackMaker.Cubes)
+                for (int i = 0 ; i < _Follower.TrackMaker.Cubes.Count ; i++)
                 {
+                        Objectif obstacle = _Follower.TrackMaker.Cubes[i];
                     PolyligneDessin p = new PolyligneDessin(Color.LimeGreen);
                     for (int x = obstacle.position.X - 5; x <= obstacle.position.X + 5; x++)
                     {
@@ -166,8 +168,9 @@ namespace IA
                     dessinerLigne(bitmap, q.A, q.B, Color.Gray, 1);
                 }
 
-                foreach (Zone z in _Follower.TrackMaker.ZonesDepose)
+                for (int i = 0 ; i < _Follower.TrackMaker.ZonesDepose.Count ; i++)
                 {
+                    Zone z = _Follower.TrackMaker.ZonesDepose[i];
                     PositionElement pos = UtilsMath.CentreRectangle(z.position);
                     PolyligneDessin p = new PolyligneDessin(Color.Pink);
                     for (int x = pos.X - 5; x <= pos.X + 5; x++)
@@ -181,8 +184,9 @@ namespace IA
 
                     dessinerPoint(bitmap, pos, Brushes.Pink);
                 }
-                for(int ab = 0 ; ab < _Follower.ListArduino.Count ; ab++)
 
+
+                for(int ab = 0 ; ab < _Follower.ListArduino.Count ; ab++)
                 //foreach (ArduinoBotIA robot in _Follower.ListArduino)
                 {
                     ArduinoBotIA robot = _Follower.ListArduino[ab];

@@ -7,6 +7,7 @@ using xbee.Communication;
 using utils;
 using System.Threading;
 using xbee.Communication.Events;
+using System.Drawing;
 
 namespace IA.Algo
 {
@@ -312,50 +313,17 @@ namespace IA.Algo
             if (tr.Positions.Count < 2)
                 return 0;
 
-            double DeltaXAB, DeltaYAB , angleTrace;
+            double angleTrace = 0;
+            /* Vecteur de comparaison */
+            PointF A = new PointF(0, 10);
+            PointF B = new PointF(0, 0);
 
-            DeltaXAB = tr.Positions[0].X - tr.Positions[1].X;
-            DeltaYAB = tr.Positions[0].Y - tr.Positions[1].Y;
+            /* Vecteur de mouvement */
+            PointF Start = new PointF(tr.Positions[0].X, tr.Positions[0].Y);
+            PointF Stop = new PointF(tr.Positions[1].X, tr.Positions[1].Y);
 
-            if (DeltaXAB == 0 && DeltaYAB == 0) // Les points sont confondus
-            {
-                angleTrace =  0;
-            }
-            else if (DeltaXAB == 0) // Différence sur Y
-            {
-                if(DeltaYAB > 0)
-                    angleTrace = 90;
-                else
-                    angleTrace = 0;
-            }
-            else if (DeltaYAB == 0) // Différence sur X
-            {
-                if (DeltaXAB > 0)
-                    angleTrace = 180;
-                else
-                    angleTrace = 270;
-            }
-            else // Différence Sur X et Y
-            {
-                angleTrace = Math.Atan2(DeltaXAB, DeltaYAB);
-            }
+            angleTrace = UtilsMath.TrueAngleBetweenVectors(A, B, Start, Stop);
 
-
-                /*
-            double DeltaXO, DeltaYO, DeltaXAB, DeltaYAB;
-            // Vecteur Normal vertical 
-            DeltaXO =  0;
-            DeltaYO = -1;
-            // Vecteur de déplacement
-           
-            // Calcul des normes
-            double NormeO = Math.Sqrt(DeltaXO * DeltaXO + DeltaYO * DeltaYO);
-            double NormeAB = Math.Sqrt(DeltaXAB * DeltaXAB + DeltaYAB * DeltaYAB);
-            //double SCA = NormeO * NormeAB * Math.Cos(Angle);
-            double C = ((DeltaXO * DeltaXAB) + (DeltaYO * DeltaYAB)) / (NormeO * NormeAB);
-            double S = ((DeltaXO * DeltaXAB) - (DeltaYO * DeltaYAB));
-            double angleDeplacement = Math.Sign(S) * Math.Cos(C);
-            */
             Logger.GlobalLogger.debug("Angle déplacement :" + angleTrace + "robot.Angle :" + robot.Angle);
             return angleTrace - robot.Angle;
         }
