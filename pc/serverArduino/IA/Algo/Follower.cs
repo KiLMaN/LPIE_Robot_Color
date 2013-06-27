@@ -337,7 +337,7 @@ namespace IA.Algo
             angleTrace = UtilsMath.TrueAngleBetweenVectors(A, B, Start, Stop);
 
             Logger.GlobalLogger.debug("Angle déplacement :" + angleTrace + "robot.Angle :" + robot.Angle);
-            return angleTrace - robot.Angle;
+            return Math.Abs(angleTrace - robot.Angle);
         }
         #endregion
 

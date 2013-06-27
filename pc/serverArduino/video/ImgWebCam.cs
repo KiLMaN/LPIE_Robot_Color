@@ -66,8 +66,8 @@ namespace video
 
                 // create blob counter and configure it
                 BlobCounter blobCounter1 = new BlobCounter();
-                blobCounter1.MinWidth = 10;                    // set minimum size of
-                blobCounter1.MinHeight = 10;                   // objects we look for
+                blobCounter1.MinWidth = 15;                    // set minimum size of
+                blobCounter1.MinHeight = 15;                   // objects we look for
                 blobCounter1.FilterBlobs = true;               // filter blobs by size
                 blobCounter1.ObjectsOrder = ObjectsOrder.Size; // order found object by size
 
