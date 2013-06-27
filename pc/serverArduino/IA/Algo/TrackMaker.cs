@@ -84,7 +84,12 @@ namespace IA.Algo
                 if (robot.Cube != null)
                 {
                     Zone o = _ZonesDepose.Find(Zone.ById(robot.Cube.idZone));
-                    Track t = CreerAstarDepose(robot, o).CalculerTrajectoire();
+                    //Track t = CreerAstarDepose(robot, o).CalculerTrajectoire();
+
+                    Track t = new Track();
+                    t.ajouterPoint(robot.Position);
+                    t.ajouterPoint(UtilsMath.CentreRectangle(o.position));
+
                     robot.SetZoneDepose(o);
                     robot.SetTrace(t);
                     return t;
@@ -104,7 +109,12 @@ namespace IA.Algo
                     o = findObjectifNear(robot.Position);
                 }
                 
-                Track t = CreerAstarCube(robot, o).CalculerTrajectoire();
+                //Track t = CreerAstarCube(robot, o).CalculerTrajectoire();
+
+                Track t = new Track();
+                t.ajouterPoint(robot.Position);
+                t.ajouterPoint(o.position);
+
                 robot.SetObjectif(o);
                 o.Robot = robot;
                 robot.SetTrace(t);
