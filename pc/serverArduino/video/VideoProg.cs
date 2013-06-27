@@ -69,8 +69,6 @@ namespace video
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
 
-        //private VideoCaptureDevice FinalVideo = null;
-
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
         private int lastIdCube = 0;
@@ -78,6 +76,7 @@ namespace video
 
         public int[] col = null;
         private int paire = 0;
+        private const int nbImgColorTraiter = 2;
         private const int nbThread = 2;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
@@ -226,7 +225,7 @@ namespace video
                 //Logger.GlobalLogger.debug("" + ListEnvoi.Count);
                 envoieListe(ListEnvoi);
             }
-            for(int i = LstRobot.Count -1; i>=0;i++)
+            for(int i = LstRobot.Count -1; i>=0;i--)
             {
                 if (LstRobot[i].Position.X == -1)
                     LstRobot.RemoveAt(i);
@@ -235,9 +234,6 @@ namespace video
         /* fonction cubes */
         private void mergePosition(List<Cub> lst)
         {
-            if (lst.Count == 0)
-                return;
-            
             List<bool> tab = new List<bool>();
             for (int i = 0; i < LstCube.Count; i++)
                 tab.Add(false);
@@ -303,8 +299,6 @@ namespace video
                         po.Position.X = (int)(milieu.X * ratioCmParPixel[0]);
                         po.Position.Y = (int)(milieu.Y * ratioCmParPixel[1]);
                     }
-                    
-                    
                     lstpos.Add(po);
                 }
                 envoieListe(lstpos);
@@ -405,19 +399,20 @@ namespace video
                 {
                     Logger.GlobalLogger.error(e.Message);
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(15);
             }
         }
         private void ProcessFrame(object sender, EventArgs arg)
         {
+            if (paire == 0)
+            {
                 Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
-                imageDebug.Image = tmp ;
-                if(paire == 0)
-                    afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+                imageDebug.Image = tmp;
+                afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
+            }
                 paire= (paire + 1) % 2;
 
         }
-
 
         private void afficheImage(object sender, NewFrameEventArgs eventArgs)
         {
@@ -448,15 +443,20 @@ namespace video
         public delegate void TraitementImg(ImgWebCam img);
         public void imgTraitment(ImgWebCam img)
         {
-            img.homographie(LimiteTerrain);
+            /* Homographie du terrain et detection contours */
+            if (imageShow % nbImgColorTraiter == 0 && LstHslFiltering.Count > 0)
+                img.homographie(LimiteTerrain, true);
+            else
+                img.homographie(LimiteTerrain, false);
+            
             if (col !=null)
-            {
                 addcouleur(img.getUnImgReel().ToManagedImage());
-            }
+            
             img.ColeurVersNB();
             img.DetectionContour((short)numericUpDown1.Value);
 
-            if (ratioCmParPixel[0] == 1 || ratioCmParPixel[1] == 1)
+            /* Reconnaissance des glyphs et taille du terrain si besoin */
+            if (imageShow < img.getNumeroImg() && (ratioCmParPixel[0] == 1 || ratioCmParPixel[1] == 1))
             {
                 double[] tmp = img.detectionGlyph(true);
                 if (tmp != null)
@@ -467,20 +467,22 @@ namespace video
                     Logger.GlobalLogger.info("Taille terrain : " + TailleTerain[0] + " x " + TailleTerain[1] + " cm");
                 }
             }
-            else
+            else if ( imageShow < img.getNumeroImg())
             {
                 img.detectionGlyph(false);
             }
-                if (imageShow < img.getNumeroImg())
+            
+            /* Merge des positions et dessin sur les lignes */
+            if (imageShow < img.getNumeroImg())
                 {
                     mergePosition(img.getLstRobot());
-                    if (imageShow % 3 == 0)
+                    if (imageShow % nbImgColorTraiter == 0)
                         mergePosition(img.getImageColor(LstHslFiltering));
+                    
                     if (polyline !=null && polyline.Count > 0)
                     {
                         img.dessinePolyline(polyline);
                     }
-                    //TODO: SUPPRIMER LA FONCTION
                     
                     if(LstCube.Count > 0 )
                          img.dessineRectangle(getRectCube(), Color.White);
@@ -543,7 +545,7 @@ namespace video
         private void detectionColor(Object s)
         {
             //TODO: REACTIVER FONCTION
-            mergePosition(((ImgWebCam)s).getImageColor(LstHslFiltering));
+            //mergePosition(((ImgWebCam)s).getImageColor(LstHslFiltering));
             
         }
         public delegate void affichageImg(Bitmap img, PictureBox box);
@@ -573,7 +575,6 @@ namespace video
                     ratioCmParPixel[0] = 1;
                     ratioCmParPixel[1] = 1;
                 }
-                
             }
             else
             {
@@ -673,10 +674,8 @@ namespace video
         }
         public void addcouleur(Bitmap bm)
         {
-            //col = new int[] {5};
             if (LstZone.Count == 0 || LstZone[LstZone.Count - 1].ID != -1 && col !=null)
             {
-                //col = new int[] {5};
                 int w_i = bm.Width;
                 int h_i = bm.Height;
                 int w_c = imgReel.Width;
@@ -712,8 +711,6 @@ namespace video
                 ZoneTmp.ID = -1;
                 LstZone.Add(ZoneTmp);
                 MessageBox.Show("Ajouter une zone de dépose avec le click milieu");
-
-                
             }
         }
         public void openVideoFlux(int indexCam, int IndexResolution)

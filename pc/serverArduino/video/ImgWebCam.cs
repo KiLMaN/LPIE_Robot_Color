@@ -25,13 +25,13 @@ namespace video
         const int stepSize = 3;
         private int GlyphSize;
 
+        #region #### Constructeurs / Acceseur / Muttateur ####
         public ImgWebCam(Bitmap image, ulong noImage, int Size)
         {
             this.imgReel = image;
             this.GlyphSize = Size;
             this.numeroImage = noImage;
         }
-
         private void setter(Bitmap image, ulong noImage)
         {
             this.imgReel = image;
@@ -53,6 +53,7 @@ namespace video
         {
             return this.imgContour;
         }
+        
         public List<video.VideoProg.Cub> getImageColor(List<HSLFiltering> lst)
         {
             UnmanagedImage tmpCol = null;
@@ -65,15 +66,14 @@ namespace video
 
                 // create blob counter and configure it
                 BlobCounter blobCounter1 = new BlobCounter();
-                blobCounter1.MinWidth = 25;                    // set minimum size of
-                blobCounter1.MinHeight = 25;                   // objects we look for
+                blobCounter1.MinWidth = 22;                    // set minimum size of
+                blobCounter1.MinHeight = 22;                   // objects we look for
                 blobCounter1.FilterBlobs = true;               // filter blobs by size
                 blobCounter1.ObjectsOrder = ObjectsOrder.Size; // order found object by size
 
-               
                 blobCounter1.ProcessImage(tmpCol);
-                Rectangle[] rects = DeleteRectInterne( blobCounter1.GetObjectsRectangles());
-                
+                //Rectangle[] rects = DeleteRectInterne( blobCounter1.GetObjectsRectangles());
+                Rectangle[] rects = blobCounter1.GetObjectsRectangles();
                 // draw rectangle around the biggest blob
                 for (int j = 0; j < rects.Length; j++)
                 {
@@ -106,6 +106,7 @@ namespace video
             min = (min < d) ? min : d;
             return min;
         }
+        #endregion
 
         #region ##### Dessin #####
         public void dessinePoint(IntPoint point, UnmanagedImage img,int nbPixel,Color col)
@@ -147,7 +148,7 @@ namespace video
         #endregion
 
         #region ##### Traitement image #####
-        public void homographie(List<IntPoint> LimiteTerain)
+        public void homographie(List<IntPoint> LimiteTerain, bool imgCol)
         {
             UnImgReel = UnmanagedImage.FromManagedImage(imgReel);
             
@@ -157,7 +158,8 @@ namespace video
                 QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(LimiteTerain, UnImgReel.Width, UnImgReel.Height);
                 UnImgReel = quadrilateralTransformation.Apply(UnImgReel);
             }
-            ImgColor = UnImgReel.Clone();
+            if( imgCol )
+                ImgColor = UnImgReel.Clone();
         }
         public void ColeurVersNB()
         {
@@ -226,7 +228,7 @@ namespace video
                     if (diff > 20)
                     {
                         // Transformation de l'image reçu en un carré pour la reconnaissance
-                        QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(corners, 50, 50);
+                        QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(corners, 60, 60);
                         UnmanagedImage glyphImage = quadrilateralTransformation.Apply(imgNB);
                         // Filtre de contraste
                         OtsuThreshold otsuThresholdFilter = new OtsuThreshold();
@@ -267,14 +269,12 @@ namespace video
 
 
                             // Calcul d'un point en bout de pince
-                            float[] Taille = new float[4];
-                            // TODO: Ratio proportionnel en fonction de l'inclinaison
-                            Taille[0] = corners[0].DistanceTo(corners[1]);
-                            Taille[1] = corners[1].DistanceTo(corners[2]);
+                            float Taille = corners[0].DistanceTo(corners[1]);
+                           /* Taille[1] = corners[1].DistanceTo(corners[2]);
                             Taille[2] = corners[2].DistanceTo(corners[3]);
-                            Taille[3] = corners[3].DistanceTo(corners[0]);
+                            Taille[3] = corners[3].DistanceTo(corners[0]); */
                             
-                            float taille = (Taille[0] / BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille) * BibliotequeGlyph.Biblioteque[Gl.getPosition()].DistancePince;
+                            float taille = (Taille / BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille) * BibliotequeGlyph.Biblioteque[Gl.getPosition()].DistancePince;
                             int x = -(int)(System.Math.Sin(rotation) * taille);
                             int y = -(int)(System.Math.Cos(rotation) * taille);
                             x += (int)intersection.X;
@@ -291,8 +291,7 @@ namespace video
                             {
                                 Trouve = true;
                                 int tailleglyph = BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille;
-                                
-                                
+
                                 // Pythagore pour detection taille
                                 Rectangle a = blobs[i].Rectangle;
                                 double angle = - Gl.rotation + 180;
@@ -330,15 +329,10 @@ namespace video
                                     
                                     coins[i] = tmp;
                                 }
-                                dessinePoint(coins[0], UnImgReel, 10, Color.OrangeRed);
-                                dessinePoint(coins[1], UnImgReel, 10, Color.Yellow);
-                                dessinePoint(coins[2], UnImgReel, 10, Color.Green);
-                                dessinePoint(coins[3], UnImgReel, 10, Color.Blue);
                                 
                                 Rectangle r = new Rectangle(min(coins[0].X, coins[1].X, coins[2].X, coins[3].X), min(coins[0].Y, coins[1].Y, coins[2].Y, coins[3].Y),
                                                             max(coins[0].X, coins[1].X, coins[2].X, coins[3].X) - min(coins[0].X, coins[1].X, coins[2].X, coins[3].X),
                                                             max(coins[0].Y, coins[1].Y, coins[2].Y, coins[3].Y) - min(coins[0].Y, coins[1].Y, coins[2].Y, coins[3].Y));
-                                Drawing.Rectangle(UnImgReel, r, Color.Yellow);
                                 ratio[0] = ((double)r.Width / (double)a.Width) * 1.48;
                                 ratio[1] = ((double)r.Height / (double)a.Height) * 1.48;
 
