@@ -151,15 +151,14 @@ namespace IA.Algo
                                                 // Faire trouner le robot 
                                                 double angle = diffOrientation(Robot, Robot.Trace);
                                                 
-                                                if (angle > 180) // Si suppérieur a 180 ° alors tourner a gauche
+                                                if (angle < 0) // Si inférieur a 0° alors tourner a gauche
                                                 {
-                                                   angle =  360 - angle;
-                                                    MessageProtocol mess = MessageBuilder.createTurnMessage(true, (byte)angle);
+                                                    MessageProtocol mess = MessageBuilder.createTurnMessage(true, (byte)Math.Abs(angle));
                                                     _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                                 }
                                                 else // sinon touner a droite
                                                 {
-                                                    MessageProtocol mess = MessageBuilder.createTurnMessage(false, (byte)angle);
+                                                    MessageProtocol mess = MessageBuilder.createTurnMessage(false, (byte)Math.Abs(angle));
                                                     _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                                 }
                                                 Logger.GlobalLogger.info("Changement d'angle : " + angle);
@@ -337,7 +336,7 @@ namespace IA.Algo
             angleTrace = UtilsMath.TrueAngleBetweenVectors(A, B, Start, Stop);
 
             Logger.GlobalLogger.debug("Angle déplacement :" + angleTrace + "robot.Angle :" + robot.Angle);
-            return angleTrace - robot.Angle;
+            return UtilsMath.diffAngle( angleTrace ,robot.Angle);
         }
         #endregion
 
