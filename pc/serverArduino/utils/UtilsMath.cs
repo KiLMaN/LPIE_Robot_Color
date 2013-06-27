@@ -106,5 +106,16 @@ namespace utils
             a = (a + 360.0) % 360.0;
             return a;
         }
+        // Calcul la différence entre deux angles (retourner entre [-180;180])
+        static public double diffAngle(double angle1, double angle2)
+        {
+            double difference = angle1 - angle2;
+            while (difference < -180) difference += 360;
+            while (difference > 180) difference -= 360;
+            /*double a = (angle1 - angle2);
+            if(Math.Abs(a) > 180)
+                a*/
+            return difference;
+        }
     }
 }
