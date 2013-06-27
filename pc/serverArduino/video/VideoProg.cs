@@ -476,8 +476,18 @@ namespace video
                 {
                     mergePosition(img.getLstRobot());
                     if (imageShow % nbImgColorTraiter == 0)
-                        mergePosition(img.getImageColor(LstHslFiltering));
-                    
+                    {
+                        List<Cub> lstCubTmp = img.getImageColor(LstHslFiltering);
+                        /*List<Rectangle> r = new List<Rectangle>();
+                        foreach(Cub t in lstCubTmp)
+                        {
+                            r.Add(t.rec);
+                        }
+                        img.dessineRectangle(r,Color.Blue);*/
+                        mergePosition(lstCubTmp);
+                        if (imgContour != null && img.ImgColor != null)
+                            imgContour.Image = img.ImgColor.ToManagedImage();
+                    }
                     if (polyline !=null && polyline.Count > 0)
                     {
                         img.dessinePolyline(polyline);
@@ -487,8 +497,7 @@ namespace video
                          img.dessineRectangle(getRectCube(), Color.White);
                     imageShow = img.getNumeroImg();
 
-                    if(imgContour != null)
-                        imgContour.Image = img.getImageContour().ToManagedImage();
+                    
                     /*
                      * PointDessin p;
                      * for (int i = 0; i < LstZone.Count; i++)

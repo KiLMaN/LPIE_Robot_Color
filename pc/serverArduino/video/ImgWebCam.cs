@@ -15,7 +15,7 @@ namespace video
     {
         protected Bitmap imgReel;
         protected UnmanagedImage UnImgReel;
-        protected UnmanagedImage ImgColor;
+        public UnmanagedImage ImgColor;
         protected UnmanagedImage imgNB;
         protected UnmanagedImage imgContour;
 
@@ -66,8 +66,8 @@ namespace video
 
                 // create blob counter and configure it
                 BlobCounter blobCounter1 = new BlobCounter();
-                blobCounter1.MinWidth = 22;                    // set minimum size of
-                blobCounter1.MinHeight = 22;                   // objects we look for
+                blobCounter1.MinWidth = 10;                    // set minimum size of
+                blobCounter1.MinHeight = 10;                   // objects we look for
                 blobCounter1.FilterBlobs = true;               // filter blobs by size
                 blobCounter1.ObjectsOrder = ObjectsOrder.Size; // order found object by size
 
@@ -82,6 +82,7 @@ namespace video
                     tmp.Add(new video.VideoProg.Cub(rects[j],i));
                 }
             }
+            ImgColor = tmpCol;
             return tmp;
         }
         public List<PositionRobot> getLstRobot()
