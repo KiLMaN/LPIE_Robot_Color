@@ -146,13 +146,14 @@ namespace IA.Algo
                                         if (Math.Abs(diffOrientation(Robot, Robot.Trace)) > _differenceMaxOrientation) // Différence suppérieur de 15 degreé entre le robot et l'angle de la droite
                                         {
                                             Logger.GlobalLogger.debug("Orientation différente ");
-                                            if (Robot.LastAction != ActionRobot.ROBOT_TOURNER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(5)) // On etait pas en train de tourner ou ça fait plus de 5 secondes
+                                            if (Robot.LastAction != ActionRobot.ROBOT_TOURNER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(1)) // On etait pas en train de tourner ou ça fait plus de 5 secondes
                                             {
                                                 // Faire trouner le robot 
                                                 double angle = diffOrientation(Robot, Robot.Trace);
-                                                Logger.GlobalLogger.info("Changement d'angle : " + angle);
+                                                
                                                 if (angle > 180) // Si suppérieur a 180 ° alors tourner a gauche
                                                 {
+                                                    angle -= 180;
                                                     MessageProtocol mess = MessageBuilder.createTurnMessage(true, (byte)angle);
                                                     _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                                 }
@@ -161,6 +162,7 @@ namespace IA.Algo
                                                     MessageProtocol mess = MessageBuilder.createTurnMessage(false, (byte)angle);
                                                     _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                                 }
+                                                Logger.GlobalLogger.info("Changement d'angle : " + angle);
                                                 Robot.LastAction = ActionRobot.ROBOT_TOURNER;
                                                 Robot.LastActionTime = DateTime.Now;
                                             }
@@ -187,11 +189,11 @@ namespace IA.Algo
                                                     }
                                                 }
                                             }
-                                            if (Robot.LastAction != ActionRobot.ROBOT_DEPLACER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(10)) // On etait pas en train de se deplacer ou ça fait plus de 10 secondes
+                                            if (Robot.LastAction != ActionRobot.ROBOT_DEPLACER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(1)) // On etait pas en train de se deplacer ou ça fait plus de 10 secondes
                                             {
-                                                double distance = UtilsMath.DistanceEuclidienne(Robot.Position, Robot.Trace.Positions[0]);
-
-                                                MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)128, (byte)(distance / _ConversionUnit)); // Avancer a 50% de vitesse
+                                                double distance = UtilsMath.DistanceEuclidienne(Robot.Position, Robot.Trace.Positions[1]);
+                                                Logger.GlobalLogger.debug("Distance : " + (byte)(distance / _ConversionUnit), 5);
+                                                MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)100, (byte)(distance / _ConversionUnit)); // Avancer a 50% de vitesse
                                                 _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
 
                                                 Robot.LastAction = ActionRobot.ROBOT_DEPLACER;
