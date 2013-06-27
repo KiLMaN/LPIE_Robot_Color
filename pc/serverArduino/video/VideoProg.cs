@@ -77,7 +77,7 @@ namespace video
         public int[] col = null;
         private int paire = 0;
         private const int nbImgColorTraiter = 2;
-        private const int nbThread = 2;
+        private const int nbThread = 1;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
@@ -273,7 +273,7 @@ namespace video
                     tab.Add(true);
                 }
             }
-            
+
             // Preparation de la liste pour envoie
             if (LstCube.Count > 0)
             {
@@ -399,7 +399,7 @@ namespace video
                 {
                     Logger.GlobalLogger.error(e.Message);
                 }
-                Thread.Sleep(15);
+                Thread.Sleep(20);
             }
         }
         private void ProcessFrame(object sender, EventArgs arg)
@@ -410,14 +410,13 @@ namespace video
                 imageDebug.Image = tmp;
                 afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
             }
-                paire= (paire + 1) % 2;
+            //paire= (paire + 1) % 2;
 
         }
 
         private void afficheImage(object sender, NewFrameEventArgs eventArgs)
         {
             /* Affiche l'image recu par la WebCam */
-
             // Instancie un Thread
             if (ListeImage[lastThread] == null)
             {
@@ -488,6 +487,8 @@ namespace video
                          img.dessineRectangle(getRectCube(), Color.White);
                     imageShow = img.getNumeroImg();
 
+                    if(imgContour != null)
+                        imgContour.Image = img.getImageContour().ToManagedImage();
                     /*
                      * PointDessin p;
                      * for (int i = 0; i < LstZone.Count; i++)
@@ -540,7 +541,7 @@ namespace video
                         imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
                     }
                 }
-                Thread.Sleep(25);
+                //Thread.Sleep(25);
         }
         private void detectionColor(Object s)
         {
@@ -727,8 +728,8 @@ namespace video
             // Initialisation des threads
             for (int i = 0; i < nbThread; i++)
             {
-                ListeThread[i] = new Thread(TraitementThread);
-                ListeThread[i].Start(i);
+               ListeThread[i] = new Thread(TraitementThread);
+               ListeThread[i].Start(i);
             }
 
             // Initialisation du Thread de nettoyage

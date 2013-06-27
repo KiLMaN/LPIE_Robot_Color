@@ -194,8 +194,8 @@ namespace video
             SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
             BlobCounter blobCounter = new BlobCounter();
 
-            blobCounter.MinHeight = 25;
-            blobCounter.MinWidth = 25;
+            blobCounter.MinHeight = 23;
+            blobCounter.MinWidth = 23;
             blobCounter.FilterBlobs = true;
             blobCounter.ObjectsOrder = ObjectsOrder.Size;
 
@@ -227,13 +227,15 @@ namespace video
                     // inside on the average
                     if (diff > 20)
                     {
+                        
                         // Transformation de l'image reçu en un carré pour la reconnaissance
                         QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(corners, 60, 60);
                         UnmanagedImage glyphImage = quadrilateralTransformation.Apply(imgNB);
+                        
                         // Filtre de contraste
                         OtsuThreshold otsuThresholdFilter = new OtsuThreshold();
                         otsuThresholdFilter.ApplyInPlace(glyphImage);
-
+                        imgContour = glyphImage;
                         // Reconnaissance du Glyph
                         Glyph Gl = new Glyph(glyphImage, GlyphSize);
 
