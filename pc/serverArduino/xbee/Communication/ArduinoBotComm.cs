@@ -123,6 +123,7 @@ namespace xbee.Communication
                 }
             
             _MessageEnAttenteEnvoi.Add(mess);
+            Logger.GlobalLogger.info("Envoi du message " + mess.ToString()+ " au robot "+ this.id);
                 
         }
         public bool IsMessageAEnvoyer()

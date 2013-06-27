@@ -226,7 +226,7 @@ namespace video
                 //Logger.GlobalLogger.debug("" + ListEnvoi.Count);
                 envoieListe(ListEnvoi);
             }
-            for(int i = LstRobot.Count -1; i>=0;i++)
+            for(int i = LstRobot.Count -1; i>=0;i--)
             {
                 if (LstRobot[i].Position.X == -1)
                     LstRobot.RemoveAt(i);
