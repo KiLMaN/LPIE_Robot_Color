@@ -153,7 +153,7 @@ namespace IA.Algo
                                                 
                                                 if (angle > 180) // Si suppérieur a 180 ° alors tourner a gauche
                                                 {
-                                                    angle -= 180;
+                                                   angle =  360 - angle;
                                                     MessageProtocol mess = MessageBuilder.createTurnMessage(true, (byte)angle);
                                                     _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
                                                 }
@@ -192,7 +192,7 @@ namespace IA.Algo
                                             if (Robot.LastAction != ActionRobot.ROBOT_DEPLACER || (DateTime.Now - Robot.LastActionTime) > TimeSpan.FromSeconds(1)) // On etait pas en train de se deplacer ou ça fait plus de 10 secondes
                                             {
                                                 double distance = UtilsMath.DistanceEuclidienne(Robot.Position, Robot.Trace.Positions[1]);
-                                                Logger.GlobalLogger.debug("Distance : " + (byte)(distance / _ConversionUnit), 5);
+                                                //Logger.GlobalLogger.debug("Distance : " + (byte)(distance / _ConversionUnit), 5);
                                                 MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)100, (byte)(distance / _ConversionUnit)); // Avancer a 50% de vitesse
                                                 _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
 
