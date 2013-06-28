@@ -65,11 +65,12 @@ namespace utils
         {
             try
             {
-                _Fichier = new StreamWriter("log/" + LogFile, true);
+                if(_Fichier == null)
+                    _Fichier = new StreamWriter("log/" + LogFile, true);
                 string format = "G";
                 Message = DateTime.Now.ToString(format) + " : " + Message;
                 _Fichier.Write(Message + "\r\n");
-                _Fichier.Close();
+                
 
             }
             catch (Exception) { }
