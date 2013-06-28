@@ -75,7 +75,6 @@ namespace video
         private double[] ratioCmParPixel;
 
         public int[] col = null;
-        private int paire = 0;
         private const int nbImgColorTraiter = 2;
         private const int nbThread = 1;
         private int lastThread = 0;
@@ -399,28 +398,24 @@ namespace video
                 {
                     Logger.GlobalLogger.error(e.Message);
                 }
-                Thread.Sleep(20);
+                Thread.Sleep(10);
             }
         }
         private void ProcessFrame(object sender, EventArgs arg)
         {
-            if (paire == 0)
-            {
-                Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
-                imageDebug.Image = tmp;
-                afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
-            }
-            //paire= (paire + 1) % 2;
-
+            Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
+            //imageDebug.Image = tmp;
+            afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()),tmp);
         }
 
-        private void afficheImage(object sender, NewFrameEventArgs eventArgs)
+        private void afficheImage(object sender, NewFrameEventArgs eventArgs,Image<Emgu.CV.Structure.Bgr,Byte> e)
         {
             /* Affiche l'image recu par la WebCam */
             // Instancie un Thread
             if (ListeImage[lastThread] == null)
             {
-                ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
+                ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph, new IntPtr(),e);
+                //ListeImage[lastThread].imgRecu = e;
                 lastThread++;
                 lastThread %= nbThread;
             }
@@ -443,17 +438,30 @@ namespace video
         public void imgTraitment(ImgWebCam img)
         {
             /* Homographie du terrain et detection contours */
+            System.DateTime milisss = System.DateTime.Now;
+           
+
+            String s = "Homographie = ";
             if (imageShow % nbImgColorTraiter == 0 && LstHslFiltering.Count > 0)
                 img.homographie(LimiteTerrain, true);
             else
                 img.homographie(LimiteTerrain, false);
+             System.DateTime no = System.DateTime.Now;
+             s += (no - milisss).Milliseconds;
+             no = System.DateTime.Now;
             
             if (col !=null)
                 addcouleur(img.getUnImgReel().ToManagedImage());
             
-            img.ColeurVersNB();
+           // img.ColeurVersNB();
+            s += "Detection contour = ";
+            no = System.DateTime.Now;
             img.DetectionContour((short)numericUpDown1.Value);
+            s += (DateTime.Now - no).Milliseconds ;
+           // Logger.GlobalLogger.info("Duree Execution:   " + s);
 
+           
+            
             /* Reconnaissance des glyphs et taille du terrain si besoin */
             if (imageShow < img.getNumeroImg() && (ratioCmParPixel[0] == 1 || ratioCmParPixel[1] == 1))
             {
@@ -470,34 +478,41 @@ namespace video
             {
                 img.detectionGlyph(false);
             }
-            
+            //if (imgContour != null)
+             //   imgReel.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), imgContour);
+
             /* Merge des positions et dessin sur les lignes */
             if (imageShow < img.getNumeroImg())
+            {
+                mergePosition(img.getLstRobot());
+                if (imageShow % nbImgColorTraiter == 0)
                 {
-                    mergePosition(img.getLstRobot());
-                    if (imageShow % nbImgColorTraiter == 0)
+                    List<Cub> lstCubTmp = img.getImageColor(LstHslFiltering);
+                    /*List<Rectangle> r = new List<Rectangle>();
+                    foreach(Cub t in lstCubTmp)
                     {
-                        List<Cub> lstCubTmp = img.getImageColor(LstHslFiltering);
-                        /*List<Rectangle> r = new List<Rectangle>();
-                        foreach(Cub t in lstCubTmp)
-                        {
-                            r.Add(t.rec);
-                        }
-                        img.dessineRectangle(r,Color.Blue);*/
-                        mergePosition(lstCubTmp);
-                        if (imgContour != null && img.ImgColor != null)
-                            imgContour.Image = img.ImgColor.ToManagedImage();
+                        r.Add(t.rec);
                     }
-                    if (polyline !=null && polyline.Count > 0)
-                    {
-                        img.dessinePolyline(polyline);
-                    }
+                         
+                    img.dessineRectangle(r,Color.Blue);
+                        */
+                    mergePosition(lstCubTmp);
+                    if (imgContour != null && img.ImgColor != null)
+                        imgContour.Image = img.ImgColor.ToManagedImage();
+                }
+                if (polyline !=null && polyline.Count > 0)
+                {
+                    img.dessinePolyline(polyline);
+                }
                     
-                    if(LstCube.Count > 0 )
-                         img.dessineRectangle(getRectCube(), Color.White);
-                    imageShow = img.getNumeroImg();
+                if(LstCube.Count > 0 )
+                        img.dessineRectangle(getRectCube(), Color.White);
+                imageShow = img.getNumeroImg();
 
-                    
+                if (imgReel != null)
+                {
+                    imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
+                }
                     /*
                      * PointDessin p;
                      * for (int i = 0; i < LstZone.Count; i++)
@@ -545,10 +560,7 @@ namespace video
                         ThreadColor.Start(img);
                     }
                     */
-                    if (imgReel != null)
-                    {
-                        imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
-                    }
+                    
                 }
                 //Thread.Sleep(25);
         }

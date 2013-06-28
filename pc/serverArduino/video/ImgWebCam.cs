@@ -8,17 +8,20 @@ using AForge;
 using AForge.Math.Geometry;
 using utils.Events;
 using utils;
-
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
 namespace video
 {
     public class ImgWebCam
     {
+        protected IntPtr homography;
         protected Bitmap imgReel;
         protected UnmanagedImage UnImgReel;
         public UnmanagedImage ImgColor;
         protected UnmanagedImage imgNB;
         protected UnmanagedImage imgContour;
-
+        public Image<Bgr, Byte> imgRecu;
         protected ulong numeroImage;
         private List<PositionRobot> LstRbt = new List<PositionRobot>();
         protected bool[] AutAffichage = new bool[] { true, true, true }; // ContourGlyph, CentreGlyph, PositionPince
@@ -26,11 +29,13 @@ namespace video
         private int GlyphSize;
 
         #region #### Constructeurs / Acceseur / Muttateur ####
-        public ImgWebCam(Bitmap image, ulong noImage, int Size)
+        public ImgWebCam(Bitmap image, ulong noImage, int Size, IntPtr Homography,Image<Bgr,Byte> im)
         {
             this.imgReel = image;
             this.GlyphSize = Size;
             this.numeroImage = noImage;
+            this.homography = Homography;
+            this.imgRecu = im;
         }
         private void setter(Bitmap image, ulong noImage)
         {
@@ -151,19 +156,57 @@ namespace video
         #region ##### Traitement image #####
         public void homographie(List<IntPoint> LimiteTerain, bool imgCol)
         {
-            UnImgReel = UnmanagedImage.FromManagedImage(imgReel);
             
-            /* Remplacement de l'image par le terain détecte dedans */
+           /* AFORGE => OK Mais long
+            * UnImgReel = UnmanagedImage.FromManagedImage(imgReel);
+            
+            // Remplacement de l'image par le terain détecte dedans 
             if (LimiteTerain.Count == 4)
             {
                 QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(LimiteTerain, UnImgReel.Width, UnImgReel.Height);
                 UnImgReel = quadrilateralTransformation.Apply(UnImgReel);
             }
+            */
+
+            if (LimiteTerain.Count == 4)
+            {
+                int wid = max(LimiteTerain[0].X,LimiteTerain[1].X,LimiteTerain[2].X,LimiteTerain[3].X) - min(LimiteTerain[0].X,LimiteTerain[1].X,LimiteTerain[2].X,LimiteTerain[3].X);
+                int hei = max(LimiteTerain[0].Y,LimiteTerain[1].Y,LimiteTerain[2].Y,LimiteTerain[3].Y) - min(LimiteTerain[0].Y,LimiteTerain[1].Y,LimiteTerain[2].Y,LimiteTerain[3].Y);
+
+                Image<Bgr, Byte> a = new Image<Bgr, byte>(wid, hei);
+                PointF[] pts1 = new PointF[4];
+                PointF[] pts2 = new PointF[4];
+
+                pts1[0] = new PointF(0,0);
+                pts1[1] = new PointF(wid, 0);
+                pts1[3] = new PointF(wid, hei);
+                pts1[2] = new PointF(0, hei);
+
+                pts2[0] = new PointF(LimiteTerain[0].X, LimiteTerain[0].Y);
+                pts2[1] = new PointF(LimiteTerain[1].X, LimiteTerain[1].Y);
+                pts2[3] = new PointF(LimiteTerain[2].X, LimiteTerain[2].Y);
+                pts2[2] = new PointF(LimiteTerain[3].X, LimiteTerain[3].Y);
+                
+                homography = CameraCalibration.GetPerspectiveTransform(pts2, pts1);
+                MCvScalar s = new MCvScalar(0, 0, 0);
+
+                //CvInvoke.cvFindHomography(matSource, matDest, homography, Emgu.CV.CvEnum.HOMOGRAPHY_METHOD.DEFAULT, 3.0, maskMat);
+                CvInvoke.cvWarpPerspective(imgRecu, a, homography, (int)Emgu.CV.CvEnum.INTER.CV_INTER_NN, s);
+                // CvInvoke.cvWarpAffine(imgRecu, a, homography, (int)Emgu.CV.CvEnum.INTER.CV_INTER_NN, s);
+          
+                imgRecu = a;
+                UnImgReel = UnmanagedImage.FromManagedImage(a.ToBitmap());
+            }
+            else
+                UnImgReel = UnmanagedImage.FromManagedImage(imgReel);
+
+            
             if( imgCol )
                 ImgColor = UnImgReel.Clone();
         }
         public void ColeurVersNB()
         {
+            /* Deprecated trop longue */
             /* Convertie l'image en noir et blanc */
 
             UnmanagedImage image = UnmanagedImage.Create(UnImgReel.Width, UnImgReel.Height,
@@ -175,7 +218,7 @@ namespace video
         public void DetectionContour(int sueil)
         {
             /* Detecte les contours de l'image depuis l'image noir et blanc */
-
+            /* VERSION AFORGE => LONGUE
             // 2 - Edge detection
             DifferenceEdgeDetector edgeDetector = new DifferenceEdgeDetector();
             imgContour = edgeDetector.Apply(imgNB);
@@ -184,6 +227,13 @@ namespace video
             Threshold thresholdFilterGlyph = new Threshold(sueil);
 
             thresholdFilterGlyph.ApplyInPlace(imgContour);
+             * */
+
+            Image<Gray, Byte> graySoft = imgRecu.Convert<Gray, Byte>();
+            imgNB = UnmanagedImage.FromManagedImage(graySoft.ToBitmap());
+
+            Image<Gray, Byte> cannyEdges = graySoft.Canny(new Gray(sueil), new Gray(149));
+            imgContour = UnmanagedImage.FromManagedImage(cannyEdges.ToBitmap());
         }
         #endregion
 
@@ -194,7 +244,7 @@ namespace video
             double[] ratio = new double[2] { 0, 0 };
             SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
             BlobCounter blobCounter = new BlobCounter();
-
+            
             blobCounter.MinHeight = 23;
             blobCounter.MinWidth = 23;
             blobCounter.FilterBlobs = true;
@@ -203,7 +253,7 @@ namespace video
             // 4 - find all stand alone blobs
             blobCounter.ProcessImage(imgContour);
             Blob[] blobs = blobCounter.GetObjectsInformation();
-            
+
             // 5 - check each blob
             for (int i = 0, n = blobs.Length; i < n; i++)
             {
@@ -223,12 +273,10 @@ namespace video
                     // calculate average difference between pixel values from outside of the
                     // shape and from inside
                     float diff = CalculateAverageEdgesBrightnessDifference(leftEdgePoints, rightEdgePoints, imgNB);
-
                     // check average difference, which tells how much outside is lighter than
                     // inside on the average
                     if (diff > 20)
                     {
-                        
                         // Transformation de l'image reçu en un carré pour la reconnaissance
                         QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation(corners, 60, 60);
                         UnmanagedImage glyphImage = quadrilateralTransformation.Apply(imgNB);
@@ -273,9 +321,6 @@ namespace video
 
                             // Calcul d'un point en bout de pince
                             float Taille = corners[0].DistanceTo(corners[1]);
-                           /* Taille[1] = corners[1].DistanceTo(corners[2]);
-                            Taille[2] = corners[2].DistanceTo(corners[3]);
-                            Taille[3] = corners[3].DistanceTo(corners[0]); */
                             
                             float taille = (Taille / BibliotequeGlyph.Biblioteque[Gl.getPosition()].taille) * BibliotequeGlyph.Biblioteque[Gl.getPosition()].DistancePince;
                             int x = -(int)(System.Math.Sin(rotation) * taille);
