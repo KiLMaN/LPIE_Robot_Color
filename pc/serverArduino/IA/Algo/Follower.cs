@@ -22,7 +22,7 @@ namespace IA.Algo
         private const int _RadiusNextItineraire = 5 * _ConversionUnit; // 1 cm
 
         // Seuil pour le passage en autonome et la depose
-        private const int _seuilProximiteObjectif = 15 * _ConversionUnit; // 30 cm
+        private const int _seuilProximiteObjectif = 30 * _ConversionUnit; // 30 cm
 
         // seuil pour la detection de proximité d'un autre robot
         private const int _seuilProximiteRobot = 20 * _ConversionUnit;
@@ -192,7 +192,7 @@ namespace IA.Algo
                                             {
                                                 double distance = UtilsMath.DistanceEuclidienne(Robot.Position, Robot.Trace.Positions[1]);
                                                 //Logger.GlobalLogger.debug("Distance : " + (byte)(distance / _ConversionUnit), 5);
-                                                MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)70, (byte)(distance / _ConversionUnit)); // Avancer a 50% de vitesse
+                                                MessageProtocol mess = MessageBuilder.createMoveMessage(true, (byte)100, (byte)(distance / _ConversionUnit)); // Avancer a 50% de vitesse
                                                 _AutomateComm.PushSendMessageToArduino(mess, RobotComm);
 
                                                 Robot.LastAction = ActionRobot.ROBOT_DEPLACER;
@@ -353,9 +353,7 @@ namespace IA.Algo
                     int index = _ListArduino.IndexOf(Robot);
                     if (p.Position.X == -1 || p.Position.Y == -1)
                     {
-
-                        _ListArduino[index].PositionValide = false;
-                        //_ListArduino.RemoveAt(index);
+                        _ListArduino.RemoveAt(index);
                     }
                     else
                     {
@@ -424,20 +422,6 @@ namespace IA.Algo
             switch (e.Message.headerMess)
             {
                 case (byte)EMBtoPCmessHeads.ASK_CONN :
-                    Rob.LastAction = ActionRobot.ROBOT_ARRET;
-                    Rob.Saisie = false;
-
-                    if (Rob.Cube != null)
-                    {
-                        Rob.Cube.Robot = null;
-                        Rob.Cube.Done = false;
-                    }
-                    
-                    Rob.SetZoneDepose(null);
-                    Rob.SetObjectif(null);
-
-                    Rob.SetTrace(null);
-                    
                     // Rien de spécial sur la demande de connexion
                     break;
                 case (byte)EMBtoPCmessHeads.AUTO_MODE_OFF:

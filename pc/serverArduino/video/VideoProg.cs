@@ -187,6 +187,8 @@ namespace video
         /* Fonction Robot */
         private void mergePosition(List<PositionRobot> LstTmp)
         {
+            if (LstTmp.Count == 0)
+                return;
             List<PositionRobot> ListEnvoi = new List<PositionRobot>();
             for (int i = 0; i < LstTmp.Count; i++)
             {
@@ -217,20 +219,16 @@ namespace video
                     LstRobot.Add(tmp);
                 }
             }
-            for (int i = LstRobot.Count - 1; i >= 0; i--)
-            {
-                if (LstRobot[i].Position.X == -1 || LstRobot[i].Position.Y == -1)
-                {
-                    ListEnvoi.Add(LstRobot[i]);
-                    LstRobot.RemoveAt(i);
-                }
-            }
             if (ListEnvoi.Count > 0)
             {
                 //Logger.GlobalLogger.debug("" + ListEnvoi.Count);
                 envoieListe(ListEnvoi);
             }
-            
+            for(int i = LstRobot.Count -1; i>=0;i--)
+            {
+                if (LstRobot[i].Position.X == -1)
+                    LstRobot.RemoveAt(i);
+            }
         }
         /* fonction cubes */
         private void mergePosition(List<Cub> lst)
