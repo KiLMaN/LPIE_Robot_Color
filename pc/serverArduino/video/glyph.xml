@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <content>
 	<glyph>
-		<id>1</id>
+		<id>3</id>
 		<type>1</type>
     <taille>64</taille>
     <distancePince>260</distancePince>
@@ -12,7 +12,7 @@
 		</lignes>
 	</glyph>
 	<glyph>
-		<id>3</id>
+		<id>1</id>
 		<type>1</type>
     <taille>64</taille>
     <distancePince>260</distancePince>
@@ -29,8 +29,8 @@
     <distancePince>260</distancePince>
 		<lignes> 
 			<ligne>010</ligne>
+			<ligne>101</ligne>
 			<ligne>001</ligne>
-			<ligne>110</ligne>
 		</lignes>
 	</glyph>
 </content>

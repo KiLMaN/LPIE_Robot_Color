@@ -15,22 +15,22 @@ namespace xbee.Communication
             set { _src = src; }
         }
 
-        static public MessageProtocol createMoveMessage(bool Sens,byte vitesse,byte distance)
+        static public MessageProtocol createMoveMessage(bool bAvant,byte vitesse,byte distance)
         {
             PCtoEMBMessageMove Message = new PCtoEMBMessageMove();
             Message.headerMess = (byte)PCtoEMBmessHeads.MOVE;
-            Message.sens = (byte)((Sens) ? 0x00 : 0x01);
+            Message.sens = (byte)((bAvant) ? 0x00 : 0x01);
             Message.speed = vitesse;
             Message.distance = distance;
 
             return Message;
         }
 
-        static public MessageProtocol createTurnMessage(bool Sens, byte angle)
+        static public MessageProtocol createTurnMessage(bool bGauche, byte angle)
         {
             PCtoEMBMessageTurn Message = new PCtoEMBMessageTurn();
             Message.headerMess = (byte)PCtoEMBmessHeads.TURN;
-            Message.direction = (byte)((Sens) ? 0x00 : 0x01);
+            Message.direction = (byte)((bGauche) ? 0x00 : 0x01);
             Message.angle = angle;
 
             return Message;

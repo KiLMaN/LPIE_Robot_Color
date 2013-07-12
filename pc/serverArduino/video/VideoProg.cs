@@ -69,16 +69,14 @@ namespace video
         public static int tailleGlyph = 5;
         private FilterInfoCollection VideoCaptureDevices;
 
-        //private VideoCaptureDevice FinalVideo = null;
-
         private ulong nbImageCapture = 0;
         private ulong imageShow = 0;
         private int lastIdCube = 0;
         private double[] ratioCmParPixel;
 
         public int[] col = null;
-        private int paire = 0;
-        private const int nbThread = 2;
+        private const int nbImgColorTraiter = 2;
+        private const int nbThread = 1;
         private int lastThread = 0;
         private Thread[] ListeThread = new Thread[nbThread];
         private ImgWebCam[] ListeImage = new ImgWebCam[nbThread];
@@ -226,7 +224,7 @@ namespace video
                 //Logger.GlobalLogger.debug("" + ListEnvoi.Count);
                 envoieListe(ListEnvoi);
             }
-            for(int i = LstRobot.Count -1; i>=0;i++)
+            for(int i = LstRobot.Count -1; i>=0;i--)
             {
                 if (LstRobot[i].Position.X == -1)
                     LstRobot.RemoveAt(i);
@@ -235,9 +233,6 @@ namespace video
         /* fonction cubes */
         private void mergePosition(List<Cub> lst)
         {
-            if (lst.Count == 0)
-                return;
-            
             List<bool> tab = new List<bool>();
             for (int i = 0; i < LstCube.Count; i++)
                 tab.Add(false);
@@ -277,7 +272,7 @@ namespace video
                     tab.Add(true);
                 }
             }
-            
+
             // Preparation de la liste pour envoie
             if (LstCube.Count > 0)
             {
@@ -303,8 +298,6 @@ namespace video
                         po.Position.X = (int)(milieu.X * ratioCmParPixel[0]);
                         po.Position.Y = (int)(milieu.Y * ratioCmParPixel[1]);
                     }
-                    
-                    
                     lstpos.Add(po);
                 }
                 envoieListe(lstpos);
@@ -410,23 +403,19 @@ namespace video
         }
         private void ProcessFrame(object sender, EventArgs arg)
         {
-                Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
-                imageDebug.Image = tmp ;
-                if(paire == 0)
-                    afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()));
-                paire= (paire + 1) % 2;
-
+            Image<Emgu.CV.Structure.Bgr, Byte> tmp = _capture.RetrieveBgrFrame();
+            //imageDebug.Image = tmp;
+            afficheImage(this, new NewFrameEventArgs(tmp.ToBitmap()),tmp);
         }
 
-
-        private void afficheImage(object sender, NewFrameEventArgs eventArgs)
+        private void afficheImage(object sender, NewFrameEventArgs eventArgs,Image<Emgu.CV.Structure.Bgr,Byte> e)
         {
             /* Affiche l'image recu par la WebCam */
-
             // Instancie un Thread
             if (ListeImage[lastThread] == null)
             {
-                ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph);
+                ListeImage[lastThread] = new ImgWebCam((Bitmap)eventArgs.Frame.Clone(), nbImageCapture, tailleGlyph, new IntPtr(),e);
+                //ListeImage[lastThread].imgRecu = e;
                 lastThread++;
                 lastThread %= nbThread;
             }
@@ -448,15 +437,33 @@ namespace video
         public delegate void TraitementImg(ImgWebCam img);
         public void imgTraitment(ImgWebCam img)
         {
-            img.homographie(LimiteTerrain);
-            if (col !=null)
-            {
-                addcouleur(img.getUnImgReel().ToManagedImage());
-            }
-            img.ColeurVersNB();
-            img.DetectionContour((short)numericUpDown1.Value);
+            /* Homographie du terrain et detection contours */
+            System.DateTime milisss = System.DateTime.Now;
+           
 
-            if (ratioCmParPixel[0] == 1 || ratioCmParPixel[1] == 1)
+            String s = "Homographie = ";
+            if (imageShow % nbImgColorTraiter == 0 && LstHslFiltering.Count > 0)
+                img.homographie(LimiteTerrain, true);
+            else
+                img.homographie(LimiteTerrain, false);
+             System.DateTime no = System.DateTime.Now;
+             s += (no - milisss).Milliseconds;
+             no = System.DateTime.Now;
+            
+            if (col !=null)
+                addcouleur(img.getUnImgReel().ToManagedImage());
+            
+           // img.ColeurVersNB();
+            s += "Detection contour = ";
+            no = System.DateTime.Now;
+            img.DetectionContour((short)numericUpDown1.Value);
+            s += (DateTime.Now - no).Milliseconds ;
+           // Logger.GlobalLogger.info("Duree Execution:   " + s);
+
+           
+            
+            /* Reconnaissance des glyphs et taille du terrain si besoin */
+            if (imageShow < img.getNumeroImg() && (ratioCmParPixel[0] == 1 || ratioCmParPixel[1] == 1))
             {
                 double[] tmp = img.detectionGlyph(true);
                 if (tmp != null)
@@ -467,25 +474,45 @@ namespace video
                     Logger.GlobalLogger.info("Taille terrain : " + TailleTerain[0] + " x " + TailleTerain[1] + " cm");
                 }
             }
-            else
+            else if ( imageShow < img.getNumeroImg())
             {
                 img.detectionGlyph(false);
             }
-                if (imageShow < img.getNumeroImg())
-                {
-                    mergePosition(img.getLstRobot());
-                    if (imageShow % 3 == 0)
-                        mergePosition(img.getImageColor(LstHslFiltering));
-                    if (polyline !=null && polyline.Count > 0)
-                    {
-                        img.dessinePolyline(polyline);
-                    }
-                    //TODO: SUPPRIMER LA FONCTION
-                    
-                    if(LstCube.Count > 0 )
-                         img.dessineRectangle(getRectCube(), Color.White);
-                    imageShow = img.getNumeroImg();
+            //if (imgContour != null)
+             //   imgReel.Invoke((affichageImg)imgAffiche, img.getImageContour().ToManagedImage(), imgContour);
 
+            /* Merge des positions et dessin sur les lignes */
+            if (imageShow < img.getNumeroImg())
+            {
+                mergePosition(img.getLstRobot());
+                if (imageShow % nbImgColorTraiter == 0)
+                {
+                    List<Cub> lstCubTmp = img.getImageColor(LstHslFiltering);
+                    /*List<Rectangle> r = new List<Rectangle>();
+                    foreach(Cub t in lstCubTmp)
+                    {
+                        r.Add(t.rec);
+                    }
+                         
+                    img.dessineRectangle(r,Color.Blue);
+                        */
+                    mergePosition(lstCubTmp);
+                    if (imgContour != null && img.ImgColor != null)
+                        imgContour.Image = img.ImgColor.ToManagedImage();
+                }
+                if (polyline !=null && polyline.Count > 0)
+                {
+                    img.dessinePolyline(polyline);
+                }
+                    
+                if(LstCube.Count > 0 )
+                        img.dessineRectangle(getRectCube(), Color.White);
+                imageShow = img.getNumeroImg();
+
+                if (imgReel != null)
+                {
+                    imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
+                }
                     /*
                      * PointDessin p;
                      * for (int i = 0; i < LstZone.Count; i++)
@@ -533,17 +560,14 @@ namespace video
                         ThreadColor.Start(img);
                     }
                     */
-                    if (imgReel != null)
-                    {
-                        imgReel.Invoke((affichageImg)imgAffiche, img.getUnImgReel().ToManagedImage(), imgReel);
-                    }
+                    
                 }
-                Thread.Sleep(25);
+                //Thread.Sleep(25);
         }
         private void detectionColor(Object s)
         {
             //TODO: REACTIVER FONCTION
-            mergePosition(((ImgWebCam)s).getImageColor(LstHslFiltering));
+            //mergePosition(((ImgWebCam)s).getImageColor(LstHslFiltering));
             
         }
         public delegate void affichageImg(Bitmap img, PictureBox box);
@@ -573,7 +597,6 @@ namespace video
                     ratioCmParPixel[0] = 1;
                     ratioCmParPixel[1] = 1;
                 }
-                
             }
             else
             {
@@ -673,10 +696,8 @@ namespace video
         }
         public void addcouleur(Bitmap bm)
         {
-            //col = new int[] {5};
             if (LstZone.Count == 0 || LstZone[LstZone.Count - 1].ID != -1 && col !=null)
             {
-                //col = new int[] {5};
                 int w_i = bm.Width;
                 int h_i = bm.Height;
                 int w_c = imgReel.Width;
@@ -712,8 +733,6 @@ namespace video
                 ZoneTmp.ID = -1;
                 LstZone.Add(ZoneTmp);
                 MessageBox.Show("Ajouter une zone de dépose avec le click milieu");
-
-                
             }
         }
         public void openVideoFlux(int indexCam, int IndexResolution)
@@ -730,8 +749,8 @@ namespace video
             // Initialisation des threads
             for (int i = 0; i < nbThread; i++)
             {
-                ListeThread[i] = new Thread(TraitementThread);
-                ListeThread[i].Start(i);
+               ListeThread[i] = new Thread(TraitementThread);
+               ListeThread[i].Start(i);
             }
 
             // Initialisation du Thread de nettoyage
