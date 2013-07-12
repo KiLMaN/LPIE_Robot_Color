@@ -14,33 +14,38 @@ unsigned long timeCmdWeelsCheck;
 unsigned long timeCmdWeelsCompare;
 unsigned long timeCmdTurnWeelsCheck;
 unsigned long timeCmdTurnWeelsCompare;
-
-boolean uniquePass;
 //***********************************************
+
+int USCaptPin = 12;
+//pin 12 pour l'ultrason  ref : 
+
 
 //************ GLOBALS COMM BYTES ***************
 byte src = 0x03; //Id ROBOT (ref num on XBEE)
 byte dst = 0xFE; //Id IA
+byte ir_id = 0x01;
+byte us_id = 0x02;
+byte dataObstDetec[] = {0x70};
+
 word lastRecvTramNum; 
 byte highWordByte;
 byte lowWordByte;
 TrameProtocole *trameAckCmd;
 TrameProtocole *trameAckPing;
-byte dataAckPing[1] = {
-  0x22}; //réponse de ping
-byte dataCommAsk[] = {
-  0x12}; //demande connexion
+byte dataAckPing[] = {0x22}; //réponse de ping
+byte dataCommAsk[] = {0x12}; //demande connexion
 word num = 0x0001; 
-//byte data[4];
 //***********************************************
 
 //*********** GLOBALS COMMAND WORDS *************
 boolean CLAWCLOSE = false;
 boolean CLAWOPEN = false;
-boolean GOTOWARD = false;
 boolean GOFORWARD = false;
+boolean GOBACKWARD = false;
 boolean TURNTOLEFT = false;
 boolean TURNTORIGHT = false;
+boolean AUTOSTATE = false;
+
 byte angleRate;
 byte speedRate;
 byte lenghtRate;
@@ -61,16 +66,12 @@ unsigned long timeCompare;
 unsigned long timeRollCheck;
 unsigned long timeRollCompare;
 
-
-
-
 boolean bolien = false;
 
 
 void setup()
 {
   //********** setup command weels *********
-  
   pinMode(STBY, OUTPUT);
   pinMode(PWMA, OUTPUT);
   pinMode(AIN1, OUTPUT);
@@ -96,9 +97,26 @@ void setup()
   //*****************************************  
 }
 
+
+
 void loop()
 {
 
+  /*
+  //à chaque entrée zde boucle on jete un oeil aux alentours (droit devant) pour verifier si il y a présence d'obstable
+  //si oui, envoi 0x70  à l'IA
+  int distanceObstacle = distanceMesuree();
+  if(distanceObstacle < distanceminimale)
+  {
+    TrameProtocole *trameObstacleDetected = MakeTrame(src,dst, num, dataObstDetec, sizeof(dataObstDetec));
+    SendTrame(*trameObstacleDetected);
+  }
+  
+  
+  
+  */
+  
+  
   /*timeCompare= millis();//take time
    if((timeCompare-timeCheck)>=1000)
    {
@@ -117,7 +135,7 @@ void loop()
 
 
 
-  //TrameProtocole * trame = getTrame();
+  
   digitalWrite(13,LOW);
   TrameProtocole * trame = getTrame();
   if(trame != NULL) // Nouvelle trame reçue
@@ -134,8 +152,7 @@ void loop()
       lastRecvTramNum = trame->num; 
       highWordByte =(lastRecvTramNum >> 8)& 0xFF;
       lowWordByte = lastRecvTramNum & 0xFF;
-      byte dataAckCmd[] = {
-        0x41,highWordByte,lowWordByte,0x01      };
+      byte dataAckCmd[] = {0x41,highWordByte,lowWordByte,0x01};
       //******************************************************************
       timeRollCheck=millis();
       //SendTrame(*trame);
@@ -151,15 +168,15 @@ void loop()
         //----------------------------------------------//
         //        0x61 = fermer     0x62 = ouvrir       //
         //**********************************************//  
-      case 0x61: /*pas utilisé car géré dans le mode autonome*/
+      case 0x61: /*pas utilisé car géré dans le mode autonome*//*fermeture pince et levée du bras*/
 
         CLAWCLOSE = true;
         CLAWOPEN = false;
-        GOTOWARD = false;
         GOFORWARD = false;
+        GOBACKWARD = false;
         TURNTOLEFT = false;
         TURNTORIGHT = false;
-
+        AUTOSTATE = false;
         /* acquitement de la commande*/
         trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
         SendTrame(*trameAckCmd);
@@ -168,11 +185,11 @@ void loop()
       case 0x62: //abaissement du bras et ouverture de la pince 
         CLAWCLOSE = false;
         CLAWOPEN = true;
-        GOTOWARD = false;
         GOFORWARD = false;
+        GOBACKWARD = false;
         TURNTOLEFT = false;
         TURNTORIGHT = false;
-
+        AUTOSTATE = false;
         /* acquitement de la commande*/
         trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
         SendTrame(*trameAckCmd);
@@ -193,12 +210,13 @@ void loop()
         {
           CLAWCLOSE = false;
           CLAWOPEN = false;
-          GOTOWARD = false;
           GOFORWARD = false;
+          GOBACKWARD = false;
           TURNTOLEFT = true;
           TURNTORIGHT = false;
+          AUTOSTATE = false;
           angleRate = trame->data[2];
-timeCmdTurnWeelsCheck = millis();
+          timeCmdTurnWeelsCheck = millis();
 
 
           /* acquitement de la commande*/
@@ -209,12 +227,14 @@ timeCmdTurnWeelsCheck = millis();
         {
           CLAWCLOSE = false;
           CLAWOPEN = false;
-          GOTOWARD = false;
           GOFORWARD = false;
+          GOBACKWARD = false;
           TURNTOLEFT = false;
           TURNTORIGHT = true;
+          AUTOSTATE = false;
           angleRate = trame->data[2];
-timeCmdTurnWeelsCheck = millis();
+          timeCmdTurnWeelsCheck = millis();
+          
           /* acquitement de la commande*/
           trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
           SendTrame(*trameAckCmd);
@@ -225,14 +245,15 @@ timeCmdTurnWeelsCheck = millis();
         {
           CLAWCLOSE = false;
           CLAWOPEN = false;
-          GOTOWARD = true;
-          GOFORWARD = false;
+          GOFORWARD = true;
+          GOBACKWARD = false;
           TURNTOLEFT = false;
           TURNTORIGHT = false;
+          AUTOSTATE = false;
           speedRate = trame->data[2];
           lenghtRate = trame->data[3];
-timeCmdWeelsCheck = millis();
-uniquePass=true;
+          timeCmdWeelsCheck = millis();
+    
           /* acquitement de la commande*/
           trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
           SendTrame(*trameAckCmd);
@@ -241,14 +262,15 @@ uniquePass=true;
         {
           CLAWCLOSE = false;
           CLAWOPEN = false;
-          GOTOWARD = false;
-          GOFORWARD = true;
+          GOFORWARD = false;
+          GOBACKWARD = true;
           TURNTOLEFT = false;
           TURNTORIGHT = false;
+          AUTOSTATE = false;
           speedRate = trame->data[2];
           lenghtRate = trame->data[3];
-timeCmdWeelsCheck = millis();
-uniquePass=true;
+          timeCmdWeelsCheck = millis();
+          
           /* acquitement de la commande*/
           trameAckCmd = MakeTrame(src,dst, lastRecvTramNum, dataAckCmd,sizeof(dataAckCmd));
           SendTrame(*trameAckCmd);
@@ -281,7 +303,7 @@ uniquePass=true;
         }
         else if(trame->data[1]==0x02)
         {
-
+          //réponse capteur US
         } 
         break;
 
@@ -304,15 +326,34 @@ uniquePass=true;
           SendTrame(*trameAskConnection);
         }
         break;
-
+        
+        //**********************************************//
+        //            Passage mode autonome             //
+        //----------------------------------------------//
+        // 0x71 = Passage mode autonome                 //
+        //                                              //
+        //                                              //
+        //**********************************************//
+      case 0x71:
+        CLAWCLOSE = false;
+        CLAWOPEN = false;
+        GOFORWARD = false;
+        GOBACKWARD = false;
+        TURNTOLEFT = false;
+        TURNTORIGHT = false;
+        AUTOSTATE = true;
+        break;   
       }
     }
-
-
   }
-  
 
-      
+  if(AUTOSTATE)
+  {
+    //implémenter braitenberg
+    
+    
+  }
+
   if(CLAWOPEN)
   {
     clawServo.write(0);
@@ -325,102 +366,87 @@ uniquePass=true;
     delay(100);
   }
 
-  if(GOTOWARD)
+  if(GOFORWARD)
   {
-    
-    /*timeRate=(lenghtRate*1000)/14;*/
-    timeRate=(70*1000)/14;
+    timeRate=((long)lenghtRate*1000)/25;
     timeCmdWeelsCompare = millis();
-    if((timeCmdWeelsCompare-timeCmdWeelsCheck)<timeRate)//remplacer 10000 par timerate
+    if((timeCmdWeelsCompare-timeCmdWeelsCheck)<timeRate)
     {
-      //uniquePass=false;
       digitalWrite(STBY,HIGH);
       digitalWrite(AIN1,LOW);
       digitalWrite(AIN2,HIGH);
       analogWrite(PWMA,speedRate);
       digitalWrite(BIN1,LOW);
       digitalWrite(BIN2,HIGH);
-      analogWrite(PWMB,speedRate+15);
-      
+      analogWrite(PWMB,speedRate+10);
     }
-    else //if(timeCmdWeelsCompare-timeCmdWeelsCheck>=10000)
+    else 
     {
-      
       digitalWrite(STBY,LOW);
     }
   }
 
-  if(GOFORWARD)
+  if(GOBACKWARD)
   {
-     /*timeRate=(lenghtRate*1000)/14;*/
-    timeRate=(70*1000)/14;
+    timeRate=((long)lenghtRate*1000)/25;
     timeCmdWeelsCompare = millis();
-    if((timeCmdWeelsCompare-timeCmdWeelsCheck)<timeRate) //remplacer 10000 par timerate
+    if((timeCmdWeelsCompare-timeCmdWeelsCheck)<timeRate) 
     {
-      //uniquePass=false;
       digitalWrite(STBY,HIGH);
       digitalWrite(AIN1,HIGH);
       digitalWrite(AIN2,LOW);
       analogWrite(PWMA,speedRate);
       digitalWrite(BIN1,HIGH);
       digitalWrite(BIN2,LOW);
-      analogWrite(PWMB,speedRate+15);
-   }
-    else //if((timeCmdWeelsCompare-timeCmdWeelsCheck)>=10000)
+      analogWrite(PWMB,speedRate);
+    }
+    else 
     {
-      
       digitalWrite(STBY,LOW);
     }
   }
 
   if(TURNTOLEFT)
   {
-     timeRate=(angleRate*1000)/190;
-
+    timeRate=(long)((long)angleRate*4.3+110);
     timeCmdTurnWeelsCompare = millis();
-    if((timeCmdTurnWeelsCompare-timeCmdTurnWeelsCheck)<timeRate)//remplacer 10000 par timerate
+    if((timeCmdTurnWeelsCompare-timeCmdTurnWeelsCheck)<timeRate)
     {
-      //uniquePass=false;
       digitalWrite(STBY,HIGH);
       digitalWrite(AIN1,LOW);
       digitalWrite(AIN2,HIGH);
-      analogWrite(PWMA,150);
+      analogWrite(PWMA,70);
       digitalWrite(BIN1,HIGH);
       digitalWrite(BIN2,LOW);
-      analogWrite(PWMB,150);
-   }
-    else //if((timeCmdWeelsCompare-timeCmdWeelsCheck)>=10000)
+      analogWrite(PWMB,70);
+    }
+    else 
     {
-      
       digitalWrite(STBY,LOW);
     }
   }
 
   if(TURNTORIGHT)
   {
-    timeRate=(angleRate*1000)/190;
+    timeRate=(long)((long)angleRate*4.3+110);
     timeCmdTurnWeelsCompare = millis();
-    if((timeCmdTurnWeelsCompare-timeCmdTurnWeelsCheck)<timeRate)//remplacer 10000 par timerate
+    if((timeCmdTurnWeelsCompare-timeCmdTurnWeelsCheck)<timeRate)
     {
-      //uniquePass=false;
       digitalWrite(STBY,HIGH);
       digitalWrite(AIN1,HIGH);
       digitalWrite(AIN2,LOW);
-      analogWrite(PWMA,150);
+      analogWrite(PWMA,70);
       digitalWrite(BIN1,LOW);
       digitalWrite(BIN2,HIGH);
-      analogWrite(PWMB,150);
-   }
-    else //if((timeCmdWeelsCompare-timeCmdWeelsCheck)>=10000)
+      analogWrite(PWMB,70);
+    }
+    else 
     {
-      
       digitalWrite(STBY,LOW);
     }
   }
-
-
-
 }
+
 
 
 
